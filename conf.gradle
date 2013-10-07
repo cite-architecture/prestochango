@@ -1,0 +1,10 @@
+/* Configuration for sparqlimg
+*/
+
+
+project.ext {
+
+    nexusUser = "deployment"
+    nexusPassword = "homeridai"
+    nexusRepo = "http://beta.hpcc.uh.edu/nexus/content/repositories/releases/"
+}

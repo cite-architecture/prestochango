@@ -1,0 +1,134 @@
+apply plugin: "base"
+apply plugin:  "groovy"
+apply plugin:  "maven"
+
+
+apply from: "versions.gradle"
+
+
+if (hasProperty('conf')) {
+    System.err.print "Using configuration data from ${conf}"
+    File confFile = new File(conf)
+    if (! confFile.exists()) {
+        throw new Exception("No configuration file ${conf} found.")
+    }
+    apply from: conf
+
+} else {
+    File confFile = new File("conf.gradle")
+    if (! confFile.exists()) {
+        throw new Exception("No configuration file ${conf} found.")
+    }
+    println "Using default configuration in 'conf.gradle'"
+    apply from: "conf.gradle"
+}
+
+
+
+
+if (hasProperty('pub')) {
+    System.err.print "Using publication configuration from ${pub}"
+    File confFile = new File(pub)
+    if (! confFile.exists()) {
+        throw new Exception("No configuration file ${pub} found.")
+    }
+    apply from: pub
+
+} else {
+    File confFile = new File("pubconf.gradle")
+    if (! confFile.exists()) {
+        throw new Exception("No configuration file 'pubconf.gradle' found.")
+    }
+    println "Using default configuration in 'pubconf.gradle'"
+    apply from: "pubconf.gradle"
+}
+
+
+
+group = "edu.holycross.shot"
+version = '0.2.9'
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://beta.hpcc.uh.edu/nexus/content/groups/public"
+    }
+}
+
+
+configurations {
+    schemas {
+        description = 'Manage schemas'
+        transitive = true
+    }
+}
+
+
+dependencies {
+    groovy group: 'org.codehaus.groovy', name: 'groovy-all', version: groovyversion
+
+
+    compile group: 'commons-io', name: 'commons-io', version: commonsioversion
+
+
+
+    compile group: 'net.sf.opencsv', name: 'opencsv', version : opencsvversion
+
+    compile group: 'edu.harvard.chs', name : 'cite' , version: citeversion
+
+    compile group: 'com.thaiopensource', name:'jing', version: jingversion
+
+    testCompile group: 'junit', name: 'junit', version: junitversion
+    testCompile group :'xmlunit', name: 'xmlunit', version: xmlunitversion
+
+    //    groovy group:'org.iso_relax.verifier.jaxp.validation', name:'isorelax-jaxp-bridge', version:'1.0'
+    schemas group: 'edu.harvard.chs', name: 'cite', version: citeversion, classifier: 'schemas', ext: 'zip'
+
+}
+
+
+task checkOutSchemas {
+    doLast {
+        configurations.schemas.files.each { f ->
+            println "SCHEMA DEPENDENCY: " + f.name
+            FileTree schemaTree = zipTree(f)
+            schemaTree.each { s ->
+                println "${s} from ${s.getClass()}"
+            }
+        }
+    }
+}
+
+task copySchemas(dependsOn: checkOutSchemas, type: Copy) {
+    from 'src/schemas'
+    into 'build/schemas'
+}
+
+
+compileGroovy.dependsOn(copySchemas)
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: nexusRepo) {                   
+            authentication (userName: nexusUser, password: nexusPassword)
+        }
+    }
+}
+
+task cleanTest () {
+    doLast {
+        File out1 = new File("testdata/testoutput")
+        if (out1.exists()) { 
+            out1.listFiles().each { f ->
+                System.err.println "Delete " + f
+                f.delete()
+            }
+            out1.delete() 
+        }
+        out1.mkdir()
+    }
+}
+
+
+//test.dependsOn cleanTest
