@@ -1,6 +1,4 @@
-# prestochango#
-
-prestochango is a library for managing a CITE Collection archive.
+# `prestochango`:  a library for managing a CITE Collection archive #
 
 
 ## CITE Collection archive

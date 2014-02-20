@@ -14,7 +14,7 @@ import org.apache.commons.io.FilenameUtils
 */
 class CollectionArchive {
 
-    int debug = 5
+    int debug = 0
 
     /** CITE Collection inventory serialized in XML to a File. */
     File inventory
@@ -470,46 +470,49 @@ class CollectionArchive {
             if (headingIndex[i] == label) {
                 oneRow.append("<${urn}> rdf:label " + '"' + c + '" .\n')
             } 
-            // NS change:  also output property for rdf:label (so it appears *twice*)
-            if (headingIndex[i] != canonical) {
-                collConf["properties"].each { confProp ->
-                    if (confProp["name"] == headingIndex[i]) {
-                        switch (confProp["type"]) {
-                            case "boolean":
+            if ((c != null) && (c != "") ){
+                if (debug > 4) { System.err.println "column value is #" + c + "#" }
+                // NS change:  also output property for rdf:label (so it appears *twice*)
+                if (headingIndex[i] != canonical) {
+                    collConf["properties"].each { confProp ->
+                        if (confProp["name"] == headingIndex[i]) {
+                            switch (confProp["type"]) {
+                                case "boolean":
+                                    break
+                                    
+                                case "string":
+                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
                                 break
-                                    
-                            case "string":
-                                oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
-                            break
 
-
-                            case "citeimg":
-                                oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
-                            break
-
-                            case "citeurn":
-                                case "ctsurn":
-                                oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
-                                    
-                            break
-
-                            case "number":
-                                oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} ${c} .\n")
-                            break
                                 
-                            case "datetime":
-                                case "authuser":
-                                oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
-                            break
+                                case "citeimg":
+                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
+                                break
+                                
+                                case "citeurn":
+                                    case "ctsurn":
+                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
+                                
+                                break
+                                
+                                case "number":
+                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} ${c} .\n")
+                                break
+                                
+                                case "datetime":
+                                    case "authuser":
+                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
+                                break
+                                
                                 
 
-
-                            default : 
-                                System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
-                            break
+                                default : 
+                                    System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
+                                break
                             
-                        }
-                    } 
+                            }
+                        } 
+                    }
                 }
                 
             } 
