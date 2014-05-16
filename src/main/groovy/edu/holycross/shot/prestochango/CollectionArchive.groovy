@@ -488,6 +488,10 @@ class CollectionArchive {
                                 case "citeimg":
                                     oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
                                 break
+
+                                case "markdown":
+                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
+                                break
                                 
                                 case "citeurn":
                                     case "ctsurn":
