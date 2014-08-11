@@ -11,20 +11,20 @@ import org.junit.Test
 /** Class testing output of ttl from prestochango's CollectionArchive class.
 */
 class TestFileInv extends GroovyTestCase {
-   String schemaUrl = "schemas/CiteCollectionInventory.rng"
+   String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
 
     @Test void testUpdatedInventory() {
-        String testTsvInventory = "testdata/hmtcollections.xml"
-        File tsvInv = new File(testTsvInventory)
+        String testInventoryName = "testdata/wRevisedSchema/hmtcollections.xml"
+        File testInv = new File(testInventoryName)
 
-        String tsvDataDir = "testdata/hmtdata"
-        File tsvDir = new File(tsvDataDir)
+        String dirName = "testdata/wRevisedSchema"
+        File dataDir = new File(dirName)
 
-        CollectionArchive cc = new CollectionArchive(tsvInv, schemaUrl, tsvDir)
-
+        CollectionArchive cc = new CollectionArchive(testInv, schemaFileName, dataDir)
+	cc.debug = 5
         File testOut = new File("testdata/testoutput/hmtOut.ttl")
-        cc.ttl(testOut)
+        cc.ttl(testOut, true)
         System.err.println "TTL in ${testOut}"
     }
 
