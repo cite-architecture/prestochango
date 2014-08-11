@@ -484,19 +484,17 @@ class CollectionArchive {
                                     oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
                                 break
 
-                                
-                                case "citeimg":
+                                case "markdown":
                                     oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
                                 break
 
-                                case "markdown":
-                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
+                                case "geojson":
+                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
                                 break
                                 
                                 case "citeurn":
                                     case "ctsurn":
                                     oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
-                                
                                 break
                                 
                                 case "number":
@@ -504,7 +502,6 @@ class CollectionArchive {
                                 break
                                 
                                 case "datetime":
-                                    case "authuser":
                                     oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
                                 break
                                 
