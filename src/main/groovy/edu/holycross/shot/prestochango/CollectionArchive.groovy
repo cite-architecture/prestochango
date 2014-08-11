@@ -45,7 +45,7 @@ class CollectionArchive {
     * @param baseDir Directory where collection data are stored, 
     * one file per collection.
     */
-    CollectionArchive(File inv, String schemaUrlStr, File baseDir) 
+    CollectionArchive(File inv, String schemaFileName, File baseDir) 
     throws Exception {
         if (!baseDir.canRead()) {
             throw new Exception("Corpus: cannot read directory ${baseDir}")
@@ -55,7 +55,7 @@ class CollectionArchive {
         if (debug > 0) { System.err.println "constructing CA from inventory ${inv} with baseDir ${baseDir}"}
         
         try {
-            validateInventory(schemaUrlStr)
+            validateInventory(schemaFileName)
         } catch (Exception invException) {
             throw invException
         }
@@ -85,15 +85,17 @@ class CollectionArchive {
     * against the published schema for a CITE TextInventory.
     * @throws Exception if the XML does not validate.
     */
-    void validateInventory(String schemaUrlStr) 
+    void validateInventory(String schemaFileName) 
     throws Exception {
-        URL svcSchema = new URL(schemaUrlStr)
+      //URL svcSchema = new URL(schemaUrlStr)
+      File schemaFile = new File(schemaFileName)
         System.setProperty("javax.xml.validation.SchemaFactory:"+XMLConstants.RELAXNG_NS_URI,
     "com.thaiopensource.relaxng.jaxp.XMLSyntaxSchemaFactory");
 
         def factory = SchemaFactory.newInstance(XMLConstants.RELAXNG_NS_URI)
 
-        def schema = factory.newSchema(svcSchema)
+        //def schema = factory.newSchema(svcSchema)
+	def schema = factory.newSchema(schemaFile)
 
         def validator = schema.newValidator()
         try {
