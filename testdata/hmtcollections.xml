@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="file:/data/repos/hmt-bitbucket/hmtxml/cite/collections/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<collectionService xmlns="http://chs.harvard.edu/xmlns/cite">
+    <!-- Optional element:  none in this inventory yet.
+        <extensionImplementation name="" baseUrl=""></extensionImplementation>
+    -->
+    <citeCollection canonicalId="URN" urn="urn:cite:hmt:msA" label="Label">
+        <namespaceMapping abbr="hmt" fullValue="http://www.homermultitext.org/datans"></namespaceMapping>
+        <title xmlns="http://purl.org/dc/elements/1.1/">Pages of the Venetus A manuscript</title>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Christopher Blackwell</creator>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Neel Smith</creator>
+        <coverage xmlns="http://purl.org/dc/elements/1.1/">All folio sides of the Venetus A manuscript</coverage>
+        <description xmlns="http://purl.org/dc/elements/1.1/">Folio sides of the Venetus A manuscript.</description>
+        <rights xmlns="http://purl.org/dc/elements/1.1/">CC attribution share-alike</rights>
+        <orderedBy property="Sequence"/>
+        <source  type="file" value="venetusA.tsv"></source>
+        <citeProperty name="URN" label="URN"  type="citeurn"/>
+        <citeProperty
+            label="Sequence"
+            name="Sequence"
+            type="number"/>
+        <citeProperty
+            label="Recto or verso"
+            name="RV"
+            type="string"/>
+        <citeProperty
+            label="description"
+            name="Label"
+            type="string"/>
+    </citeCollection>
+
+
+<!--
+   <citeCollection canonicalId="PageZone" urn="urn:cite:hmt:pageroi" label="Label">
+        <namespaceMapping abbr="hmt" fullValue="http://www.homermultitext.org/datans"></namespaceMapping>
+        <title xmlns="http://purl.org/dc/elements/1.1/">Zones of images showing pages of the Venetus A manuscript</title>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Nikolas Churik</creator>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Neel Smith</creator>
+        <coverage xmlns="http://purl.org/dc/elements/1.1/">First six books of Venetus A</coverage>
+        <description xmlns="http://purl.org/dc/elements/1.1/">Zones of default image of a page approximating its rectangular area</description>
+        <rights xmlns="http://purl.org/dc/elements/1.1/">CC attribution share-alike</rights>
+        <source  type="file" value="pageRois.csv"></source>
+        <citeProperty name="PageZone" label="Zone on image"  type="citeurn"/>
+        <citeProperty name="Folio" label="Folio"  type="citeurn"/>
+        <citeProperty name="ImageRoI" label="Region of image"  type="citeimg"/>
+        <citeProperty
+            label="Label"
+            name="Label"
+            type="string"/>
+    </citeCollection>
+-->
+</collectionService>

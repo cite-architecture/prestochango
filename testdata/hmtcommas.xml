@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-model href="CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<collectionService xmlns="http://chs.harvard.edu/xmlns/cite">
+    <!-- Optional element:  none in this inventory yet.
+        <extensionImplementation name="" baseUrl=""></extensionImplementation>
+    -->
+    <citeCollection canonicalId="URN" urn="urn:cite:hmt:u4" label="Label">
+        <namespaceMapping abbr="hmt" fullValue="http://www.homermultitext.org/datans"></namespaceMapping>
+        <title xmlns="http://purl.org/dc/elements/1.1/">Pages of the manuscriptMarciana 841</title>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Christopher Blackwell</creator>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Neel Smith</creator>
+        <coverage xmlns="http://purl.org/dc/elements/1.1/">All folio sides of the Marciana 841 manuscript</coverage>
+        <description xmlns="http://purl.org/dc/elements/1.1/">Folio sides of the Marciana 841 manuscript.</description>
+        <rights xmlns="http://purl.org/dc/elements/1.1/">CC attribution share-alike</rights>
+        <orderedBy property="Sequence"/>
+        <source  type="file" value="hmt-u4.csv"></source>
+        <citeProperty name="URN" label="URN"  type="citeurn"/>
+        <citeProperty
+            label="Sequence"
+            name="Sequence"
+            type="number"/>
+        <citeProperty
+            label="Recto or verso"
+            name="RV"
+            type="string">
+        <valueList>
+            <value>recto</value>
+            <value>verso</value>
+        </valueList>
+        </citeProperty>
+        <citeProperty
+            label="description"
+            name="Label"
+            type="string"/>
+        
+       
+    </citeCollection>
+</collectionService>
