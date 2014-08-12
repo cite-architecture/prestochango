@@ -4,7 +4,7 @@
     xmlns="http://chs.harvard.edu/xmlns/cite"
     xmlns:dc="http://purl.org/dc/elements/1.1/">
     <extensionImplementation
-        fullValue="http://www.homermultitext.org/hmt-docs/specifications/citeimage"
+        rdfType="cite:CiteImage"
         abbr="image"/>
     
     <!-- IMAGE DATA FROM HMT Collections ********************   -->
@@ -32,7 +32,8 @@
             value="images/vbimgs.csv"/>
         <citeProperty name="Image" label="Image URN" type="citeurn"/>
         <citeProperty name="Label" label="Caption" type="string"/>
-        <citeProperty name="Rights" label="Rights" type="string"/>
+        <citeProperty name="Rights" label="Rights" type="string">
+        </citeProperty>
     </citeCollection>
     
     

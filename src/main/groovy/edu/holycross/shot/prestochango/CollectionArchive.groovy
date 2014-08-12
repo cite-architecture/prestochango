@@ -189,12 +189,25 @@ class CollectionArchive {
 	prop['name'] = "${cp.'@name'}"
 	prop['label'] = "${cp.'@label'}"
 	prop['type'] = "${cp.'@type'}"
+	prop['rdfverb'] = ""
+	prop['inverseverb'] = ""
+
+
+
+	// can only be zero or one of these:
+	cp[cite.indexRelation].each { idx ->
+	 prop['rdfverb'] = idx.'@rdfverb'
+	if (idx.'@inverseverb') {
+	  prop['inverseverb'] = idx.'@inverseverb'
+	}
+      }
 
 	def valList = []
 	cp[cite.valueList][cite.value].each {
 	  valList.add("${it.text()}")
 	}
 	prop['valueList'] = valList
+
 	propertyList.add(prop)
       } 
 
@@ -202,10 +215,12 @@ class CollectionArchive {
       if (c.orderedBy) {
 	seq = "${c.orderedBy[0].'@property'}"
       }
-      def groupProp = null
+      String groupProp = null
       if (c.'@groupProperty') {
 	groupProp = c.'@groupProperty'
       }
+
+
       def citeExtensions = []
       c[cite.extension].each { ce ->
 	citeExtensions << "${ce.'@name'}"
@@ -230,7 +245,9 @@ class CollectionArchive {
     return configuredCollections
   }
 
-  String getRdfVerbForExtension(String extensAbbr) 
+
+
+  String getRdfTypeForExtension(String extensAbbr) 
   throws Exception {
     try {
       return this.extensionsMap[extensAbbr]
@@ -298,6 +315,45 @@ class CollectionArchive {
       throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
     }
   }
+
+
+  /** Finds the value of the rdfVerb for a given property.
+   * @param urn The Collection in question.
+   * @param propertyName Name of the property.
+   * @returns The rdfVerb string, or null if none configured.
+   * @throws Exception if urn is not a configured collection or
+   * if propertyName does not exist in that collection.
+   */
+  String getRdfVerb(CiteUrn urn, String propertyName) 
+  throws Exception {
+    String rdfVerb = null
+    def config
+    try {
+      config =  this.citeConfig[urn.toString()]
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
+    }
+    
+    boolean propertyFound
+    config['properties'].each { p ->
+      if (debug > 3) {
+	System.err.println "getRdfVerb: cf property ${p['name']} and ${propertyName}"
+      }
+      if (p['name'] == propertyName) {
+	rdfVerb =  p['rdfverb']
+	propertyFound = true
+	if (debug > 3) {
+	  System.err.println "FOUND IT. ${propertyFound}"
+	}
+      }
+    }
+    if (propertyFound) {
+      return rdfVerb
+    } else {
+      throw new Exception("CollectionArchive:getRdfVerb: no property ${propertyName} in collection ${urn}")
+    }
+  }
+
 
 
   /** Finds name of property with labelling
@@ -520,117 +576,131 @@ class CollectionArchive {
     }
 
 
-    /**  Writes an RDF description, in TTL format, of a single object.
-    * @param cols An array of data values.
-    * @param headingIndex An array of property names, in the same order
-    * as the data values in the cols array.
-    * @param canonical Name of the canonical ID property in this collection.
-    * @param label Name of the rdf:label property in this collection.
-    *
-    */
-    String turtlizeOneRow(ArrayList cols, ArrayList headingIndex, String canonical, String label, boolean ordered) {
-        if (debug > 2) {
-            System.err.println "TURLTELIZE ROW " + cols
-            System.err.println "Use headings " + headingIndex
-        }
-        StringBuffer oneRow  = new StringBuffer()
-        CiteUrn urn
-        String collUrn
-        // Generate statements about canonical ID of object:
-        cols.eachWithIndex { column, idx ->
-            if (debug > 3) { System.err.println "${idx}. Looking at ${headingIndex[idx]} vs ${canonical}" }
-            if (headingIndex[idx] == canonical) {
-                if (debug > 3) { 
-                    System.err.println "Found canonical ${canonical}:" 
-                    System.err.println "at ${column}"
-                }
+  /**  Writes an RDF description, in TTL format, of a single object.
+   * @param cols An array of data values.
+   * @param headingIndex An array of property names, in the same order
+   * as the data values in the cols array.
+   * @param canonical Name of the canonical ID property in this collection.
+   * @param label Name of the rdf:label property in this collection.
+   *
+   */
+  String turtlizeOneRow(ArrayList cols, ArrayList headingIndex, String canonical, String label, boolean ordered) {
+    if (debug > 2) {
+	  System.err.println "TURLTELIZE ROW " + cols
+	  System.err.println "Use headings " + headingIndex
+    }
+     
+    StringBuffer oneRow  = new StringBuffer()
+    CiteUrn urn
+    CiteUrn collUrn
 
-                try {
-                    if (debug > 3) { System.err.println "Try to make URN from ${column}" }
-                    urn = new CiteUrn(column)
-                    if (debug > 3) { System.err.println "OK!" }
+    // Generate statements about canonical ID of object:
+    cols.eachWithIndex { column, idx ->
+      if (debug > 3) { System.err.println "${idx}. Looking at ${headingIndex[idx]} vs ${canonical}" }
+      if (headingIndex[idx] == canonical) {
+	
+	if (debug > 3) { 
+	  System.err.println "Found canonical ${canonical}:" 
+	  System.err.println "at ${column}"
+	}
 
-                    collUrn = "urn:cite:${urn.getNs()}:${urn.getCollection()}"
-                    oneRow.append("<${column}> cite:belongsTo <${collUrn}> .\n")
-                    oneRow.append("<${collUrn}> cite:possesses <${column}> .\n")
+	try {
+	  if (debug > 3) { System.err.println "Try to make URN from ${column}" }
+          
+          urn = new CiteUrn(column)
+	  if (debug > 3) { System.err.println "OK!" }
 
-                    if (!ordered) {
-                        oneRow.append("<${column}> cite:ordered " + '"false" .\n')
-                    }
+	  collUrn = new CiteUrn("urn:cite:${urn.getNs()}:${urn.getCollection()}")
+	  oneRow.append("<${column}> cite:belongsTo <${collUrn}> .\n")
+	  oneRow.append("<${collUrn}> cite:possesses <${column}> .\n")
 
-                    if (debug > 3) { System.err.println "appended to oneRow, now ${oneRow}" }
-                } catch (Exception e) {
-                    System.err.println "turtlizeOneRow: unable to make urn from ${column}"
-                }
-            }
-        }
+	  if (!ordered) {
+	    oneRow.append("<${column}> cite:ordered " + '"false" .\n')
+	  }
 
-        def collConf = this.citeConfig["${collUrn}"]
-
-
-        if (debug > 0) {
-            System.err.println "Config for ${collUrn} is " + collConf
-        }
-        
-
-        cols.eachWithIndex { c, i ->
-            if (headingIndex[i] == label) {
-                oneRow.append("<${urn}> rdf:label " + '"' + c + '" .\n')
-            } 
-            if ((c != null) && (c != "") ){
-                if (debug > 4) { System.err.println "column value is #" + c + "#" }
-                // NS change:  also output property for rdf:label (so it appears *twice*)
-                if (headingIndex[i] != canonical) {
-                    collConf["properties"].each { confProp ->
-                        if (confProp["name"] == headingIndex[i]) {
-                            switch (confProp["type"]) {
-                                case "boolean":
-                                    break
-                                    
-                                case "string":
-                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
-                                break
-
-                                case "markdown":
-                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
-                                break
-
-                                case "geojson":
-                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
-                                break
-                                
-                                case "citeurn":
-                                    case "ctsurn":
-                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
-                                break
-                                
-                                case "number":
-                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} ${c} .\n")
-                                break
-                                
-                                case "datetime":
-                                    oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
-                                break
-                                
-                                
-
-                                default : 
-                                    System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
-                                break
-                            
-                            }
-                        } 
-                    }
-                }
-                
-            } 
-        } 
-        if (debug > 3) { System.err.println "Turtleized row: " + oneRow }
-        return oneRow.toString()
+	  if (debug > 3) { System.err.println "appended to oneRow, now ${oneRow}" }
+	} catch (Exception e) {
+	  System.err.println "turtlizeOneRow: unable to make urn from ${column}"
+	}
+      }
     }
 
+    def collConf = this.citeConfig["${collUrn}"]
 
-    /** Formats sequencing statments in the OLO ontologry for an ordered collection
+
+    if (debug > 0) {
+      System.err.println "Config for ${collUrn} is " + collConf
+    }
+        
+
+    cols.eachWithIndex { c, i ->
+
+      if (headingIndex[i] == label) {
+	oneRow.append("<${urn}> rdf:label " + '"' + c + '" .\n')
+      } 
+      if ((c != null) && (c != "") ){
+	if (debug > 4) { System.err.println "column value of ${headingIndex[i]} is #" + c + "#" }
+	// NS change:  also output property for rdf:label (so it appears *twice*)
+	if (headingIndex[i] != canonical) {
+	  collConf["properties"].each { confProp ->
+	    if (confProp["name"] == headingIndex[i]) {
+	      switch (confProp["type"]) {
+
+	      case "boolean":
+	      break
+
+	      case "number":
+	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} ${c} .\n")
+
+	      if (getRdfVerb(collUrn, headingIndex[i])) {
+		oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} ${c} .\n")
+	      }
+
+
+
+	      break
+
+	      case "markdown":              
+	      case "geojson":
+	      case "string":
+	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
+	      if (getRdfVerb(collUrn, headingIndex[i])) {
+		oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} " + '"' + c + '" .\n')
+	      }
+
+	      break
+                
+	      case "citeurn":
+	      case "ctsurn":
+	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
+
+	      if (getRdfVerb(collUrn, headingIndex[i])) {
+		oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} <${c}> .\n")
+	      }
+
+	      break
+                                
+                                
+	      
+	      default : 
+	      System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
+	      break
+              
+	      }
+	    } 
+	  }
+	}
+        
+      } 
+    } 
+    if (debug > 3) { System.err.println "Turtleized row: " + oneRow }
+    return oneRow.toString()
+  }
+
+
+  
+
+  /** Formats sequencing statments in the OLO ontologry for an ordered collection
     * represented by a tsv file.
     * @param f File with data in tsv format.  First row should
     * be property names, subsequent rows should contain data.
@@ -794,44 +864,44 @@ class CollectionArchive {
 
 
 
-    /** Formats data rows from a tsv file as TTL.
-    * First constructs an index of the property names for this object,
-    * then cycles through all data rows, and constructs and an array of values
-    * that are then passed off to the generic turtleizeOneRow method.
-    *
-    * @param f File with data in tsv format.  First row should
-    * be property names, subsequent rows should contain data.
-    * @param collUrn Cite URN of the collection.
-    * @returns String expressing the contents of the row in TTL.
-    */
-    String ttlBasicTsvData(File f, CiteUrn collUrn, boolean ordered) {
-        String canonical = getCanonicalIdProperty(collUrn)
-        String label = getLabelProperty(collUrn)
-        String orderProp = getOrderedByProperty(collUrn)
+  /** Formats data rows from a tsv file as TTL.
+   * First constructs an index of the property names for this object,
+   * then cycles through all data rows, and constructs and an array of values
+   * that are then passed off to the generic turtleizeOneRow method.
+   *
+   * @param f File with data in tsv format.  First row should
+   * be property names, subsequent rows should contain data.
+   * @param collUrn Cite URN of the collection.
+   * @returns String expressing the contents of the row in TTL.
+   */
+  String ttlBasicTsvData(File f, CiteUrn collUrn, boolean ordered) {
+    String canonical = getCanonicalIdProperty(collUrn)
+    String label = getLabelProperty(collUrn)
+    String orderProp = getOrderedByProperty(collUrn)
 
-        StringBuffer replyBuff = new StringBuffer()
-        def headingIndex = []
-        def lineCount = 0
-        f.eachLine { l ->
-            replyBuff.append("\n")
-            def cols = l.split(/\t/)
+    StringBuffer replyBuff = new StringBuffer()
+    def headingIndex = []
+    def lineCount = 0
+    f.eachLine { l ->
+      replyBuff.append("\n")
+      def cols = l.split(/\t/)
 
-            if (lineCount == 0) {
-                headingIndex = cols
-            } else {
-                String rowTtl  = ""
-                try {
-                    rowTtl = turtlizeOneRow(cols.toList(), headingIndex.toList(), canonical, label, ordered)
-                } catch (Exception e) {
-                    System.err.println "FAILED TO PROCESS ${cols.size()} columns, " + cols
-                    System.err.println "BECAUSE OF " + e
-                }
-                replyBuff.append(rowTtl)
-            }
-            lineCount++;
-        }
-        return replyBuff.toString()
+      if (lineCount == 0) {
+	headingIndex = cols
+      } else {
+	String rowTtl  = ""
+	try {
+	  rowTtl = turtlizeOneRow(cols.toList(), headingIndex.toList(), canonical, label, ordered)
+	} catch (Exception e) {
+	  System.err.println "FAILED TO PROCESS ${cols.size()} columns, " + cols
+	  System.err.println "BECAUSE OF " + e
+	}
+	replyBuff.append(rowTtl)
+      }
+      lineCount++;
     }
+    return replyBuff.toString()
+  }
 
 
     /** Formats sequencing statments in the OLO ontologry for an ordered collection
