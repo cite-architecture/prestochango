@@ -57,21 +57,10 @@ repositories {
 }
 
 
-configurations {
-    schemas {
-        description = 'Manage schemas'
-        transitive = true
-    }
-}
-
-
 dependencies {
-    groovy group: 'org.codehaus.groovy', name: 'groovy-all', version: groovyversion
-
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: groovyversion
 
     compile group: 'commons-io', name: 'commons-io', version: commonsioversion
-
-
 
     compile group: 'net.sf.opencsv', name: 'opencsv', version : opencsvversion
 
@@ -82,31 +71,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: junitversion
     testCompile group :'xmlunit', name: 'xmlunit', version: xmlunitversion
 
-    //    groovy group:'org.iso_relax.verifier.jaxp.validation', name:'isorelax-jaxp-bridge', version:'1.0'
-    schemas group: 'edu.harvard.chs', name: 'cite', version: citeversion, classifier: 'schemas', ext: 'zip'
-
 }
 
-
-task checkOutSchemas {
-    doLast {
-        configurations.schemas.files.each { f ->
-            println "SCHEMA DEPENDENCY: " + f.name
-            FileTree schemaTree = zipTree(f)
-            schemaTree.each { s ->
-                println "${s} from ${s.getClass()}"
-            }
-        }
-    }
-}
-
-task copySchemas(dependsOn: checkOutSchemas, type: Copy) {
-    from 'src/schemas'
-    into 'build/schemas'
-}
-
-
-compileGroovy.dependsOn(copySchemas)
 
 uploadArchives {
     repositories.mavenDeployer {
@@ -129,6 +95,3 @@ task cleanTest () {
         out1.mkdir()
     }
 }
-
-
-//test.dependsOn cleanTest
