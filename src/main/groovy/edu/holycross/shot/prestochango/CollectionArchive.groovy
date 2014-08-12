@@ -19,185 +19,226 @@ class CollectionArchive {
   Integer WARN = 1
   Integer debug = 0
 
-    /** CITE Collection inventory serialized in XML to a File. */
-    File inventory
+  /** CITE Collection inventory serialized in XML to a File. */
+  File inventory
 
-    /** Root directory of file system containing archival files.
-    */
-    File baseDirectory
+  /** Root directory of file system containing archival files.  */
+  File baseDirectory
 
-    /** Hash map with key information from the inventory file for
-    * easy access without having to navigate complex XML. */
-    LinkedHashMap citeConfig
+  /** Hash map with key information from the inventory file for
+   * easy access without having to navigate complex XML. */
+  LinkedHashMap citeConfig
 
-    /** Groovy XML namespace for CITE. */
-    final groovy.xml.Namespace cite = new groovy.xml.Namespace("http://chs.harvard.edu/xmlns/cite")
-
-    /** Groovy XML namespace for Dublin Core. */
-    final groovy.xml.Namespace dc = new groovy.xml.Namespace("http://purl.org/dc/elements/1.1/")
-
-    /** RDF namespace declarations. */
-    final String prefix = "@prefix cite:        <http://www.homermultitext.org/cite/rdf/> .\n@prefix citedata:        <http://www.homermultitext.org/citedata/> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. \n@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix olo:     <http://purl.org/ontology/olo/core#> .\n\n"
-
-    /** Default character encoding, can be reset dynamically. */
-    String charEnc = "UTF-8"
+  /** Hash map with rdf verbs for each supported extension. */
+  LinkedHashMap extensionsMap = [:]
 
 
-    /** Constructor for CollectionArchive using local file storage.
-    * @param inv Collection inventory.
-    * @param baseDir Directory where collection data are stored, 
-    * one file per collection.
-    */
-    CollectionArchive(File inv, String schemaFileName, File baseDir) 
-    throws Exception {
-        if (!baseDir.canRead()) {
-            throw new Exception("Corpus: cannot read directory ${baseDir}")
-        }
-        this.baseDirectory = baseDir
-        this.inventory = inv
-        if (debug > 0) { System.err.println "constructing CA from inventory ${inv} with baseDir ${baseDir}"}
+  /** Groovy XML namespace for CITE. */
+  final groovy.xml.Namespace cite = new groovy.xml.Namespace("http://chs.harvard.edu/xmlns/cite")
+
+  /** Groovy XML namespace for Dublin Core. */
+  final groovy.xml.Namespace dc = new groovy.xml.Namespace("http://purl.org/dc/elements/1.1/")
+
+  /** RDF namespace declarations. */
+  final String prefix = "@prefix cite:        <http://www.homermultitext.org/cite/rdf/> .\n@prefix citedata:        <http://www.homermultitext.org/citedata/> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. \n@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix olo:     <http://purl.org/ontology/olo/core#> .\n\n"
+
+  /** Default character encoding, can be reset dynamically. */
+  String charEnc = "UTF-8"
+
+
+  /** Constructor for CollectionArchive using local file storage.
+   * @param inv Collection inventory.
+   * @param baseDir Directory where collection data are stored, 
+   * one file per collection.
+   */
+  CollectionArchive(File inv, String schemaFileName, File baseDir) 
+  throws Exception {
+    try {
+      if (!baseDir.canRead()) {
+	throw new Exception("Corpus: cannot read directory ${baseDir}")
+      }
+      this.baseDirectory = baseDir
+      this.inventory = inv
+      if (debug > 0) { System.err.println "constructing CA from inventory ${inv} with baseDir ${baseDir}"}
+      
+      try {
+	validateInventory(schemaFileName)
+      } catch (Exception invException) {
+	throw invException
+      }
+      this.citeConfig = configureFromFile()
+
+      if (debug > 0) { System.err.println "Configuration map = " + this.citeConfig} 
+
+    } catch (Exception e) {
+      throw e
+    }
+  }
+
+
+  CollectionArchive(File inv, File schemaFile, File baseDir) 
+  throws Exception {
+    if (!baseDir.canRead()) {
+      throw new Exception("Corpus: cannot read directory ${baseDir}")
+    }
+    this.baseDirectory = baseDir
+    this.inventory = inv
+    if (debug > 0) { System.err.println "constructing CA from inventory ${inv} with baseDir ${baseDir}"}
         
-        try {
-            validateInventory(schemaFileName)
-        } catch (Exception invException) {
-            throw invException
-        }
-        this.citeConfig = configureFromFile()
-
-        if (debug > 0) { System.err.println "Configuration map = " + this.citeConfig} 
+    try {
+      validateInventory(schemaFile)
+    } catch (Exception invException) {
+      throw invException
     }
-
-
-    /** Constructor for CollectionArchive using Google Tables for data storage.
-    *  @param inv Inventory file.
-    */
-    CollectionArchive(File inv, String schemaUrlStr) 
-    throws Exception {
-        this.inventory = inv
-        try {
-
-            validateInventory(schemaUrlStr)
-        } catch (Exception invException) {
-            throw invException
-        }
-        this.citeConfig = configureFromFile()
-        //throw new Exception("Support for Google tables not yet implemented.")
-    }
-
-    /** Validates the XML serialization of the collection's schema
-    * against the published schema for a CITE TextInventory.
-    * @throws Exception if the XML does not validate.
-    */
-    void validateInventory(String schemaFileName) 
-    throws Exception {
-      //URL svcSchema = new URL(schemaUrlStr)
-      File schemaFile = new File(schemaFileName)
-        System.setProperty("javax.xml.validation.SchemaFactory:"+XMLConstants.RELAXNG_NS_URI,
-    "com.thaiopensource.relaxng.jaxp.XMLSyntaxSchemaFactory");
-
-        def factory = SchemaFactory.newInstance(XMLConstants.RELAXNG_NS_URI)
-
-        //def schema = factory.newSchema(svcSchema)
-	def schema = factory.newSchema(schemaFile)
-
-        def validator = schema.newValidator()
-        try {
-            validator.validate(this.inventory)
-        } catch (Exception e) {
-            throw e
-        }
-
-    }
-
-
-    /**  Creates a map of the configuration data 
-    * in this collection's XML capabilities file.
-    * @returns A map of configuration data or null
-    * if the inventory file could not be parsed.
-    */
-    LinkedHashMap configureFromFile() {
-        return configureFromFile(this.inventory)
-    }
+    this.citeConfig = configureFromFile()
     
-    /** Creates a map of the configuration data 
-    * in an XML capabilities file.
-    * @param f The XML capabilities file.
-    * @returns A map of configuration data or null
-    * if the file could not be parsed.
-    */
-    LinkedHashMap configureFromFile(File f) {
-        def root 
-        try {
-            root = new XmlParser().parse(f)
-        } catch (Exception e) {
-            return null
-        }
+    if (debug > 0) { System.err.println "Configuration map = " + this.citeConfig} 
+  }
 
 
-        def configuredCollections = [:]
+  /** Constructor for CollectionArchive using Google Tables for data storage.
+   *  @param inv Inventory file.
+   */
+  CollectionArchive(File inv, String schemaFileName) 
+  throws Exception {
+    this.inventory = inv
+    try {
+      validateInventory(schemaFileName)
+    } catch (Exception invException) {
+      throw invException
+    }
+    this.citeConfig = configureFromFile()
+  }
 
-        root[cite.citeCollection].each { c ->
-            def title = c.'@urn'
-            c[dc.description].each {
-                title = it.text()
-            }
+  /** Validates the XML serialization of the collection's schema
+   * against the published schema for a CITE TextInventory.
+   * @throws Exception if the XML does not validate.
+   */
+  void validateInventory(String schemaFileName) 
+  throws Exception {
+    try {
+      File schemaFile = new File(schemaFileName)
+      validateInventory(schemaFile)
+    } catch (Exception e) {
+      throw e
+    }
+  }
+
+  void validateInventory(File schemaFile) 
+  throws Exception {
+    System.setProperty("javax.xml.validation.SchemaFactory:"+XMLConstants.RELAXNG_NS_URI,
+		       "com.thaiopensource.relaxng.jaxp.XMLSyntaxSchemaFactory");
+    def factory = SchemaFactory.newInstance(XMLConstants.RELAXNG_NS_URI)
+    def schema = factory.newSchema(schemaFile)
+    def validator = schema.newValidator()
+    try {
+      validator.validate(this.inventory)
+    } catch (Exception e) {
+      throw e
+    }
+  }
 
 
-            String sourceType = ""
-            String source = ""
-            c[cite.source].each { src ->
-                sourceType = "${src.'@type'}"
-                source = "${src.'@value'}"
-            }
-            
-            
-            def propertyList = []
-            c[cite.citeProperty].each { cp ->
-                def prop = [:]
-                prop['name'] = "${cp.'@name'}"
-                prop['label'] = "${cp.'@label'}"
-                prop['type'] = "${cp.'@type'}"
-
-                def valList = []
-                cp[cite.valueList][cite.value].each {
-                    valList.add("${it.text()}")
-                }
-                prop['valueList'] = valList
-                propertyList.add(prop)
-            } 
-
-            def seq = ""
-            if (c.orderedBy) {
-                seq = "${c.orderedBy[0].'@property'}"
-            }
-            def groupProp = null
-            if (c.'@groupProperty') {
-                groupProp = c.'@groupProperty'
-            }
-            def citeExtensions = []
-            c[cite.citeExtension].each { ce ->
-                citeExtensions << "${ce.'@uri'}"
-            }
-
-            def collData = [
-                "title" : title,
-                "canonicalId" : "${c.'@canonicalId'}",
-                "labelProp" : "${c.'@label'}",
-
-                "groupProperty" : groupProp,
-                "nsabbr" : "${c[cite.namespaceMapping][0].'@abbr'}", 
-                "nsfull" :"${c[cite.namespaceMapping][0].'@fullValue'}",
-                "orderedBy" : seq,
-                "citeExtensions" : citeExtensions,
-                "properties" : propertyList,
-                "sourceType" : sourceType,
-                "source" : source
-            ]
-            configuredCollections.putAt("${c.'@urn'}",collData)
-        }
-        return configuredCollections
+  /**  Creates a map of the configuration data 
+   * in this collection's XML capabilities file.
+   * @returns A map of configuration data or null
+   * if the inventory file could not be parsed.
+   */
+  LinkedHashMap configureFromFile() {
+    return configureFromFile(this.inventory)
+  }
+    
+  /** Creates a map of the configuration data 
+   * in an XML capabilities file.
+   * @param f The XML capabilities file.
+   * @returns A map of configuration data.
+   * @throws Exception if the file could not be parsed.
+   */
+  LinkedHashMap configureFromFile(File f) {
+    def root 
+    try {
+      root = new XmlParser().parse(f)
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive: unable to parse inventory file ${f}")
     }
 
+
+    root[cite.extensionImplementation].each { extension ->
+      this.extensionsMap[extension.'@abbr'] = extension.'@rdfType'
+    }
+
+    def configuredCollections = [:]
+    root[cite.citeCollection].each { c ->
+      String title = c.'@urn'
+      c[dc.description].each {
+	title = it.text()
+      }
+
+
+      String sourceType = ""
+      String source = ""
+      c[cite.source].each { src ->
+	sourceType = "${src.'@type'}"
+	source = "${src.'@value'}"
+      }
+            
+            
+      def propertyList = []
+      c[cite.citeProperty].each { cp ->
+	def prop = [:]
+	prop['name'] = "${cp.'@name'}"
+	prop['label'] = "${cp.'@label'}"
+	prop['type'] = "${cp.'@type'}"
+
+	def valList = []
+	cp[cite.valueList][cite.value].each {
+	  valList.add("${it.text()}")
+	}
+	prop['valueList'] = valList
+	propertyList.add(prop)
+      } 
+
+      def seq = ""
+      if (c.orderedBy) {
+	seq = "${c.orderedBy[0].'@property'}"
+      }
+      def groupProp = null
+      if (c.'@groupProperty') {
+	groupProp = c.'@groupProperty'
+      }
+      def citeExtensions = []
+      c[cite.extension].each { ce ->
+	citeExtensions << "${ce.'@name'}"
+      }
+
+      def collData = [
+	"title" : title,
+	"canonicalId" : "${c.'@canonicalId'}",
+	"labelProp" : "${c.'@label'}",
+
+	"groupProperty" : groupProp,
+	"nsabbr" : "${c[cite.namespaceMapping][0].'@abbr'}", 
+	"nsfull" :"${c[cite.namespaceMapping][0].'@fullValue'}",
+	"orderedBy" : seq,
+	"citeExtensions" : citeExtensions,
+	"properties" : propertyList,
+	"sourceType" : sourceType,
+	"source" : source
+      ]
+      configuredCollections.putAt("${c.'@urn'}",collData)
+    }
+    return configuredCollections
+  }
+
+  String getRdfVerbForExtension(String extensAbbr) 
+  throws Exception {
+    try {
+      return this.extensionsMap[extensAbbr]
+      
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive:  no extension ${extensAbbr} configured.")
+    }
+  }
 
 
   /** Finds the list of enumerated values allowed for a property.
@@ -223,42 +264,85 @@ class CollectionArchive {
     return vals
   }
 
-    /** Finds name of property with URN identifier
-    * for objects in a collection.
-    * @param urn The Collection in question.
-    * @returns Name of the property.
+
+  /** Finds list of extensions configured
+   * for a Collection.
+   * @param urn The Collection in question.
+   * @returns List of strings with the abbreviated
+   * name for each extensions.
+   * @throws Exception if urn is not a configured collection.
    */
-    String getCanonicalIdProperty(CiteUrn urn) {
-        def config =  this.citeConfig[urn.toString()]
-        return config['canonicalId']
+  ArrayList getExtensionList(CiteUrn urn) 
+  throws Exception {
+    try {
+      def config =  this.citeConfig[urn.toString()]
+      return config['citeExtensions']
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive:getExtensionList: no collection ${urn} configured.")
     }
+  }
+  
 
-
-    /** Finds name of property with labelling
-    * information usable in rdf:label description.
-    * @param urn The Collection in question.
-    * @returns Name of the property.
+  /** Finds name of property with URN identifier
+   * for objects in a collection.
+   * @param urn The Collection in question.
+   * @returns Name of the property.
+   * @throws Exception if urn is not a configured collection.
    */
-    String getLabelProperty(CiteUrn urn) {
-        def config =  this.citeConfig[urn.toString()]
-        return config['labelProp']
+  String getCanonicalIdProperty(CiteUrn urn) 
+  throws Exception {
+    try {
+      def config =  this.citeConfig[urn.toString()]
+      return config['canonicalId']
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
     }
+  }
 
 
-    String getTitle(CiteUrn urn) {
-        def config =  this.citeConfig[urn.toString()]
-        return config['title']
+  /** Finds name of property with labelling
+   * information usable in rdf:label description.
+   * @param urn The Collection in question.
+   * @returns Name of the property.
+   * @throws Exception if urn is not a configured collection.
+   */
+  String getLabelProperty(CiteUrn urn) 
+  throws Exception {
+    try {
+      def config =  this.citeConfig[urn.toString()]
+      return config['labelProp']
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive:getLabelProperty: no collection ${urn} configured.")
     }
+  }
 
 
 
-    /** Finds a single pairing of source type and source name
-    * for a Collection.  Currently, only 'file' source type is
-    * implemented, and source name should be a local file name.
-    * @param urn The Collection in question.
-    * @returns An ArrayList containing the two items.
-    */
-    ArrayList getSourcePair(CiteUrn urn) {
+  /** Finds name of property with long description
+   * of the Collection.
+   * @param urn The Collection in question.
+   * @returns Name of the property.
+   * @throws Exception if urn is not a configured collection.
+   */
+  String getTitle(CiteUrn urn) 
+  throws Exception {
+    try {
+      def config =  this.citeConfig[urn.toString()]
+      return config['title']
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive:getLabelProperty: no collection ${urn} configured.")
+    }
+  }
+
+
+
+  /** Finds a single pairing of source type and source name
+   * for a Collection.  Currently, only 'file' source type is
+   * implemented, and source name should be a local file name.
+   * @param urn The Collection in question.
+   * @returns An ArrayList containing the two items.
+   */
+  ArrayList getSourcePair(CiteUrn urn) {
         def config = this.citeConfig[urn.toString()]
         def pair = [config['sourceType'], config['source']]
         return pair
@@ -364,62 +448,75 @@ class CollectionArchive {
 
 
     /**  Writes an RDF description, in TTL format, of the data about
-    * a collection expressed by the Collection Inventory
+    * a collection expressed by the Collection Inventory.
     * @returns A String composed of TTL statements.
     */
     String turtlizeInventory() {
-        StringBuffer ttl = new StringBuffer()
+      StringBuffer ttl = new StringBuffer()
 
-        def invroot = new XmlParser().parse(this.inventory)
-        invroot[cite.citeCollection].each { cc ->
-            if (!cc.'@urn') {
-                System.err.println "CollectionArchive:  cannot turtlieze collection with no URN!"
-                System.err.println "Parsed record was " + cc
-                throw new Exception("No urn defined for collection.")
-            }
-            CiteUrn urn = new CiteUrn(cc.'@urn')
-            String labelProperty = getLabelProperty(urn)
-            def nsMap = cc[cite.namespaceMapping][0]
 
-            ttl.append("<${nsMap.'@fullValue'}> rdf:type cite:DataNs .\n")
-            ttl.append("<${nsMap.'@fullValue'}> cite:abbreviatedBy " + '"' + nsMap.'@abbr' +  '" .\n\n')
+      def invroot = new XmlParser().parse(this.inventory)
+      invroot[cite.citeCollection].each { cc ->
+	if (!cc.'@urn') {
+	  System.err.println "CollectionArchive:  cannot turtlieze collection with no URN!"
+	  System.err.println "Parsed record was " + cc
+	  throw new Exception("No urn defined for collection.")
+	}
+	CiteUrn urn = new CiteUrn(cc.'@urn')
+	String labelProperty = getLabelProperty(urn)
+	def nsMap = cc[cite.namespaceMapping][0]
 
-            ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:type cite:CiteCollection . \n")
-            def rdfLabel = getTitle(urn).replaceAll(/\n/,'')
+	ttl.append("<${nsMap.'@fullValue'}> rdf:type cite:DataNs .\n")
+	ttl.append("<${nsMap.'@fullValue'}> cite:abbreviatedBy " + '"' + nsMap.'@abbr' +  '" .\n\n')
 
-            ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:label " + '"' + rdfLabel  + '" . \n')
+	ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:type cite:CiteCollection . \n")
+	def rdfLabel = getTitle(urn).replaceAll(/\n/,'')
 
-            ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> cite:canonicalId citedata:${urn.getCollection()}_${cc.'@canonicalId'} . \n")
+	ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:label " + '"' + rdfLabel  + '" . \n')
+	
+	ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> cite:canonicalId citedata:${urn.getCollection()}_${cc.'@canonicalId'} . \n")
             
-            if (cc[cite.orderedBy]) {
-                ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:orderedBy citedata:${urn.getCollection()}_${cc[cite.orderedBy][0].'@property'} .\n")
-            }
-            ttl.append("\n")
+	if (cc[cite.orderedBy]) {
+	  ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:orderedBy citedata:${urn.getCollection()}_${cc[cite.orderedBy][0].'@property'} .\n")
+	}
+	ttl.append("\n")
+	
 
-            /* document configured properties: */
-            cc[cite.citeProperty].each { prop ->
-                String propUri = "citedata:${urn.getCollection()}_${prop.'@name'}"
-                ttl.append( "<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:collProperty  ${propUri} .\n")
-                ttl.append( "${propUri} rdf:type rdf:Property .\n")
-                ttl.append ("${propUri} cite:propLabel " + '"' + prop.'@label' +  '".\n')
+	cc[cite.extension].each { extension ->
+	  if (debug > WARN) {
+	    System.err.println "CollectionArchive: examine exension ${extension}"
+	    System.err.println "It has name ${extension.'@name'}"
+	    System.err.println "Check for it in ${extensionsMap}:"
+	  }
+	  String abbr = extension.'@name'
+	  ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:type ${this.extensionsMap[abbr]} .\n")
+	}
 
-                switch (prop.'@type') {
-                    case ("citeurn"):
-                        ttl.append ("${propUri} cite:propType cite:CiteUrn .\n")
-                    break
-                    case ("ctsurn"):
-                        ttl.append ("${propUri} cite:propType cite:CtsUrn .\n")
-                    break
 
-                    default:
-                        ttl.append ("${propUri} cite:propType " + '"' + prop.'@type' +  '".\n')
-                    break
-                }
-                ttl.append("\n")
-            }
-            
-        }
-        return ttl.toString()
+	/* document configured properties: */
+	cc[cite.citeProperty].each { prop ->
+	  String propUri = "citedata:${urn.getCollection()}_${prop.'@name'}"
+	  ttl.append( "<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:collProperty  ${propUri} .\n")
+	  ttl.append( "${propUri} rdf:type rdf:Property .\n")
+	  ttl.append ("${propUri} cite:propLabel " + '"' + prop.'@label' +  '".\n')
+
+	  switch (prop.'@type') {
+	  case ("citeurn"):
+	  ttl.append ("${propUri} cite:propType cite:CiteUrn .\n")
+	  break
+	  case ("ctsurn"):
+	  ttl.append ("${propUri} cite:propType cite:CtsUrn .\n")
+	  break
+
+	  default:
+	  ttl.append ("${propUri} cite:propType " + '"' + prop.'@type' +  '".\n')
+	  break
+	  }
+	  ttl.append("\n")
+	}
+        
+      }
+      return ttl.toString()
     }
 
 
