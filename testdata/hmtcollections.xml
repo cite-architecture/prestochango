@@ -2,9 +2,7 @@
 
 <?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <collectionService xmlns="http://chs.harvard.edu/xmlns/cite">
-    <!-- Optional element:  none in this inventory yet.
-        <extensionImplementation name="" baseUrl=""></extensionImplementation>
-    -->
+   
     <citeCollection canonicalId="URN" urn="urn:cite:hmt:msA" label="Label">
         <namespaceMapping abbr="hmt" fullValue="http://www.homermultitext.org/datans"></namespaceMapping>
         <title xmlns="http://purl.org/dc/elements/1.1/">Pages of the Venetus A manuscript</title>
