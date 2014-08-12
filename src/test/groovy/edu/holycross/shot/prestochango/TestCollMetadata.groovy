@@ -12,7 +12,8 @@ import org.junit.Test
 */
 class TestCollMetadata extends GroovyTestCase {
 
-    String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
+    String schemaFileName = "schemas/CiteCollectionInventory.rng"
+
 
     String testInventory = "testdata/testcapabilities.xml"
     File inv = new File(testInventory)
@@ -22,7 +23,7 @@ class TestCollMetadata extends GroovyTestCase {
 
 
     @Test void testPropMetadata() {
-        CollectionArchive cc = new CollectionArchive(inv, schemaUrl, dir)
+        CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
 
         CiteUrn collUrn = new CiteUrn("urn:cite:hmt:u4")
 
