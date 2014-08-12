@@ -12,8 +12,8 @@ import org.junit.Test
 */
 class TestNullColumn extends GroovyTestCase {
 
+ String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
-   String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
 
     @Test void testCsv() {
 
@@ -23,7 +23,7 @@ class TestNullColumn extends GroovyTestCase {
         String csvDataDir = "testdata/csvs"
         File csvDir = new File(csvDataDir)
 
-        CollectionArchive cc = new CollectionArchive(csvInv, schemaUrl, csvDir)
+        CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)
 
 
         File testOut = new File("testdata/testoutput/hmtNullColCsvOut.ttl")

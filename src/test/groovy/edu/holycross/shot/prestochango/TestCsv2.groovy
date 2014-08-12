@@ -13,7 +13,7 @@ import org.junit.Test
 class TestCsv2 extends GroovyTestCase {
 
 
-   String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
+    String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
     @Test void testCsv() {
 
@@ -23,7 +23,7 @@ class TestCsv2 extends GroovyTestCase {
         String csvDataDir = "testdata/csvs"
         File csvDir = new File(csvDataDir)
 
-        CollectionArchive cc = new CollectionArchive(csvInv, schemaUrl, csvDir)
+        CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)
 
 
         File testOut = new File("testdata/testoutput/hmtCsvOut.ttl")

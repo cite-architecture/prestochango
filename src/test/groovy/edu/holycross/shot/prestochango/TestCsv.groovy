@@ -11,7 +11,8 @@ import org.junit.Test
 /** Class testing prestochange CiteCollection class.
 */
 class TestCsv extends GroovyTestCase {
-    String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
+    String schemaFileName = "schemas/CiteCollectionInventory.rng"
+
     String testInventory = "testdata/states-caps.xml"
     File inv = new File(testInventory)
 
@@ -31,7 +32,7 @@ class TestCsv extends GroovyTestCase {
         testOut.text = ""
 
 
-        CollectionArchive cc = new CollectionArchive(inv, schemaUrl, dir)
+        CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
         cc.ttl(testOut)
         System.err.println "TTL in ${testOut}"
     }
