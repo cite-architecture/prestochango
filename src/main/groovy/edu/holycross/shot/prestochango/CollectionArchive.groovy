@@ -14,7 +14,10 @@ import org.apache.commons.io.FilenameUtils
 */
 class CollectionArchive {
 
-    int debug = 0
+  Integer SCREAM = 3
+  Integer DEBUGMSG = 2
+  Integer WARN = 1
+  Integer debug = 0
 
     /** CITE Collection inventory serialized in XML to a File. */
     File inventory
@@ -197,23 +200,28 @@ class CollectionArchive {
 
 
 
-    /** Finds the list of enumerated values allowed for a property.
-    * @param urn A CiteUrn identifying the collection.
-    * @param propertyName Name of the property in question.
-    * @returns 
-    */
-    ArrayList getValueList(CiteUrn urn, String propertyName) {
-        def config =  this.citeConfig[urn.toString()]
-        def vals = []
-        if (config) {
-            config['properties'].each { p ->
-                if (p['name'] == propertyName) {
-                    vals = p['valueList']
-                }
-            }
-        }
-        return vals
+  /** Finds the list of enumerated values allowed for a property.
+   * @param urn A CiteUrn identifying the collection.
+   * @param propertyName Name of the property in question.
+   * @returns 
+   */
+  ArrayList getValueList(CiteUrn urn, String propertyName) {
+    def config =  this.citeConfig[urn.toString()]
+
+    def vals = []
+    if (config) {
+      config['properties'].each { p ->
+	if (debug > WARN) {
+	  System.err.println "CollectionArchive:getValueList: examine property " + p
+	}
+
+	if (p['name'] == propertyName) {
+	  vals = p['valueList']
+	}
+      }
     }
+    return vals
+  }
 
     /** Finds name of property with URN identifier
     * for objects in a collection.

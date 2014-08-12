@@ -10,13 +10,16 @@ import org.junit.Test
 /** Class testing output of ttl from prestochango's CollectionArchive class.
 */
 class TestValList extends GroovyTestCase {
-   String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
+
+  String schemaFileName = "schemas/CiteCollectionInventory.rng"
+
     CiteUrn coll = new CiteUrn("urn:cite:hmt:msA")
     File tsvInv = new File( "testdata/hmtcollections.xml")
     File tsvDir = new File("testdata/hmtdata")
 
     @Test void testOrder() {
-        CollectionArchive cc = new CollectionArchive(tsvInv, schemaUrl, tsvDir)
+        CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)
+	cc.debug = 8
 
         String valProp = "RV"
         def expectedValues = ["recto","verso"]
