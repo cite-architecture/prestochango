@@ -11,14 +11,14 @@ import org.junit.Test
 */
 class TestCanonId extends GroovyTestCase {
 
+    String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
-    String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
     CiteUrn coll = new CiteUrn("urn:cite:hmt:msA")
     File tsvInv = new File( "testdata/hmtcollections.xml")
     File tsvDir = new File("testdata/hmtdata")
 
     @Test void testOrder() {
-        CollectionArchive cc = new CollectionArchive(tsvInv, schemaUrl, tsvDir)
+        CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)
 
         String expectedProp = "URN"
 

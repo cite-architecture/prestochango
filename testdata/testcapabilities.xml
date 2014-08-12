@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?xml-model href="CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
-
+<?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <collectionService
     xmlns="http://chs.harvard.edu/xmlns/cite"
     xmlns:cite="http://chs.harvard.edu/xmlns/cite"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="file:/data/repos/hmt-bitbucket/hmtxml/cite/collections/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+
+<?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <collectionService xmlns="http://chs.harvard.edu/xmlns/cite">
     <!-- Optional element:  none in this inventory yet.
         <extensionImplementation name="" baseUrl=""></extensionImplementation>

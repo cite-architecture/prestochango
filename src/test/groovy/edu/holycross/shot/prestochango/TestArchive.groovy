@@ -12,7 +12,7 @@ import org.junit.Test
 */
 class TestArchive extends GroovyTestCase {
 
-    String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
+    String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
     String testInventory = "testdata/testcapabilities.xml"
     File inv = new File(testInventory)
@@ -26,23 +26,23 @@ class TestArchive extends GroovyTestCase {
     * with valid CTS TextInventory and readable text archive.
     */
     @Test void testConstructor() {
-        CollectionArchive cc = new CollectionArchive(inv, schemaUrl, dir)
+        CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
         assert cc
 
         File fake = new File("fake-inv-file")
 
         shouldFail {
-            CollectionArchive failedCollection = new CollectionArchive(fake, schemaUrl, dir)
+            CollectionArchive failedCollection = new CollectionArchive(fake, schemaFileName, dir)
         }
 
         shouldFail {
-            CollectionArchive failedCollection = new CollectionArchive(inv, schemaUrl, fake)
+            CollectionArchive failedCollection = new CollectionArchive(inv, schemaFileName, fake)
         }
 
     }
 
     @Test void testListColls() {
-        CollectionArchive cc = new CollectionArchive(inv, schemaUrl, dir)
+        CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
         def expectedList = ["urn:cite:hmt:u4"]
         assert cc.getCollectionList() == expectedList
     }
@@ -50,7 +50,7 @@ class TestArchive extends GroovyTestCase {
 
 
     @Test void testObjModel() {
-        CollectionArchive cc = new CollectionArchive(inv, schemaUrl, dir)
+        CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
         def conf  = cc.configureFromFile()
         // 1 collection configured:
         assert conf.keySet().size() == 1
@@ -58,7 +58,7 @@ class TestArchive extends GroovyTestCase {
     
 
     @Test void testPropertyRetrieval() {
-        CollectionArchive cc = new CollectionArchive(inv, schemaUrl, dir)
+        CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
         assert cc
 
 //        CiteUrn tstId = new CiteUrn("urn:cite:hmt:u4.13r")
@@ -72,7 +72,7 @@ class TestArchive extends GroovyTestCase {
     }
 
     @Test void testPropValList() {
-        CollectionArchive cc = new CollectionArchive(inv, schemaUrl, dir)
+        CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
         assert cc
 
         CiteUrn collUrn = new CiteUrn("urn:cite:hmt:u4")
