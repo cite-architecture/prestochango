@@ -12,7 +12,7 @@ import org.junit.Test
 */
 class TestPrefix extends GroovyTestCase {
 
-    String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
+  String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
     @Test void testPrefixing() {
 
@@ -23,7 +23,7 @@ class TestPrefix extends GroovyTestCase {
         File tsvDir = new File(tsvDataDir)
 
 
-        CollectionArchive cc = new CollectionArchive(tsvInv, schemaUrl, tsvDir)
+        CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)
 
         File testOut = new File("testdata/testoutput/defaultNoPrefix.ttl")
         cc.ttl(testOut)

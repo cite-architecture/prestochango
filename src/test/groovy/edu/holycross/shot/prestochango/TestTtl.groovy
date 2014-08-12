@@ -11,8 +11,10 @@ import org.junit.Test
 /** Class testing output of ttl from prestochango's CollectionArchive class.
 */
 class TestTtl extends GroovyTestCase {
-   String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
 
+
+
+  String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
     @Test void testTsv() {
 
@@ -22,7 +24,7 @@ class TestTtl extends GroovyTestCase {
         String tsvDataDir = "testdata/hmtdata"
         File tsvDir = new File(tsvDataDir)
 
-        CollectionArchive cc = new CollectionArchive(tsvInv, schemaUrl, tsvDir)
+        CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)
 
         File testOut = new File("testdata/testoutput/hmtOut.ttl")
         cc.ttl(testOut)
@@ -37,7 +39,7 @@ class TestTtl extends GroovyTestCase {
         String csvDataDir = "testdata"
         File csvDir = new File(csvDataDir)
 
-        CollectionArchive cc = new CollectionArchive(csvInv, schemaUrl, csvDir)
+        CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)
 
         File testOut = new File("testdata/testoutput/csvOut.ttl")
         cc.ttl(testOut)

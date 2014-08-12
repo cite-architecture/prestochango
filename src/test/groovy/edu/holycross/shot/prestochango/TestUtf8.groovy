@@ -10,7 +10,9 @@ import org.junit.Test
 */
 class TestUtf8 extends GroovyTestCase {
 
-   String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
+
+
+  String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
     @Test void testCsv() {
         String testCsvInventory = "testdata/archiminv.xml"
@@ -19,7 +21,7 @@ class TestUtf8 extends GroovyTestCase {
         String csvDataDir = "testdata"
         File csvDir = new File(csvDataDir)
 
-        CollectionArchive cc = new CollectionArchive(csvInv, schemaUrl, csvDir)
+        CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)
 
         File testOut = new File("testdata/testoutput/lacunaeOut.ttl")
         cc.ttl(testOut)
@@ -34,7 +36,7 @@ class TestUtf8 extends GroovyTestCase {
         String tsvDataDir = "testdata"
         File tsvDir = new File(tsvDataDir)
 
-        CollectionArchive cc = new CollectionArchive(tsvInv, schemaUrl, tsvDir)
+        CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)
 
         File testOut = new File("testdata/testoutput/lacunaeOut2.ttl")
         cc.ttl(testOut)

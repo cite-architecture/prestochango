@@ -11,8 +11,10 @@ import org.junit.Test
 /** Class testing prestochange CiteCollection class.
 */
 class TestSource extends GroovyTestCase {
-    String schemaUrl = "http://www.homermultitext.org/hmtschemas/collections/CiteCollectionService.rng"
 
+
+  String schemaFileName = "schemas/CiteCollectionInventory.rng"
+ 
     String testTsvInventory = "testdata/testcapabilities.xml"
 
 
@@ -22,7 +24,7 @@ class TestSource extends GroovyTestCase {
     File dir = new File("testdata/csvs")
 
     @Test void testSource() {
-        CollectionArchive cc = new CollectionArchive(inv, schemaUrl, dir)
+        CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
         def srcInfo = cc.getSourcePair(urn)
         assert srcInfo[0] == 'file'
         assert srcInfo[1] == 'csvs/states.csv'
