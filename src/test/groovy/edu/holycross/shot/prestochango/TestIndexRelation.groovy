@@ -21,7 +21,6 @@ class TestIndexRelation extends GroovyTestCase {
 
     CiteUrn urn = new CiteUrn("urn:cite:hmt:scholia")
     assert cc.getRdfVerb(urn, "VisualEvidence") == "dse:illustratedBy"
-    assert cc.getRdfVerb(urn, "CtsUrn") == "hmt:commentsOn"
 
     assert shouldFail {
       String noway = cc.getRdfVerb(urn, "FakeProperty")
@@ -29,7 +28,7 @@ class TestIndexRelation extends GroovyTestCase {
 
     assert shouldFail {
       CiteUrn bogus = new CiteUrn("urn:cite:fake:collection")
-      String nothappening = cc.getRdfVerb(bogus, "CtsUrn")
+      String nothappening = cc.getRdfVerb(bogus, "TextUrn")
     }
 
   }
