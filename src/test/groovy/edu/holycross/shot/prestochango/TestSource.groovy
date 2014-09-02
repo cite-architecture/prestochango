@@ -27,7 +27,7 @@ class TestSource extends GroovyTestCase {
         CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
         def srcInfo = cc.getSourcePair(urn)
         assert srcInfo[0] == 'file'
-        assert srcInfo[1] == 'csvs/states.csv'
+        assert srcInfo[1] == 'states.csv'
     }
 
 }

@@ -36,7 +36,7 @@ class TestTtl extends GroovyTestCase {
         String testCsvInventory = "testdata/states-caps.xml"
         File csvInv = new File(testCsvInventory)
 
-        String csvDataDir = "testdata"
+        String csvDataDir = "testdata/csvs"
         File csvDir = new File(csvDataDir)
 
         CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)

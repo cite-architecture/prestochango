@@ -16,7 +16,6 @@ class TestNullColumn extends GroovyTestCase {
 
 
     @Test void testCsv() {
-
         String testCsvInventory = "testdata/nullcolumns.xml"
         File csvInv = new File(testCsvInventory)
 
@@ -30,5 +29,25 @@ class TestNullColumn extends GroovyTestCase {
         cc.ttl(testOut)
         System.err.println "TTL in ${testOut}"
     }
+
+
+
+
+    @Test void testMissingSeq() {
+        String testCsvInventory = "testdata/nullseq.xml"
+        File csvInv = new File(testCsvInventory)
+
+        String csvDataDir = "testdata/csvs"
+        File csvDir = new File(csvDataDir)
+
+        CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)
+        File testOut = new File("testdata/testoutput/hmtNullColCsvOut.ttl")
+
+	assert shouldFail {
+	  cc.ttl(testOut)
+	}
+    }
+
+
 
 }
