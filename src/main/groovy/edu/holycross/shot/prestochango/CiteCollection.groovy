@@ -22,7 +22,7 @@ class CiteCollection {
     CiteCollection(File baseDir) 
     throws Exception {
         if (!baseDir.canRead()) {
-            throw new Exception("Corpus: cannot read directory ${baseDir}")
+            throw new Exception("CiteCollection: cannot read directory ${baseDir}")
         }
         this.baseDirectory = baseDir
 

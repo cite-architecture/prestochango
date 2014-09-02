@@ -55,7 +55,7 @@ class CollectionArchive {
   throws Exception {
     try {
       if (!baseDir.canRead()) {
-	throw new Exception("Corpus: cannot read directory ${baseDir}")
+	throw new Exception("CollectionArchive: cannot read directory ${baseDir}")
       }
       this.baseDirectory = baseDir
       this.inventory = inv
@@ -79,7 +79,7 @@ class CollectionArchive {
   CollectionArchive(File inv, File schemaFile, File baseDir) 
   throws Exception {
     if (!baseDir.canRead()) {
-      throw new Exception("Corpus: cannot read directory ${baseDir}")
+      throw new Exception("CollectionArchive: cannot read directory ${baseDir}")
     }
     this.baseDirectory = baseDir
     this.inventory = inv
