@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="../../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <collectionService
     xmlns="http://chs.harvard.edu/xmlns/cite">
 <!--
@@ -134,7 +133,7 @@
         <citeProperty name="Heiberg" label="Heiberg reading" type="ctsurn"></citeProperty>
     </citeCollection>
 
-  
+  <!--
     <citeCollection canonicalId="persNameUrn" label="English" urn="urn:cite:ap:persName">
         <namespaceMapping abbr="ap" fullValue="http://shot.holycross.edu/ns/ap"></namespaceMapping>
         <title
@@ -155,8 +154,9 @@
     <citeProperty name="persNameUrn" label="URN" type="citeurn"></citeProperty>
         <citeProperty name="English" label="Name" type="string"></citeProperty>
 </citeCollection>
-    
+    -->
 
+<!--
     <citeCollection canonicalId="placeNameUrn" label="English" urn="urn:cite:ap:persName">
         <namespaceMapping abbr="ap" fullValue="http://shot.holycross.edu/ns/ap"></namespaceMapping>
         <title
@@ -177,6 +177,10 @@
         <citeProperty name="persNameUrn" label="URN" type="citeurn"></citeProperty>
         <citeProperty name="English" label="Name" type="string"></citeProperty>
     </citeCollection>
+    
+    -->
+    
+    
     <!--
     <citeCollection canonicalId="titleUrn" label="English" urn="urn:cite:ap:title">
         <namespaceMapping abbr="ap" fullValue="http://shot.holycross.edu/ns/ap"></namespaceMapping>

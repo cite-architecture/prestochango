@@ -503,58 +503,59 @@ class CollectionArchive {
 
 
 
-    /**  Writes an RDF description, in TTL format, of the data about
-    * a collection expressed by the Collection Inventory.
-    * @returns A String composed of TTL statements.
-    */
-    String turtlizeInventory() {
-      StringBuffer ttl = new StringBuffer()
+  /**  Writes an RDF description, in TTL format, of the data about
+   * a collection expressed by the Collection Inventory.
+   * @returns A String composed of TTL statements.
+   * @throws Exception if inventory is misconfigured.
+   */
+  String turtlizeInventory() 
+  throws Exception {
+    StringBuffer ttl = new StringBuffer()
 
+    def invroot = new XmlParser().parse(this.inventory)
+    invroot[cite.citeCollection].each { cc ->
+      if (!cc.'@urn') {
+	System.err.println "CollectionArchive:  cannot turtlieze collection with no URN!"
+	System.err.println "Parsed record was " + cc
+	throw new Exception("No urn defined for collection.")
+      }
+      CiteUrn urn = new CiteUrn(cc.'@urn')
+      String labelProperty = getLabelProperty(urn)
+      def nsMap = cc[cite.namespaceMapping][0]
 
-      def invroot = new XmlParser().parse(this.inventory)
-      invroot[cite.citeCollection].each { cc ->
-	if (!cc.'@urn') {
-	  System.err.println "CollectionArchive:  cannot turtlieze collection with no URN!"
-	  System.err.println "Parsed record was " + cc
-	  throw new Exception("No urn defined for collection.")
-	}
-	CiteUrn urn = new CiteUrn(cc.'@urn')
-	String labelProperty = getLabelProperty(urn)
-	def nsMap = cc[cite.namespaceMapping][0]
+      ttl.append("<${nsMap.'@fullValue'}> rdf:type cite:DataNs .\n")
+      ttl.append("<${nsMap.'@fullValue'}> cite:abbreviatedBy " + '"' + nsMap.'@abbr' +  '" .\n\n')
+      
+      ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:type cite:CiteCollection . \n")
+      def rdfLabel = getTitle(urn).replaceAll(/\n/,'')
 
-	ttl.append("<${nsMap.'@fullValue'}> rdf:type cite:DataNs .\n")
-	ttl.append("<${nsMap.'@fullValue'}> cite:abbreviatedBy " + '"' + nsMap.'@abbr' +  '" .\n\n')
-
-	ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:type cite:CiteCollection . \n")
-	def rdfLabel = getTitle(urn).replaceAll(/\n/,'')
-
-	ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:label " + '"' + rdfLabel  + '" . \n')
+      ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:label " + '"' + rdfLabel  + '" . \n')
 	
-	ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> cite:canonicalId citedata:${urn.getCollection()}_${cc.'@canonicalId'} . \n")
-            
-	if (cc[cite.orderedBy]) {
-	  ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:orderedBy citedata:${urn.getCollection()}_${cc[cite.orderedBy][0].'@property'} .\n")
-	}
-	ttl.append("\n")
+      ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> cite:canonicalId citedata:${urn.getCollection()}_${cc.'@canonicalId'} . \n")
+      
+      if (cc[cite.orderedBy]) {
+	ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:orderedBy citedata:${urn.getCollection()}_${cc[cite.orderedBy][0].'@property'} .\n")
+      }
+      ttl.append("\n")
 	
 
-	cc[cite.extension].each { extension ->
-	  if (debug > WARN) {
-	    System.err.println "CollectionArchive: examine exension ${extension}"
-	    System.err.println "It has name ${extension.'@name'}"
-	    System.err.println "Check for it in ${extensionsMap}:"
-	  }
-	  String abbr = extension.'@name'
-	  ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:type ${this.extensionsMap[abbr]} .\n")
+      cc[cite.extension].each { extension ->
+	if (debug > WARN) {
+	  System.err.println "CollectionArchive: examine exension ${extension}"
+	  System.err.println "It has name ${extension.'@name'}"
+	  System.err.println "Check for it in ${extensionsMap}:"
 	}
+	String abbr = extension.'@name'
+	ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:type ${this.extensionsMap[abbr]} .\n")
+      }
 
 
-	/* document configured properties: */
-	cc[cite.citeProperty].each { prop ->
-	  String propUri = "citedata:${urn.getCollection()}_${prop.'@name'}"
-	  ttl.append( "<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:collProperty  ${propUri} .\n")
-	  ttl.append( "${propUri} rdf:type rdf:Property .\n")
-	  ttl.append ("${propUri} cite:propLabel " + '"' + prop.'@label' +  '".\n')
+      /* document configured properties: */
+      cc[cite.citeProperty].each { prop ->
+	String propUri = "citedata:${urn.getCollection()}_${prop.'@name'}"
+	ttl.append( "<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:collProperty  ${propUri} .\n")
+	ttl.append( "${propUri} rdf:type rdf:Property .\n")
+	ttl.append ("${propUri} cite:propLabel " + '"' + prop.'@label' +  '".\n')
 
 	  switch (prop.'@type') {
 	  case ("citeurn"):
@@ -582,9 +583,10 @@ class CollectionArchive {
    * as the data values in the cols array.
    * @param canonical Name of the canonical ID property in this collection.
    * @param label Name of the rdf:label property in this collection.
-   *
+   * @throws Exception if collection not configured
    */
-  String turtlizeOneRow(ArrayList cols, ArrayList headingIndex, String canonical, String label, boolean ordered) {
+  String turtlizeOneRow(ArrayList cols, ArrayList headingIndex, String canonical, String label, boolean ordered) 
+  throws Exception {
     if (debug > 2) {
 	  System.err.println "TURLTELIZE ROW " + cols
 	  System.err.println "Use headings " + headingIndex
@@ -627,6 +629,9 @@ class CollectionArchive {
 
     def collConf = this.citeConfig["${collUrn}"]
 
+    if (collConf == null) {
+      throw new Exception("CollectionArchive:turtlizeOneRow: no configuration for collection ${collUrn}")
+    }
 
     if (debug > 0) {
       System.err.println "Config for ${collUrn} is " + collConf
@@ -781,15 +786,17 @@ class CollectionArchive {
     }
 
 
-    /** Formats data rows from a csv file as TTL.
-    * First constructs an index of the property names for this object,
-    * then cycles through all data rows, and constructs and an array of values
-    * that are then passed off to the generic turtleizeOneRow method.
-    *
-    * @param collUrn URN of the collection
-    * @returns String expressing the contents of the row in TTL.
-    */
-    String ttlBasicCsvData(File f, CiteUrn collUrn, boolean ordered) {
+  /** Formats data rows from a csv file as TTL.
+   * First constructs an index of the property names for this object,
+   * then cycles through all data rows, and constructs and an array of values
+   * that are then passed off to the generic turtleizeOneRow method.
+   *
+   * @param collUrn URN of the collection
+   * @returns String expressing the contents of the row in TTL.
+   * @throws Exception if f cannot be fully parsed.
+   */
+  String ttlBasicCsvData(File f, CiteUrn collUrn, boolean ordered) 
+  throws Exception {
         String canonical = getCanonicalIdProperty(collUrn)
         String label = getLabelProperty(collUrn)
         String orderProp = getOrderedByProperty(collUrn)
@@ -812,8 +819,9 @@ class CollectionArchive {
                 try {
                  rowTtl = turtlizeOneRow(cols.toList(), headingIndex.toList(), canonical, label, ordered)
                 } catch (Exception e) {
-                    System.err.println "Failed to ttl ${cols}"
-                    System.err.println "BECAUSE OF " + e
+		  System.err.println "CollectionArchive: turtlizeOneRow failed for ${cols}"
+		  System.err.println "BECAUSE OF " + e
+		  throw e
                 }
 
                 reply.append(rowTtl)
@@ -830,6 +838,7 @@ class CollectionArchive {
      * @param f The file of data.
      * @param urnVal The URN, as a String, identifying the collection.
      * @returns A String composed of TTL statements.
+     * @throws Exception if data in f cannote be parsed.
      */
      String turtlizeCsv(File f, String urnVal) 
      throws Exception {
@@ -845,7 +854,14 @@ class CollectionArchive {
 
         StringBuffer rowBuffer = new StringBuffer()
 
-        String basicCsv = ttlBasicCsvData(f,collUrn, ordered)
+        String basicCsv 
+
+	try {
+	  basicCsv = ttlBasicCsvData(f,collUrn, ordered)
+	} catch (Exception e) {
+	  System.err.println("CollectionArchive:turtlizeCsv: unable to turtlize data in ${f}")
+	  throw e
+	}
 
         if (debug > 0 ) {System.err.println "Got basic csv len " + basicCsv.size()}
         rowBuffer.append (basicCsv )
@@ -1018,62 +1034,92 @@ class CollectionArchive {
     }
 
 
-    /** Writes a complete RDF description of a Collection Archive
-    * in TTL format, without RDF prefix definitions, to a local file.
-    * This can be useful when a system like dse that already has prefix
-    * statements wants to generate a larger composite RDF description
-    * concatenating RDF from multiple sources.
-    * @param outFile A local file where output is written.
-    */
-    void ttl(File outFile) {
-        ttl(outFile, false)
+  /** Writes a complete RDF description of a Collection Archive
+   * in TTL format, without RDF prefix definitions, to a local file.
+   * This can be useful when a system like dse that already has prefix
+   * statements wants to generate a larger composite RDF description
+   * concatenating RDF from multiple sources.
+   * @param outFile A local file where output is written.
+   * @throws Exception if unable to parse data in all files of 
+   * the Collection Archive.
+   */
+  void ttl(File outFile) 
+  throws Exception{
+    if (debug > WARN) {
+      System.err.println "Trying to turtilize entire archive ..."
     }
-
-    /** Writes a complete RDF description of a Collection Archive
-    * in TTL format to a local file.
-    * @param ttl A local file where output is written.
-    * @param includePrefix Whether or not to include RDF prefix
-    * statements in the output.
-    */
-    void ttl(File ttl, boolean includePrefix) {
-        if (includePrefix) {
-            ttl.append(prefix, charEnc)
-        }
-        ttl.append(turtlizeInventory(), charEnc)
-        
-        // Cycle each configured collection:
-        this.citeConfig.keySet().each { u ->
-            CiteUrn urn = new CiteUrn(u)
-            if (debug > 3) {System.err.println "TURTLIZE " + u}
-            def src = getSourcePair(urn)
-            if (debug > 3) { System.err.println "examine " + src}
-            
-            switch (src[0]) {
-                case "file":
-                    try {
-                    File f = new File("${this.baseDirectory}/${src[1]}")
-                    if (src[1] ==~ /.+csv/) {
-                        if (debug > 0) { System.err.println "Turtlize ${f} as csv"}
-                        String ttlData = turtlizeCsv(f, u)
-                        ttl.append(ttlData, charEnc)
-                    } else if (src[1] ==~ /.+tsv/) {
-                        if (debug > 0) { System.err.println "Turtlize ${f} as tsv"}
-                        ttl.append(turtlizeTsv(f, u), charEnc)
-                    } else {
-                        System.err.println "COULD NOT FIND PATTERN FOR " + src[1]
-                    }
-                } catch (Exception e) {
-                    // 
-                }
-                break
-
-                default:
-                    System.err.println "CollectionArchive: failed to process ${src[0]}."
-                    System.err.println "Only local file sources currently implemented."
-                    break
-            }
-
-        }
+    try {
+      ttl(outFile, false)
+    } catch (Exception e) {
+      throw e
     }
+    if (debug > WARN) {
+      System.err.println "Ran ttl without exceptions"
+    }
+  }
 
+  /** Writes a complete RDF description of a Collection Archive
+   * in TTL format to a local file.
+   * @param ttl A local file where output is written.
+   * @param includePrefix Whether or not to include RDF prefix
+   * statements in the output.
+   * @throws Exception if unable to parse data in all files of 
+   * the Collection Archive.
+   */
+  void ttl(File ttl, boolean includePrefix) 
+  throws Exception {
+
+    //if (2 > 1) {
+    //throw new Exception("Break this damn thing.")
+    //}
+
+    if (includePrefix) {
+      ttl.append(prefix, charEnc)
+    }
+    ttl.append(turtlizeInventory(), charEnc)
+
+
+
+
+    // Cycle each configured collection:
+    this.citeConfig.keySet().each { u ->
+      CiteUrn urn = new CiteUrn(u)
+      if (debug > 3) {System.err.println "TURTLIZE " + u}
+      def src = getSourcePair(urn)
+      if (debug > 3) { System.err.println "examine " + src}
+      
+      switch (src[0]) {
+      case "file":
+      try {
+	File f = new File("${this.baseDirectory}/${src[1]}")
+	if (src[1] ==~ /.+csv/) {
+	  if (debug > 0) { System.err.println "Turtlize ${f} as csv"}
+	  String ttlData 
+	  try {
+	    ttlData = turtlizeCsv(f, u)
+	  } catch (Exception e) {
+	    System.err.println "CollectionArchive:ttl with prefix: could not turtlize data in ${f}"
+	    throw new Exception("CollectionArchive:ttl: exception ${e}")
+	  }
+
+	  if (debug > WARN) {System.err.println "Turtlized ${f} successfully: appending data"}
+	  ttl.append(ttlData, charEnc)
+	} else if (src[1] ==~ /.+tsv/) {
+	  if (debug > 0) { System.err.println "Turtlize ${f} as tsv"}
+	  ttl.append(turtlizeTsv(f, u), charEnc)
+	} else {
+	  System.err.println "COULD NOT FIND PATTERN FOR " + src[1]
+	}
+      } catch (Exception e) {
+	throw e
+      }
+      break
+
+      default:
+      System.err.println "CollectionArchive: failed to process ${src[0]}."
+      System.err.println "Only local file sources currently implemented."
+      break
+      }
+    }
+  }
 }

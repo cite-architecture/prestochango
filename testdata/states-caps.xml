@@ -17,7 +17,7 @@
             abbr="ussstates"
             fullValue="http://shot.holycross.edu/datans/ussstates"/>
         
-        <source type="file" value="csvs/states.csv"/>
+        <source type="file" value="states.csv"/>
         <citeProperty
             label="URN"
             name="StateURN"
