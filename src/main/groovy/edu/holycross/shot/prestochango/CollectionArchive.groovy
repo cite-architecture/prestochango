@@ -17,7 +17,7 @@ class CollectionArchive {
   Integer SCREAM = 3
   Integer DEBUGMSG = 2
   Integer WARN = 1
-  Integer debug = 5
+  Integer debug = 0
 
   /** CITE Collection inventory serialized in XML to a File. */
   File inventory
@@ -803,8 +803,6 @@ class CollectionArchive {
   String ttlBasicCsvData(File f, CiteUrn collUrn, boolean ordered) 
   throws Exception {
 
-    System.err.println "Basic csv data..."
-    
     String canonical = getCanonicalIdProperty(collUrn)
     String label = getLabelProperty(collUrn)
     String orderProp = getOrderedByProperty(collUrn)
@@ -817,7 +815,7 @@ class CollectionArchive {
     Reader wrapper = new InputStreamReader(new FileInputStream(f), "utf-8");
     CSVReader reader = new CSVReader(wrapper)
     reader.readAll().each { cols ->
-      System.err.println "READ COLS " + cols + " of size " + cols.size()
+      if (debug >= SCREAM) {System.err.println "READ COLS " + cols + " of size " + cols.size()}
       reply.append("\n")
       if (lineCount == 0) {
 	headingIndex = cols.toList()
@@ -857,8 +855,6 @@ class CollectionArchive {
         // change this to get Collection URN from any level CITE URN.
         CiteUrn collUrn
 
-	System.err.println "Turtlize file " + f + ", urn "  + urnVal
-	
         try {
             collUrn = new CiteUrn(urnVal)
         } catch (Exception e) {
