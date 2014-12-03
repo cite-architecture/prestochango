@@ -10,26 +10,29 @@ import org.junit.Test
 
 /** Class testing output of ttl from prestochango's CollectionArchive class.
 */
-class TestNullColumn extends GroovyTestCase {
+class TestEmptyLine extends GroovyTestCase {
 
  String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
- // Ordered colections MUST have a sequence value
- @Test void testMissingSeq() {
-   String testCsvInventory = "testdata/nullseq.xml"
+
+ 
+ // OK to have input with empty columns or empty lines:
+ @Test void testCsv() {
+   String testCsvInventory = "testdata/nullcolumns.xml"
    File csvInv = new File(testCsvInventory)
-	
+
    String csvDataDir = "testdata/csvs"
    File csvDir = new File(csvDataDir)
 
    CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)
-   File testOut = new File("testdata/testoutput/hmtNullColCsvOut.ttl")
 
-	
-   assert shouldFail {
-     cc.ttl(testOut)
-   }
+
+   File testOut = new File("testdata/testoutput/hmtNullColCsvOut.ttl")
+   cc.ttl(testOut)
+   System.err.println "TTL in ${testOut}"
  }
+
+
 
 
 

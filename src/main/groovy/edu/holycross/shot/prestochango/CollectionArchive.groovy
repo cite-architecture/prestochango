@@ -17,7 +17,7 @@ class CollectionArchive {
   Integer SCREAM = 3
   Integer DEBUGMSG = 2
   Integer WARN = 1
-  Integer debug = 0
+  Integer debug = 5
 
   /** CITE Collection inventory serialized in XML to a File. */
   File inventory
@@ -724,24 +724,27 @@ class CollectionArchive {
         int count = 0
         CSVReader reader = new CSVReader(new FileReader(f))        
         reader.readAll().each { cols ->
-            if (count == 0) {
-                headingIndex = cols
-            } else {
-                headingIndex.toList().eachWithIndex { h, i ->
-                    if (h == orderProp) {
-                        def keyCount = cols[i]
-                        String urnVal
-                        headingIndex.toList().eachWithIndex { h2, i2 ->
-                            if (h2 == canonical) {
-                                urnVal = cols[i2]
-                            }
-                        }
-                        seqs[keyCount] = urnVal
-                        
-                    }
-                }
-            }
-            count++;
+	  
+	  if (count == 0) {
+	    headingIndex = cols
+	  } else if (cols.size() > 1) {
+	    headingIndex.toList().eachWithIndex { h, i ->
+	      if (h == orderProp) {
+		def keyCount = cols[i]
+		String urnVal
+		headingIndex.toList().eachWithIndex { h2, i2 ->
+		  if (h2 == canonical) {
+		    urnVal = cols[i2]
+		  }
+		}
+		seqs[keyCount] = urnVal
+                
+	      }
+	    }
+	  } else {
+	    // empty or not parseable
+	  }
+	  count++;
         }
         if (debug > 0) {System.err.println "Generated ${seqs.keySet().size()} sequence mappings"}
         /* then, use the sequences index to generate prev-next 
@@ -753,7 +756,7 @@ class CollectionArchive {
         CSVReader reader2 = new CSVReader(new FileReader(f))        
         reader2.readAll().each { cols ->
             if (lnCount == 0) {
-            } else {
+            } else if (cols.size() > 1) {
                 headingIndex.toList().eachWithIndex { h, i ->
                     if (h == orderProp) {
                         def keyStr = cols[i]
@@ -786,6 +789,8 @@ class CollectionArchive {
     }
 
 
+
+  // CATCH NULL SEQUENCE WHILE ALLOWING EMPTY LINES!
   /** Formats data rows from a csv file as TTL.
    * First constructs an index of the property names for this object,
    * then cycles through all data rows, and constructs and an array of values
@@ -797,24 +802,27 @@ class CollectionArchive {
    */
   String ttlBasicCsvData(File f, CiteUrn collUrn, boolean ordered) 
   throws Exception {
-        String canonical = getCanonicalIdProperty(collUrn)
-        String label = getLabelProperty(collUrn)
-        String orderProp = getOrderedByProperty(collUrn)
 
-        StringBuffer reply = new StringBuffer()
+    System.err.println "Basic csv data..."
+    
+    String canonical = getCanonicalIdProperty(collUrn)
+    String label = getLabelProperty(collUrn)
+    String orderProp = getOrderedByProperty(collUrn)
 
-        def headingIndex = []
-        def lineCount = 0
+    StringBuffer reply = new StringBuffer()
 
-        Reader wrapper = new InputStreamReader(new FileInputStream(f), "utf-8");
-        CSVReader reader = new CSVReader(wrapper)
-        reader.readAll().each { cols ->
+    def headingIndex = []
+    def lineCount = 0
 
-            reply.append("\n")
-            if (lineCount == 0) {
-                headingIndex = cols.toList()
+    Reader wrapper = new InputStreamReader(new FileInputStream(f), "utf-8");
+    CSVReader reader = new CSVReader(wrapper)
+    reader.readAll().each { cols ->
+      System.err.println "READ COLS " + cols + " of size " + cols.size()
+      reply.append("\n")
+      if (lineCount == 0) {
+	headingIndex = cols.toList()
 
-            } else {
+      } else if (cols.size() > 1) {
                 String rowTtl
                 try {
                  rowTtl = turtlizeOneRow(cols.toList(), headingIndex.toList(), canonical, label, ordered)
@@ -825,7 +833,9 @@ class CollectionArchive {
                 }
 
                 reply.append(rowTtl)
-            }
+            } else {
+	      // empty line, ignore
+	    }
             lineCount++
         }
         return reply.toString()
@@ -833,6 +843,8 @@ class CollectionArchive {
 
 
 
+
+  
      /**  Writes an RDF description, in TTL format, of the data 
      * contained in a single file in comma-separated value format.
      * @param f The file of data.
@@ -843,7 +855,10 @@ class CollectionArchive {
      String turtlizeCsv(File f, String urnVal) 
      throws Exception {
         // change this to get Collection URN from any level CITE URN.
-        CiteUrn collUrn 
+        CiteUrn collUrn
+
+	System.err.println "Turtlize file " + f + ", urn "  + urnVal
+	
         try {
             collUrn = new CiteUrn(urnVal)
         } catch (Exception e) {
@@ -904,7 +919,7 @@ class CollectionArchive {
 
       if (lineCount == 0) {
 	headingIndex = cols
-      } else {
+      } else if (cols.size() > 1)  {
 	String rowTtl  = ""
 	try {
 	  rowTtl = turtlizeOneRow(cols.toList(), headingIndex.toList(), canonical, label, ordered)
@@ -913,6 +928,8 @@ class CollectionArchive {
 	  System.err.println "BECAUSE OF " + e
 	}
 	replyBuff.append(rowTtl)
+      } else {
+	// empty line: ignore
       }
       lineCount++;
     }
@@ -940,7 +957,7 @@ class CollectionArchive {
             def cols = ln.split(/\t/)
             if (count == 0) {
                 hdrIndex = cols
-            } else {
+            } else if (cols.size() > 1) {
                 hdrIndex.toList().eachWithIndex { h, i ->
                     if (h == orderProp) {
                         def keyCount = cols[i]
@@ -965,7 +982,7 @@ class CollectionArchive {
         f.eachLine { l ->
             def cols = l.split(/\t/)
             if (lnCount == 0) {
-            } else {
+            } else if (cols.size() > 1) {
                 hdrIndex.toList().eachWithIndex { h, i ->
                     if (h == orderProp) {
                         def keyStr = cols[i]
@@ -1099,6 +1116,7 @@ class CollectionArchive {
 	    ttlData = turtlizeCsv(f, u)
 	  } catch (Exception e) {
 	    System.err.println "CollectionArchive:ttl with prefix: could not turtlize data in ${f}"
+	    System.err.println e
 	    throw new Exception("CollectionArchive:ttl: exception ${e}")
 	  }
 
