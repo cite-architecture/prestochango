@@ -46,7 +46,7 @@ if (hasProperty('pub')) {
 
 
 group = "edu.holycross.shot"
-version = '0.3.5'
+version = '0.3.6'
 
 
 repositories {
