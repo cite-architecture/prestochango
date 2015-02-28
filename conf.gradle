@@ -4,7 +4,17 @@
 
 project.ext {
 
-    nexusUser = "deployment"
-    nexusPassword = "homeridai"
-    nexusRepo = "http://beta.hpcc.uh.edu/nexus/content/repositories/releases/"
+    mdSrc = "specs/md"
+    
+    htmlPreface = """
+<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+<body>
+    """
+    htmlEnd = "</body>\n</html>\n"
+
+    tokenMap = [    "openex": "<div class='example'>", "closeex" : "</div>"]
+    
+    nexusUser = ""
+    nexusPassword = ""
+    nexusRepo = ""
 }

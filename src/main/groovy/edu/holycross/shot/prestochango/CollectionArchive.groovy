@@ -1082,16 +1082,10 @@ class CollectionArchive {
   void ttl(File ttl, boolean includePrefix) 
   throws Exception {
 
-    //if (2 > 1) {
-    //throw new Exception("Break this damn thing.")
-    //}
-
     if (includePrefix) {
       ttl.append(prefix, charEnc)
     }
     ttl.append(turtlizeInventory(), charEnc)
-
-
 
 
     // Cycle each configured collection:
