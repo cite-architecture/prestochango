@@ -17,7 +17,7 @@ class CollectionArchive {
   Integer SCREAM = 3
   Integer DEBUGMSG = 2
   Integer WARN = 1
-  Integer debug = 0
+  public Integer debug = 0
 
   /** CITE Collection inventory serialized in XML to a File. */
   File inventory
@@ -218,6 +218,8 @@ class CollectionArchive {
       String groupProp = null
       if (c.'@groupProperty') {
 	groupProp = c.'@groupProperty'
+
+
       }
 
 
@@ -410,6 +412,9 @@ class CollectionArchive {
 
 
     String getOrderedByProperty(CiteUrn urn) {
+      if (debug > 5) {
+	System.err.println "Get ordered prop for " + urn
+      }
         def config =  this.citeConfig[urn.toString()]
         return config['orderedBy']
     }
@@ -426,13 +431,15 @@ class CollectionArchive {
     }
 
 
-    boolean isGrouped(CiteUrn urn) {
-        def config =  this.citeConfig[urn.toString()]
-        return (config['groupedBy']?.size() > 0)
-    }
+
+  //  What the heck is this supposed to mean?
+  boolean isGrouped(CiteUrn urn) {
+    def config =  this.citeConfig[urn.toString()]
+    return (config['groupedBy']?.size() > 0)
+  }
 
 
-    // do we really want the whole colleciotn in one NS?
+    // do we really want the whole collection in one NS?
     def getNs() {
         def invroot = new XmlParser().parse(this.inventory)
 
@@ -453,31 +460,33 @@ class CollectionArchive {
     }
 
 
-    /* get ordered list of prop names */
-    def getPropNameList(CiteUrn collectionUrn) {
-        return getPropNameList(collectionUrn.toString())
+  
+  /* get ordered list of prop names */
+  ArrayList getPropNameList(CiteUrn collectionUrn) {
+    return getPropNameList(collectionUrn.toString())
+  }
+
+
+  ArrayList getPropNameList(String collectionUrn) {
+    def config =  this.citeConfig[collectionUrn]
+    def propList = []
+
+    if (config) {
+      config['properties'].each { p ->
+	propList.add(p['name'])
+      }
     }
-
-    def getPropNameList(String collectionUrn) {
-        def config =  this.citeConfig[collectionUrn]
-        def propList = []
-
-        if (config) {
-            config['properties'].each { p ->
-                propList.add(p['name'])
-            }
-        }
-        return propList
-    }
+    return propList
+  }
 
 
 
 
-    def getPropLabelList(CiteUrn collectionUrn) {
+  ArrayList getPropLabelList(CiteUrn collectionUrn) {
         return getPropLabelList(collectionUrn.toString())
     }
 
-    def getPropLabelList(String collectionUrn) {
+    ArrayList getPropLabelList(String collectionUrn) {
         def config =  this.citeConfig[collectionUrn]
         def propList = []
         config['properties'].each { p ->
@@ -488,11 +497,11 @@ class CollectionArchive {
 
 
 
-    def getPropTypeList(CiteUrn collectionUrn) {
+ArrayList getPropTypeList(CiteUrn collectionUrn) {
         return getPropTypeList(collectionUrn.toString())
     }
 
-    def getPropTypeList(String collectionUrn) {
+ArrayList getPropTypeList(String collectionUrn) {
         def config =  this.citeConfig[collectionUrn]
         def propList = []
         config['properties'].each { p ->
