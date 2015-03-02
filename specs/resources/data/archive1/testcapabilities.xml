@@ -41,7 +41,7 @@
     <citeProperty
         label="Folio ID"
         name="URN"
-        type="string"/>
+        type="citeurn"/>
     <citeProperty
         label="Codex URN"
         name="CodexURN"
