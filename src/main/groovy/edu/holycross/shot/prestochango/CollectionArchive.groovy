@@ -675,7 +675,6 @@ ArrayList getPropTypeList(String collectionUrn) {
 	      break
 
 	      case "markdown":              
-	      case "geojson":
 	      case "string":
 	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
 	      if (getRdfVerb(collUrn, headingIndex[i])) {
@@ -685,7 +684,6 @@ ArrayList getPropTypeList(String collectionUrn) {
 	      break
                 
 	      case "citeurn":
-		  case "citeimg":
 	      case "ctsurn":
 	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
 
