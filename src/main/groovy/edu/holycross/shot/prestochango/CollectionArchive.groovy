@@ -676,6 +676,7 @@ class CollectionArchive {
 	      break
                 
 	      case "citeurn":
+		  case "citeimg":
 	      case "ctsurn":
 	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
 
