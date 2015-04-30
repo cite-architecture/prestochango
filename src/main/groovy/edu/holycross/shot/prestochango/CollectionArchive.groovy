@@ -40,7 +40,14 @@ class CollectionArchive {
   final groovy.xml.Namespace dc = new groovy.xml.Namespace("http://purl.org/dc/elements/1.1/")
 
   /** RDF namespace declarations. */
-  final String prefix = "@prefix cite:        <http://www.homermultitext.org/cite/rdf/> .\n@prefix citedata:        <http://www.homermultitext.org/citedata/> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. \n@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix olo:     <http://purl.org/ontology/olo/core#> .\n@prefix dse:  <http://www.homermultitext.org/dse/rdf/> \n\n"
+  final String prefix = """
+@prefix cite:        <http://www.homermultitext.org/cite/rdf/> .
+@prefix citedata:        <http://www.homermultitext.org/citedata/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. 
+@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix olo:     <http://purl.org/ontology/olo/core#> .
+@prefix dse:  <http://www.homermultitext.org/dse/rdf/> .
+""".toString()
 
   /** Default character encoding, can be reset dynamically. */
   String charEnc = "UTF-8"

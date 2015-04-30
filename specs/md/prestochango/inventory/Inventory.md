@@ -12,8 +12,8 @@ This includes information about extensions to CITE Collections recognized in thi
 
 You can determine the number of Extensions, and for each Extension:
 
-    - its abbreviated name
-    - its full RDF verb
+- its abbreviated name
+- its full RDF verb
 
 
 ## Information about inventoried Collections ##

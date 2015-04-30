@@ -15,6 +15,10 @@ We can validate <a href="../../../resources/test/data/archive1/testcapabilities.
 <a href="../../../resources/test/data/schemas/CiteCollectionInventory.rng" concordion:set="#schema = setHref(#HREF)">this schema</a>, and use the
 files in <a href="../../../resources/test/data/archive1/tsvs" concordion:set="#archive = setHref(#HREF)">this root directory</a> to <strong concordion:assertTrue="shouldMakeArchive(#inv,#schema,#archive)">construct a CITE Collection archive</strong>.
 
+@closeex@
+
+
+@openex@
 
 
 ### Examples: failures ###
