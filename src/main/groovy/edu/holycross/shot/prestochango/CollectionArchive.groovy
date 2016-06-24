@@ -17,7 +17,7 @@ class CollectionArchive {
   Integer SCREAM = 3
   Integer DEBUGMSG = 2
   Integer WARN = 1
-  public Integer debug = 0
+  public Integer debug = 1
 
   /** CITE Collection inventory serialized in XML to a File. */
   File inventory
@@ -171,8 +171,10 @@ class CollectionArchive {
 
 
     root[cite.extensionImplementation].each { extension ->
-      this.extensionsMap[extension.'@abbr'] = extension.'@rdfType'
+      this.extensions[extension.'@abbr'] = extension.'@rdfType'
     }
+	  System.err.println "Extension Map:"
+	  System.err.println this.extensionsMap
 
     def configuredCollections = [:]
     root[cite.citeCollection].each { c ->

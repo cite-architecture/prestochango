@@ -14,8 +14,8 @@ class TestExtensionTtl extends GroovyTestCase {
 
   String schemaFileName = "schemas/CiteCollectionInventory.rng"
   // Archive to use:
-  File inventoryFile = new File("testdata/hmtimgs.xml")
-  File dataDir = new File("testdata/images")
+  File inventoryFile = new File("testdata/image-collection.xml")
+  File dataDir = new File("testdata/csvs")
   String schemaFile = new File("schemas/CiteCollectionInventory.rng")
 
 
@@ -26,6 +26,14 @@ class TestExtensionTtl extends GroovyTestCase {
 
     // Check output for this line:
     // <urn:cite:hmt:vaimg>  cite:collProperty  citedata:vaimg_Image .
+    Integer  expectedRecords= 0 
+    testOut.eachLine { l ->
+      if (l ==~ /.+cite:possesses.+/ ) {
+		expectedRecords++
+      }
+    }
+    Integer extensionRecords = 0
+    assert expectedRecords == "THIS IS NOT REALLY IMPLEMENTED, SO OF COURSE IT FAILS."
     System.err.println "TTL in ${testOut}"
   }
 }

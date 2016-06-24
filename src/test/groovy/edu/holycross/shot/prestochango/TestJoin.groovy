@@ -16,10 +16,10 @@ class TestJoin extends GroovyTestCase {
 
   @Test void testJoinProperty() {
 
-    String inventory = "testdata/greekLit/greekLit.xml"
+    String inventory = "testdata/greekLit.xml"
     File invFile = new File(inventory)
 
-    String data = "testdata/greekLit"
+    String data = "testdata/csvs"
     File dataDir = new File(data)
 
     CollectionArchive cc = new CollectionArchive(invFile, schemaFileName, dataDir)

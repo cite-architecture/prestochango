@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
-<collectionService
+<collectionService version="0.1"
     xmlns="http://chs.harvard.edu/xmlns/cite"
     xmlns:dc="http://purl.org/dc/elements/1.1/">
   
@@ -13,7 +13,7 @@
         urn="urn:cite:hmt:scholia">
         <namespaceMapping
             abbr="hmt"
-            fullValue="http://www.homermultitext.org/datans"/>
+            uri="http://www.homermultitext.org/datans"/>
         <title
             xmlns="http://purl.org/dc/elements/1.1/">Inventory of scholia edited</title>
         <creator

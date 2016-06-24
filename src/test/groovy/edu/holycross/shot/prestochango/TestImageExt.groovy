@@ -12,8 +12,8 @@ class TestImageExt extends GroovyTestCase {
 
 
   // Archive to use:
-  File inventoryFile = new File("testdata/hmtimgs.xml")
-  File dataDir = new File("testdata/images")
+  File inventoryFile = new File("testdata/image-collection.xml")
+  File dataDir = new File("testdata/csvs")
   String schemaFile = new File("schemas/CiteCollectionInventory.rng")
 
 
@@ -28,7 +28,7 @@ class TestImageExt extends GroovyTestCase {
     CiteUrn coll = new CiteUrn("urn:cite:totally:fake")
     CollectionArchive cc = new CollectionArchive(inventoryFile, schemaFile, dataDir)    
     assert shouldFail {
-      def failList =    cc.getExtensionList(coll) 
+      def failList = cc.getExtensionList(coll) 
     }
   }
 
