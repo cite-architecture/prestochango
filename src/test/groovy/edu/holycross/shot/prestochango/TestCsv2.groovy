@@ -17,7 +17,7 @@ class TestCsv2 extends GroovyTestCase {
 
     @Test void testCsv() {
 
-        String testCsvInventory = "testdata/hmtcommas.xml"
+        String testCsvInventory = "testdata/collections.xml"
         File csvInv = new File(testCsvInventory)
 
         String csvDataDir = "testdata/csvs"
@@ -26,7 +26,7 @@ class TestCsv2 extends GroovyTestCase {
         CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)
 
 
-        File testOut = new File("testdata/testoutput/hmtCsvOut.ttl")
+        File testOut = new File("testdata/testoutput/collections-out.ttl")
         cc.ttl(testOut)
         System.err.println "TTL in ${testOut}"
     }

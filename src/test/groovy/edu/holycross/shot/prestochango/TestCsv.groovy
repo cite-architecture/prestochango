@@ -13,7 +13,7 @@ import org.junit.Test
 class TestCsv extends GroovyTestCase {
     String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
-    String testInventory = "testdata/states-caps.xml"
+    String testInventory = "testdata/image-collection.xml"
     File inv = new File(testInventory)
 
     String dataDir = "testdata/csvs"
@@ -28,7 +28,7 @@ class TestCsv extends GroovyTestCase {
             outputDir.mkdir()
         }
 
-        File testOut = new File(outputDir, "statesOut.ttl")
+        File testOut = new File(outputDir, "image-collection-out.ttl")
         testOut.text = ""
 
 

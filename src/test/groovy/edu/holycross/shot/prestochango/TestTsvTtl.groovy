@@ -17,15 +17,15 @@ class TestTsvTtl extends GroovyTestCase {
 
     @Test void testTsv() {
 
-        String testTsvInventory = "testdata/hmtcollections.xml"
+        String testTsvInventory = "testdata/signs-collections.xml"
         File tsvInv = new File(testTsvInventory)
 
-        String tsvDataDir = "testdata/hmtdata"
+        String tsvDataDir = "testdata/csvs"
         File tsvDir = new File(tsvDataDir)
 
         CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)
 
-        File testOut = new File("testdata/testoutput/hmtOut.ttl")
+        File testOut = new File("testdata/testoutput/signs-collection-out.ttl")
         cc.ttl(testOut)
         System.err.println "TTL in ${testOut}"
     }

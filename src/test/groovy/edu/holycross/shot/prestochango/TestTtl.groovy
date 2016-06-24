@@ -18,22 +18,22 @@ class TestTtl extends GroovyTestCase {
 
     @Test void testTsv() {
 
-        String testTsvInventory = "testdata/hmtcollections.xml"
+        String testTsvInventory = "testdata/signs-collection.xml"
         File tsvInv = new File(testTsvInventory)
 
-        String tsvDataDir = "testdata/hmtdata"
+        String tsvDataDir = "testdata/csvs"
         File tsvDir = new File(tsvDataDir)
 
         CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)
 
-        File testOut = new File("testdata/testoutput/hmtOut.ttl")
+        File testOut = new File("testdata/testoutput/signs-testing-tsv.ttl")
         cc.ttl(testOut)
         System.err.println "TTL in ${testOut}"
     }
 
 
     @Test void testCsv() {
-        String testCsvInventory = "testdata/states-caps.xml"
+        String testCsvInventory = "testdata/image-collection.xml"
         File csvInv = new File(testCsvInventory)
 
         String csvDataDir = "testdata/csvs"
@@ -41,7 +41,7 @@ class TestTtl extends GroovyTestCase {
 
         CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)
 
-        File testOut = new File("testdata/testoutput/csvOut.ttl")
+        File testOut = new File("testdata/testoutput/images-testing-csv.ttl")
         cc.ttl(testOut)
         System.err.println "TTL in ${testOut}"
     }
