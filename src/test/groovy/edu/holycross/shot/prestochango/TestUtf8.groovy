@@ -15,33 +15,19 @@ class TestUtf8 extends GroovyTestCase {
   String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
     @Test void testCsv() {
-        String testCsvInventory = "testdata/archimedes/archiminv.xml"
+        String testCsvInventory = "testdata/signs-collection.xml"
         File csvInv = new File(testCsvInventory)
 
-        String csvDataDir = "testdata/archimedes"
+        String csvDataDir = "testdata/csvs"
         File csvDir = new File(csvDataDir)
 
         CollectionArchive cc = new CollectionArchive(csvInv, schemaFileName, csvDir)
 
-        File testOut = new File("testdata/testoutput/lacunaeOut.ttl")
+        File testOut = new File("testdata/testoutput/signs-utf8.ttl")
         cc.ttl(testOut)
         System.err.println "TTL in ${testOut}"
     }
 
-    /*
-    @Test void testTsv() {
-        String testTsvInventory = "testdata/archimedes/archiminv2.xml"
-        File tsvInv = new File(testTsvInventory)
-
-        String tsvDataDir = "testdata"
-        File tsvDir = new File(tsvDataDir)
-
-        CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)
-
-        File testOut = new File("testdata/testoutput/lacunaeOut2.ttl")
-        cc.ttl(testOut)
-        System.err.println "TTL in ${testOut}"
-	}*/
 
 
 }

@@ -17,7 +17,7 @@ class TestTsvTtl extends GroovyTestCase {
 
     @Test void testTsv() {
 
-        String testTsvInventory = "testdata/signs-collections.xml"
+        String testTsvInventory = "testdata/signs-collection.xml"
         File tsvInv = new File(testTsvInventory)
 
         String tsvDataDir = "testdata/csvs"

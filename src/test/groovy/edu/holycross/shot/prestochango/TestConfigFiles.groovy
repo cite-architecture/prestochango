@@ -13,11 +13,11 @@ class TestConfigFiles extends GroovyTestCase {
 
 
   String schemaFileName = "schemas/CiteCollectionInventory.rng"
-  File dataDir = new File("testdata/persian")
-  File testOut = new File("testdata/testoutput/oldpersian.ttl")
+  File dataDir = new File("testdata/csvs")
+  File testOut = new File("testdata/testoutput/signs-testing-config.ttl")
 
   @Test void testBadConfig() {
-    String inventoryName = "testdata/persian/misconfigured.xml"
+    String inventoryName = "testdata/signs-collection-misconfigured.xml"
     File inv = new File(inventoryName)
     CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dataDir)
     assert shouldFail {
@@ -26,7 +26,7 @@ class TestConfigFiles extends GroovyTestCase {
   }
 
   @Test void testGoodConfig() {
-    String inventoryName = "testdata/persian/opcollections.xml"
+    String inventoryName = "testdata/signs-collection.xml"
     File inv = new File(inventoryName)
     if (testOut.exists()) {
       testOut.setText("")
@@ -34,9 +34,8 @@ class TestConfigFiles extends GroovyTestCase {
     CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dataDir)
     cc.ttl(testOut, true)
     // check on size of testOut: grep a phrase like 'cite:possesses'
-    
 
-    Integer expectedRecords = 8
+    Integer expectedRecords = 6 
     Integer actualRecords = 0
     testOut.eachLine { l ->
       if (l ==~ /.+cite:possesses.+/ ) {
