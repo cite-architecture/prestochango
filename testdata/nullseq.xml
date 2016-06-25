@@ -2,12 +2,12 @@
 
 
 <?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
-<collectionService xmlns="http://chs.harvard.edu/xmlns/cite">
+<collectionService xmlns="http://chs.harvard.edu/xmlns/cite" version="0.1">
     <!-- Optional element:  none in this inventory yet.
         <extensionImplementation name="" baseUrl=""></extensionImplementation>
     -->
     <citeCollection canonicalId="URN" urn="urn:cite:hmt:u4" label="Label">
-        <namespaceMapping abbr="hmt" fullValue="http://www.homermultitext.org/datans"></namespaceMapping>
+        <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"></namespaceMapping>
         <title xmlns="http://purl.org/dc/elements/1.1/">Pages of the manuscriptMarciana 841</title>
         <creator xmlns="http://purl.org/dc/elements/1.1/">Christopher Blackwell</creator>
         <creator xmlns="http://purl.org/dc/elements/1.1/">Neel Smith</creator>

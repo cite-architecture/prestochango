@@ -15,6 +15,8 @@ class TestUtf8 extends GroovyTestCase {
   String schemaFileName = "schemas/CiteCollectionInventory.rng"
 
     @Test void testCsv() {
+
+		String utfString = "ἀστερίσκος"
         String testCsvInventory = "testdata/signs-collection.xml"
         File csvInv = new File(testCsvInventory)
 
@@ -25,7 +27,14 @@ class TestUtf8 extends GroovyTestCase {
 
         File testOut = new File("testdata/testoutput/signs-utf8.ttl")
         cc.ttl(testOut)
+		Boolean matchedUtf = false
+		testOut.eachLine { l ->
+			  if ( l.contains(utfString) ) {
+				matchedUtf = true
+			  }
+		}
         System.err.println "TTL in ${testOut}"
+		assert matchedUtf
     }
 
 

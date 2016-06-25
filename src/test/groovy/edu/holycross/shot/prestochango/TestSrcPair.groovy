@@ -14,8 +14,8 @@ class TestSrcPair extends GroovyTestCase {
 
   String schemaFileName = "schemas/CiteCollectionInventory.rng"
     CiteUrn coll = new CiteUrn("urn:cite:hmt:msA")
-    File tsvInv = new File( "testdata/hmtcollections.xml")
-    File tsvDir = new File("testdata/hmtdata")
+    File tsvInv = new File( "testdata/collections.xml")
+    File tsvDir = new File("testdata/csvs")
 
     @Test void testPairing() {
         CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)

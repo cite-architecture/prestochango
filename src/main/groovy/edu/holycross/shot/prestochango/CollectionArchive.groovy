@@ -173,8 +173,8 @@ class CollectionArchive {
     root[cite.extensionImplementation].each { extension ->
       this.extensions[extension.'@abbr'] = extension.'@rdfType'
     }
-	  System.err.println "Extension Map:"
-	  System.err.println this.extensionsMap
+	 if (debug > 0) { System.err.println "Extension Map:" }
+	 if (debug > 0) { System.err.println this.extensionsMap }
 
     def configuredCollections = [:]
     root[cite.citeCollection].each { c ->

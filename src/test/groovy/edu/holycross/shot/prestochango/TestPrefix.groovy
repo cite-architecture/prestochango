@@ -16,6 +16,8 @@ class TestPrefix extends GroovyTestCase {
 
     @Test void testPrefixing() {
 
+		String prefixString = ""
+
         String testTsvInventory = "testdata/testcapabilities.xml"
         File tsvInv = new File(testTsvInventory)
 
@@ -32,6 +34,8 @@ class TestPrefix extends GroovyTestCase {
         cc.ttl(testOut2, true)
 
         System.err.println "TTL in ${testOut} and ${testOut2}"
+
+		assert prefixString == "NEED TO CHECK THIS PROGRAMMATICALY."
     }
 
 

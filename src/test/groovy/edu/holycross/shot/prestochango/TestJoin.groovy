@@ -13,6 +13,7 @@ import org.junit.Test
 class TestJoin extends GroovyTestCase {
 
   String schemaFileName = "schemas/CiteCollectionInventory.rng"
+  String response = ""
 
   @Test void testJoinProperty() {
 
@@ -27,6 +28,7 @@ class TestJoin extends GroovyTestCase {
     File testOut = new File("testdata/testoutput/greekLitOut.ttl")
     cc.ttl(testOut)
     System.err.println "TTL in ${testOut}"
+	assert response == "NOT IMPLEMENTED SO SHOULD FAIL."
   }
 
 

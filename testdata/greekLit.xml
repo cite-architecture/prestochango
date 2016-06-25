@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
-<collectionService
-    xmlns="http://chs.harvard.edu/xmlns/cite"
+<collectionService xmlns="http://chs.harvard.edu/xmlns/cite"
     xmlns:dc="http://purl.org/dc/elements/1.1/" version="0.1">
- 
+
     <citeCollection canonicalId="URN" label="GreekLit Text Groups" urn="urn:cite:chs:textgroup">
-        <namespaceMapping abbr="chs" uri="http://chs.harvard.edu/cite/chs"></namespaceMapping>
+        <namespaceMapping abbr="chs" uri="http://chs.harvard.edu/cite/chs"/>
         <dc:creator>The Center for Hellenic Studies of Harvard University</dc:creator>
-        <dc:description>TextGroup identifiers for ancient Greek texts transmitted by manuscript copying.</dc:description>
+        <dc:description>TextGroup identifiers for ancient Greek texts transmitted by manuscript
+            copying.</dc:description>
         <dc:rights>Public Domain</dc:rights>
         <source type="file" value="greekLit-groups.csv"/>
-        <citeProperty label="URN" name="URN" type="citeurn"></citeProperty>
-        <citeProperty label="CTS URN" type="ctsurn" name="CTSURN"></citeProperty>
-        <citeProperty label="English Name" name="EnglishName" type="string"></citeProperty>
-        <citeProperty label="Latin Name" name="LatinName" type="string" ></citeProperty>
+        <citeProperty label="URN" name="URN" type="citeurn"/>
+        <citeProperty label="CTS URN" type="ctsurn" name="CTSURN"/>
+        <citeProperty label="English Name" name="EnglishName" type="string"/>
+        <citeProperty label="Latin Name" name="LatinName" type="string"/>
     </citeCollection>
-    
+
     <citeCollection canonicalId="URN" label="GreekLit Works" urn="urn:cite:chs:work">
         <namespaceMapping abbr="chs" uri="http://chs.harvard.edu/cite/chs"/>
         <dc:creator>The Center for Hellenic Studies of Harvard University</dc:creator>
-        <dc:description>Work identifiers for ancient Greek texts transmitted by manuscript copying.</dc:description>
+        <dc:description>Work identifiers for ancient Greek texts transmitted by manuscript
+            copying.</dc:description>
         <dc:rights>Public Domain</dc:rights>
         <source type="file" value="greekLit-works.csv"/>
-        <citeProperty label="URN" name="URN" type="citeurn"></citeProperty>
-        <citeProperty label="CTS URN" type="ctsurn" name="CTSURN"></citeProperty>
-        <citeProperty label="Group URN" type="citeurn" name="GroupURN"> <indexRelation rdfverb="http://www.homermultitext.org/cite/rdf/inherits" inverseverb="http://www.homermultitext.org/cite/rdf/isInheritedBy"/></citeProperty>
-        <citeProperty label="English Name" name="EnglishName" type="string"></citeProperty>
-        <citeProperty label="Latin Name" name="LatinName" type="string" ></citeProperty>
-        <citeProperty name="Textgroup" label="Text group" type="citeurn" join="naturaljoin"></citeProperty>
+        <citeProperty label="URN" name="URN" type="citeurn"/>
+        <citeProperty label="CTS URN" type="ctsurn" name="CTSURN"/>
+        <citeProperty label="Group URN" type="citeurn" name="GroupURN">
+            <indexRelation rdfverb="http://www.homermultitext.org/cite/rdf/inherits"
+                inverseverb="http://www.homermultitext.org/cite/rdf/isInheritedBy"/>
+        </citeProperty>
+        <citeProperty label="English Name" name="EnglishName" type="string"/>
+        <citeProperty label="Latin Name" name="LatinName" type="string"/>
+        <citeProperty name="Textgroup" label="Text group" type="citeurn" join="naturaljoin"/>
     </citeCollection>
-    
-    
+
+
 </collectionService>

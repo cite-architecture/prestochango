@@ -21,6 +21,8 @@ class TestIndexingTtl extends GroovyTestCase {
     cc.debug = 5
     File outFile = new File("testdata/testoutput/indexedColl.ttl")
     cc.ttl(outFile)
+	String response = ""
+	assert response == "NOT IMPLEMENTED SO WILL FAIL."
   }
 
 
