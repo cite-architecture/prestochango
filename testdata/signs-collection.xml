@@ -1,61 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
-<collectionService
-    xmlns="http://chs.harvard.edu/xmlns/cite"
-    xmlns:dc="http://purl.org/dc/elements/1.1/"
-     version="0.1">
+<collectionService xmlns="http://chs.harvard.edu/xmlns/cite"
+    xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.0">
     <extensions>
-        <extension abbr="image" extensionUri="http://chs.harvard.edu/cite/chsimg" rdfType="cite:CiteImage" rdfUri="http://www.homermultitext.org/cite/rdf/citeimage" extendedCitation="true">
-            <request name="GetBinaryImage"></request>
-            <request name="GetCaption"></request>
-            <request name="GetRights"></request>
-            <request name="GetImagePlus"></request>
-            <request name="GetIIPMooViewer"></request>
-        </extension>
+        <extension rdfType="cite:CiteImage"
+            rdfUri="http://www.homermultitext.org/cite/rdf/citeimage"> </extension>
     </extensions>
-   
-    
- 
-    
-    <citeCollection
-        canonicalId="URN"
-        label="EnglishName"
-        urn="urn:cite:hmt:critsigns">
-        <namespaceMapping
-            abbr="hmt"
-            uri="http://www.homermultitext.org/datans"/>
+
+
+
+
+    <citeCollection canonicalId="URN" label="EnglishName" urn="urn:cite:hmt:critsigns">
+        <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
         <dc:title>Classes of Aristarchan critical signs</dc:title>
         <dc:description>Names and character encoding information for Aristarchan critical
             signs</dc:description>
         <dc:rights>All data in this collection are available under the terms of the Creative Commons
             Attribution-Non-Commercial 3.0 Unported License,
             http://creativecommons.org/licenses/by-nc/3.0/deed.en_US</dc:rights>
-        <source
-            type="file"
-            value="criticalsigns.tsv"/>
-        <citeProperty
-            label="URN"
-            name="URN"
-            type="citeurn"/>
-        <citeProperty
-            label="English name"
-            name="EnglishName"
-            type="string"/>
-        <citeProperty
-            label="Greek name"
-            name="GreekName"
-            type="string"/>
-        <citeProperty
-            label="Unicode codepoint (hex value)"
-            name="UnicodeHex"
-            type="string"/>
-        <citeProperty
-            label="Notes on Unicode representation"
-            name="UnicodeNotes"
-            type="string"/>
+        <source type="file" value="criticalsigns.tsv"/>
+        <citeProperty label="URN" name="URN" type="citeurn"/>
+        <citeProperty label="English name" name="EnglishName" type="string"/>
+        <citeProperty label="Greek name" name="GreekName" type="string"/>
+        <citeProperty label="Unicode codepoint (hex value)" name="UnicodeHex" type="string"/>
+        <citeProperty label="Notes on Unicode representation" name="UnicodeNotes" type="string"/>
+        <citeProperty label="Evidentiary Manuscript" name="MS" type="citeurn"
+            universalValue="urn:cite:hmt:codices.venA"/>
     </citeCollection>
-    
-    
-  
-    
+
+
+
+
 </collectionService>

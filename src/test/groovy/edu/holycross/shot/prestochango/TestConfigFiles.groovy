@@ -17,6 +17,9 @@ class TestConfigFiles extends GroovyTestCase {
   File testOut = new File("testdata/testoutput/signs-testing-config.ttl")
 
   @Test void testBadConfig() {
+    if (testOut.exists()) {
+      testOut.setText("")
+    }
     String inventoryName = "testdata/signs-collection-misconfigured.xml"
     File inv = new File(inventoryName)
     CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dataDir)

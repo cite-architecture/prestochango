@@ -2,7 +2,7 @@
 
 
 <?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
-<collectionService xmlns="http://chs.harvard.edu/xmlns/cite" version="0.1">
+<collectionService xmlns="http://chs.harvard.edu/xmlns/cite" version="1.0">
     <!-- Optional element:  none in this inventory yet.
         <extensionImplementation name="" baseUrl=""></extensionImplementation>
     -->

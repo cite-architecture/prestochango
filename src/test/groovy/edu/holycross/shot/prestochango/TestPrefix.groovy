@@ -16,12 +16,19 @@ class TestPrefix extends GroovyTestCase {
 
     @Test void testPrefixing() {
 
-		String prefixString = ""
+   String prefixString = """
+@prefix cite:        <http://www.homermultitext.org/cite/rdf/> .
+@prefix citedata:        <http://www.homermultitext.org/citedata/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. 
+@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix olo:     <http://purl.org/ontology/olo/core#> .
+@prefix dse:  <http://www.homermultitext.org/dse/rdf/> .
+""".toString()
 
-        String testTsvInventory = "testdata/testcapabilities.xml"
+        String testTsvInventory = "testdata/collections.xml"
         File tsvInv = new File(testTsvInventory)
 
-        String tsvDataDir = "testdata"
+        String tsvDataDir = "testdata/csvs"
         File tsvDir = new File(tsvDataDir)
 
 
@@ -35,7 +42,7 @@ class TestPrefix extends GroovyTestCase {
 
         System.err.println "TTL in ${testOut} and ${testOut2}"
 
-		assert prefixString == "NEED TO CHECK THIS PROGRAMMATICALY."
+		assert prefixString.replaceAll(/\s/,"") == "NEED TO CHECK THIS PROGRAMMATICALY."
     }
 
 
