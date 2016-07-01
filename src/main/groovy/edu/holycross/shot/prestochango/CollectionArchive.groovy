@@ -17,7 +17,7 @@ class CollectionArchive {
   Integer SCREAM = 3
   Integer DEBUGMSG = 2
   Integer WARN = 1
-  public Integer debug = 1
+  public Integer debug = 0
 
   /** CITE Collection inventory serialized in XML to a File. */
   File inventory
@@ -172,10 +172,10 @@ class CollectionArchive {
 
 
 	  root[cite.extensions][cite.extension].each { extension ->
-		  System.err.println "Extension; ${extension}"
-		  this.extensionsMap[extension.'@rdfType'] = extension.'@rdfUri'
+		  if (debug > 0){ System.err.println "Extension; ${extension}" }
+		  this.extensionsMap[extension.'@abbr'] = extension.'@uri'
 	  }
-	  this.extensionsMap.each { System.err.println it }
+	  this.extensionsMap.each { if (debug > 0){System.err.println it} }
 	  if (debug > 0) { System.err.println "Extension Map:" }
 	  if (debug > 0) { System.err.println this.extensionsMap }
 
@@ -261,7 +261,7 @@ class CollectionArchive {
 
 
 
-  String getRdfTypeForExtension(String extensAbbr) 
+  String getUriForExtension(String extensAbbr) 
   throws Exception {
     try {
       return this.extensionsMap[extensAbbr]
@@ -368,6 +368,43 @@ class CollectionArchive {
     }
   }
 
+
+  /** Finds the value of the inverseverb for a given property.
+   * @param urn The Collection in question.
+   * @param propertyName Name of the property.
+   * @returns The inverseverb string, or null if none configured.
+   * @throws Exception if urn is not a configured collection or
+   * if propertyName does not exist in that collection.
+   */
+  String getInverseVerb(CiteUrn urn, String propertyName) 
+  throws Exception {
+    String inverseVerb = null
+    def config
+    try {
+      config =  this.citeConfig[urn.toString()]
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
+    }
+    
+    boolean propertyFound
+    config['properties'].each { p ->
+      if (debug > 3) {
+	System.err.println "getInverseVerb: cf property ${p['name']} and ${propertyName}"
+      }
+      if (p['name'] == propertyName) {
+	inverseVerb =  p['inverseverb']
+	propertyFound = true
+	if (debug > 3) {
+	  System.err.println "FOUND IT. ${propertyFound}"
+	}
+      }
+    }
+    if (propertyFound) {
+      return inverseVerb
+    } else {
+      throw new Exception("CollectionArchive:getInverseVerb: no property ${propertyName} in collection ${urn}")
+    }
+  }
 
 
   /** Finds name of property with labelling
@@ -537,27 +574,27 @@ def invroot = new XmlParser().parse(this.inventory)
 
 	invroot[cite.extensions][cite.extension].each { extension ->
 
-		String extensionUri = extension.'@rdfUri'
-		String extensionType = extension.'@rdfType'
+		String extensionUri = extension.'@uri'
+		String extensionAbbr = extension.'@abbr'
 
-			System.err.println "CollectionArchive: examine exension ${extensionUri}"
-			System.err.println "It has type ${extensionType}"
+			if (debug > 0){System.err.println "CollectionArchive: examine exension ${extensionUri}" }
+			if (debug > 0){System.err.println "It has type ${extensionAbbr}" }
 			
 		ttl.append("<${extensionUri}> rdf:type cite:CiteExtension .\n")
-		ttl.append("<${extensionUri}> cite:abbreviatedBy ${extensionType} .\n")
+		ttl.append("<${extensionUri}> cite:abbreviatedBy ${extensionAbbr} .\n")
 	}
 
 invroot[cite.citeCollection].each { cc ->
 	if (!cc.'@urn') {
-		System.err.println "CollectionArchive:  cannot turtlieze collection with no URN!"
-		System.err.println "Parsed record was " + cc
+		if (debug > 0){
+			System.err.println "CollectionArchive:  cannot turtlieze collection with no URN!"
+			System.err.println "Parsed record was " + cc
+		}
 		throw new Exception("No urn defined for collection.")
 	}
 	CiteUrn urn = new CiteUrn(cc.'@urn')
 	String labelProperty = getLabelProperty(urn)
 	def nsMap = cc[cite.namespaceMapping][0]
-	//System.err.println "nsMap.'@uri' = "
-	// System.err.println nsMap.'@uri'
 
 	ttl.append("<${nsMap.'@uri'}> rdf:type cite:DataNs .\n")
 	ttl.append("<" + nsMap.'@uri' + "> cite:abbreviatedBy " + '"' + nsMap.'@abbr' +  '" .\n\n')
@@ -574,6 +611,7 @@ invroot[cite.citeCollection].each { cc ->
 		cc[cite.extendedBy].each { ext ->
 			tempExtensionName = ext.'@extension'	
 			ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> cite:extendedBy ${tempExtensionName} . \n")
+			ttl.append("${tempExtensionName} cite:extends <urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> . \n")
 		}
 	}
 
@@ -618,123 +656,201 @@ return ttl.toString()
    * @param label Name of the rdf:label property in this collection.
    * @throws Exception if collection not configured
    */
-  String turtlizeOneRow(ArrayList cols, ArrayList headingIndex, String canonical, String label, boolean ordered) 
-  throws Exception {
-    if (debug > 2) {
-	  System.err.println "TURLTELIZE ROW " + cols
-	  System.err.println "Use headings " + headingIndex
-    }
-     
-    StringBuffer oneRow  = new StringBuffer()
-    CiteUrn urn
-    CiteUrn collUrn
+String turtlizeOneRow(ArrayList cols, ArrayList headingIndex, String canonical, String label, boolean ordered) 
+throws Exception {
+if (debug > 2) {
+	System.err.println "TURLTELIZE ROW " + cols
+	System.err.println "Use headings " + headingIndex
+}
 
-    // Generate statements about canonical ID of object:
-    cols.eachWithIndex { column, idx ->
-      if (debug > 3) { System.err.println "${idx}. Looking at ${headingIndex[idx]} vs ${canonical}" }
-      if (headingIndex[idx] == canonical) {
-	
-	if (debug > 3) { 
-	  System.err.println "Found canonical ${canonical}:" 
-	  System.err.println "at ${column}"
+StringBuffer oneRow  = new StringBuffer()
+CiteUrn urn
+CiteUrn collUrn
+
+// Generate statements about canonical ID of object:
+cols.eachWithIndex { column, idx ->
+	if (debug > 3) { System.err.println "${idx}. Looking at ${headingIndex[idx]} vs ${canonical}" }
+	if (headingIndex[idx] == canonical) {
+
+		if (debug > 3) { 
+			System.err.println "Found canonical ${canonical}:" 
+			System.err.println "at ${column}"
+		}
+
+		try {
+			if (debug > 3) { System.err.println "Try to make URN from ${column}" }
+
+			urn = new CiteUrn(column)
+			if (debug > 3) { System.err.println "OK!" }
+
+			collUrn = new CiteUrn("urn:cite:${urn.getNs()}:${urn.getCollection()}")
+			oneRow.append("<${column}> cite:belongsTo <${collUrn}> .\n")
+			oneRow.append("<${collUrn}> cite:possesses <${column}> .\n")
+
+			if (!ordered) {
+				oneRow.append("<${column}> cite:ordered " + '"false" .\n')
+			}
+
+			if (debug > 3) { System.err.println "appended to oneRow, now ${oneRow}" }
+		} catch (Exception e) {
+			System.err.println "turtlizeOneRow: unable to make urn from ${column}"
+		}
 	}
+}
 
-	try {
-	  if (debug > 3) { System.err.println "Try to make URN from ${column}" }
-          
-          urn = new CiteUrn(column)
-	  if (debug > 3) { System.err.println "OK!" }
+def collConf = this.citeConfig["${collUrn}"]
 
-	  collUrn = new CiteUrn("urn:cite:${urn.getNs()}:${urn.getCollection()}")
-	  oneRow.append("<${column}> cite:belongsTo <${collUrn}> .\n")
-	  oneRow.append("<${collUrn}> cite:possesses <${column}> .\n")
+if (collConf == null) {
+	throw new Exception("CollectionArchive:turtlizeOneRow: no configuration for collection ${collUrn}")
+}
 
-	  if (!ordered) {
-	    oneRow.append("<${column}> cite:ordered " + '"false" .\n')
-	  }
+/*
+if (debug > 0) {
+System.err.println "Config for ${collUrn} is " + collConf
+}
+ */
 
-	  if (debug > 3) { System.err.println "appended to oneRow, now ${oneRow}" }
-	} catch (Exception e) {
-	  System.err.println "turtlizeOneRow: unable to make urn from ${column}"
-	}
-      }
-    }
+			collConf["properties"].each { confProp ->
+				if ((confProp["universalValue"] != null) && (confProp["universalValue"] != "null")){
+					def c = confProp["universalValue"]
+					switch (confProp["type"]) {
 
-    def collConf = this.citeConfig["${collUrn}"]
+						case "boolean":
+							if ( (c == true) || (c == "true")){
+								oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} true .\n")
+							} else {
+								oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} false .\n")
+							}
+						break
 
-    if (collConf == null) {
-      throw new Exception("CollectionArchive:turtlizeOneRow: no configuration for collection ${collUrn}")
-    }
+						case "number":
+						oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} ${c} .\n")
 
-	/*
-    if (debug > 0) {
-      System.err.println "Config for ${collUrn} is " + collConf
-    }
-	*/
-        
+						if (getRdfVerb(collUrn, confProp["name"])) {
+							System.err.println "doing getRdfVerb"
+							System.err.println "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} ${c} .\n"
+							oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} ${c} .\n")
+						}
+						if (getInverseVerb(collUrn, confProp["name"])) {
+							oneRow.append( "${c} ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
+						}
 
-    cols.eachWithIndex { c, i ->
+						break
 
-      if (headingIndex[i] == label) {
-	oneRow.append("<${urn}> rdf:label " + '"' + c + '" .\n')
-      } 
-      if ((c != null) && (c != "") ){
-	if (debug > 4) { System.err.println "column value of ${headingIndex[i]} is #" + c + "#" }
-	// NS change:  also output property for rdf:label (so it appears *twice*)
-	if (headingIndex[i] != canonical) {
-	  collConf["properties"].each { confProp ->
-	    if (confProp["name"] == headingIndex[i]) {
-	      switch (confProp["type"]) {
+						case "markdown":              
+						case "geojson":
+						case "string":
+						oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} " + '"' + c + '" .\n')
+						if (getRdfVerb(collUrn, confProp["name"])) {
+							oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} " + '"' + c + '" .\n')
+						}
+						if (getInverseVerb(collUrn, confProp["name"])) {
+							oneRow.append( "'" + c + "' ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
+						}
 
-	      case "boolean":
-	      break
+						break
 
-	      case "number":
-	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} ${c} .\n")
+						case "citeurn":
+						case "citeimg":
+						case "ctsurn":
+						oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} <${c}> .\n")
 
-	      if (getRdfVerb(collUrn, headingIndex[i])) {
-			oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} ${c} .\n")
-	      }
+						if (getRdfVerb(collUrn, confProp["name"])) {
+							oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} <${c}> .\n")
+						}
+						if (getInverseVerb(collUrn, confProp["name"])) {
+							oneRow.append( "<${c}> ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
+						}
 
-	      break
+						break
 
-	      case "markdown":              
-		  case "geojson":
-	      case "string":
-	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
-	      if (getRdfVerb(collUrn, headingIndex[i])) {
-		oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} " + '"' + c + '" .\n')
-	      }
 
-	      break
-                
-	      case "citeurn":
-	      case "citeimg":
-	      case "ctsurn":
-	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
 
-	      if (getRdfVerb(collUrn, headingIndex[i])) {
-		oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} <${c}> .\n")
-	      }
+						default : 
+						System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
+						break
+					}
+				}
+			}
 
-	      break
-                                
-                                
-	      
-	      default : 
-	      System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
-	      break
-              
-	      }
-	    } 
-	  }
-	}
-        
-      } 
-    } 
-    if (debug > 3) { System.err.println "Turtleized row: " + oneRow }
-    return oneRow.toString()
-  }
+cols.eachWithIndex { c, i ->
+
+	if (headingIndex[i] == label) {
+		oneRow.append("<${urn}> rdf:label " + '"' + c + '" .\n')
+	} 
+	if ((c != null) && (c != "") ){
+		if (debug > 4) { System.err.println "column value of ${headingIndex[i]} is #" + c + "#" }
+		// NS change:  also output property for rdf:label (so it appears *twice*)
+		if (headingIndex[i] != canonical) {
+			collConf["properties"].each { confProp ->
+				if (confProp["name"] == headingIndex[i]) {
+					switch (confProp["type"]) {
+
+						case "boolean":
+							if ( (c == true) || (c == "true")){
+								oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} true .\n")
+							} else {
+								oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} false .\n")
+							}
+						break
+
+						case "number":
+						oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} ${c} .\n")
+
+						if (getRdfVerb(collUrn, headingIndex[i])) {
+							System.err.println "doing getRdfVerb"
+							System.err.println "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} ${c} .\n"
+							oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} ${c} .\n")
+						}
+						if (getInverseVerb(collUrn, headingIndex[i])) {
+							oneRow.append( "${c} ${getInverseVerb(collUrn, headingIndex[i])} <${urn}> .\n")
+						}
+
+						break
+
+						case "markdown":              
+						case "geojson":
+						case "string":
+						oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
+						if (getRdfVerb(collUrn, headingIndex[i])) {
+							oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} " + '"' + c + '" .\n')
+						}
+						if (getInverseVerb(collUrn, headingIndex[i])) {
+							oneRow.append( "'" + c + "' ${getInverseVerb(collUrn, headingIndex[i])} <${urn}> .\n")
+						}
+
+						break
+
+						case "citeurn":
+						case "citeimg":
+						case "ctsurn":
+						oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
+
+						if (getRdfVerb(collUrn, headingIndex[i])) {
+							oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} <${c}> .\n")
+						}
+						if (getInverseVerb(collUrn, headingIndex[i])) {
+							oneRow.append( "<${c}> ${getInverseVerb(collUrn, headingIndex[i])} <${urn}> .\n")
+						}
+
+						break
+
+
+
+						default : 
+						System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
+						break
+
+					}
+				} 
+			}
+		}
+
+	} 
+} 
+if (debug > 3) { System.err.println "Turtleized row: " + oneRow }
+return oneRow.toString()
+}
 
 
   

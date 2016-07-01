@@ -44,6 +44,7 @@ class TestExtensionTtl extends GroovyTestCase {
 	Boolean hasExt = false
 	Boolean hasExtAbbr = false
 	Boolean collHasExt = false
+	Boolean collHasExtInverse = false
 
     testOut.eachLine { l ->
       if (l ==~ /<http:\/\/www.homermultitext.org\/cite\/rdf\/citeimage> +rdf:type +cite:CiteExtension +\./ ) {
@@ -55,9 +56,13 @@ class TestExtensionTtl extends GroovyTestCase {
       if (l ==~ /<urn:cite:hmt:vaimg> +cite:extendedBy +cite:CiteImage +\. ?/ ) {
 		collHasExt = true
       }
+      if (l ==~ /cite:CiteImage +cite:extends +<urn:cite:hmt:vaimg> +\. ?/ ) {
+		collHasExtInverse = true
+      }
     }
 
 	assert collHasExt 
+	assert collHasExtInverse
 	assert hasExt
 	assert hasExtAbbr
 

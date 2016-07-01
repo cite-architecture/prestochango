@@ -3,9 +3,12 @@
 <collectionService xmlns="http://chs.harvard.edu/xmlns/cite"
     xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.0">
     <extensions>
-        <extension rdfType="cite:CiteImage"
-            rdfUri="http://www.homermultitext.org/cite/rdf/citeimage"> </extension>
-        <extension rdfType="cite:GeoJSON" rdfUri="http://made.up.uri/rdf/geojson"/>
+        <extension abbr="cite:CiteImage"
+            uri="http://www.homermultitext.org/cite/rdf/citeimage"> </extension>
+        
+        
+        
+        <extension abbr="cite:GeoJSON" uri="http://made.up.uri/rdf/geojson"/>
     </extensions>
 
 

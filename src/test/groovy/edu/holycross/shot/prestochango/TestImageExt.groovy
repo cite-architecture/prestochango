@@ -19,7 +19,7 @@ class TestImageExt extends GroovyTestCase {
 
   @Test void testExtension() {
     CiteUrn coll = new CiteUrn("urn:cite:hmt:vaimg")
-    def expectedExtensions = ["image"]
+    def expectedExtensions = ["cite:CiteImage"]
     CollectionArchive cc = new CollectionArchive(inventoryFile, schemaFile, dataDir)    
     assert cc.getExtensionList(coll) == expectedExtensions
   }
@@ -32,9 +32,9 @@ class TestImageExt extends GroovyTestCase {
     }
   }
 
-  @Test void testRdfVerb() {
+  @Test void testGetURI() {
     CollectionArchive cc = new CollectionArchive(inventoryFile, schemaFile, dataDir)    
-    assert cc.getRdfTypeForExtension("image") == "cite:CiteImage"
+    assert cc.getUriForExtension("cite:CiteImage") == "http://www.homermultitext.org/cite/rdf/citeimage"
   }
 
 }

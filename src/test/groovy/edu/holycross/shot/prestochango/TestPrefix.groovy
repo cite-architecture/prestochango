@@ -35,14 +35,37 @@ class TestPrefix extends GroovyTestCase {
         CollectionArchive cc = new CollectionArchive(tsvInv, schemaFileName, tsvDir)
 
         File testOut = new File("testdata/testoutput/defaultNoPrefix.ttl")
+
+    if (testOut.exists()) {
+      testOut.setText("")
+    }
         cc.ttl(testOut)
+
+		Boolean lacksPrefix = true
+
+		testOut.eachLine { l -> 
+			if ( l.contains("@prefix")) { lacksPrefix = false }		
+		}
+
+		assert lacksPrefix
         
         File testOut2 = new File("testdata/testoutput/withPrefix.ttl")
+
+		Integer countPrefixParts = 0
+
+		if (testOut2.exists()) {
+		  testOut2.setText("")
+		}
         cc.ttl(testOut2, true)
+
+		testOut2.eachLine { l ->
+			if (l.contains("@prefix")) { countPrefixParts++ }
+		}
+
+		assert countPrefixParts == 6
 
         System.err.println "TTL in ${testOut} and ${testOut2}"
 
-		assert prefixString.replaceAll(/\s/,"") == "NEED TO CHECK THIS PROGRAMMATICALY."
     }
 
 

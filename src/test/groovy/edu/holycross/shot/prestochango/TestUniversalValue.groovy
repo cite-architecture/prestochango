@@ -8,12 +8,14 @@ import org.junit.Test
 
 
 
-class TestIndexRelation extends GroovyTestCase {
+/** Class testing output of ttl from prestochango's CollectionArchive class.
+*/
+class TestUniversalValue extends GroovyTestCase {
 
   String schemaFileName = "schemas/CiteCollectionInventory.rng"
   String response = ""
 
-  @Test void testIndexedProperty() {
+  @Test void testJoinProperty() {
 
     String inventory = "testdata/one-for-all.xml"
     File invFile = new File(inventory)
@@ -32,36 +34,23 @@ class TestIndexRelation extends GroovyTestCase {
     cc.ttl(testOut)
 
 
-	Integer checkForIndexing = 0
+	Integer checkForUVs = 0
 
 // citedata:vaimg_testUV2 rdf:type rdf:Property .
 // citedata:vaimg_testUV1 rdf:type rdf:Property .
 	// <urn:cite:hmt:vaimg.VA083RN-0084> citedata:vaimg_OtherUrn <urn:cite:hmt:other.2> .
 
 	testOut.eachLine { l ->
-		if ( l.contains("cite:madeUp" )) {
-				if ( l.contains("urn:cite:hmt:other.1")) { checkForIndexing++ }
+		if ( l.contains("citedata:vaimg_testUV2" )) {
+				if ( l.contains("urn:cite:hmt:some.thing2")) { checkForUVs++ }
 		}
-		if ( l.contains("cite:upMade" )) {
-				if ( l.contains("urn:cite:hmt:other.1")) { checkForIndexing++ }
-		}
-		if ( l.contains("cite:madeUp" )) {
-				if ( l.contains("urn:cite:hmt:other.2")) { checkForIndexing++ }
-		}
-		if ( l.contains("cite:upMade" )) {
-				if ( l.contains("urn:cite:hmt:other.2")) { checkForIndexing++ }
-		}
-		if ( l.contains("cite:madeUp" )) {
-				if ( l.contains("urn:cite:hmt:other.3")) { checkForIndexing++ }
-		}
-		if ( l.contains("cite:upMade" )) {
-				if ( l.contains("urn:cite:hmt:other.3")) { checkForIndexing++ }
+		if ( l.contains("citedata:vaimg_testUV1" )) {
+				if ( l.contains("urn:cite:hmt:some.thing1")) { checkForUVs++ }
 		}
 	}
 	
-	assert checkForIndexing == 6
+	assert checkForUVs == 6
   }
-
 
 
 }

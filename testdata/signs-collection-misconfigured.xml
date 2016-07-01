@@ -5,7 +5,7 @@
     xmlns:dc="http://purl.org/dc/elements/1.1/"
      version="1.0">
     <extensions>
-        <extension rdfType="cite:CiteImage" rdfUri="http://www.homermultitext.org/cite/rdf/citeimage" >
+        <extension abbr="cite:CiteImage" uri="http://www.homermultitext.org/cite/rdf/citeimage" >
             
         </extension>
     </extensions>

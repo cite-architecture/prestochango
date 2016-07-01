@@ -5,6 +5,7 @@
     <extensions>
         <extension abbr="cite:CiteImage"
             uri="http://www.homermultitext.org/cite/rdf/citeimage"> </extension>
+        <extension abbr="cite:GeoJSON" uri="http://made.up.uri/rdf/geojson"/>
     </extensions>
 
 
@@ -23,15 +24,17 @@
         <rights xmlns="http://purl.org/dc/elements/1.1/"> All data in this collection are available
             under the terms of the Creative Commons Attribution-Non-Commercial 3.0 Unported License,
             http://creativecommons.org/licenses/by-nc/3.0/deed.en_US</rights>
-        <source type="file" value="vaimgs.csv"/>
+        <source type="file" value="one-for-all.csv"/>
 
         <citeProperty name="Image" label="Image URN" type="citeurn"/>
         <citeProperty name="Label" label="Caption" type="string"/>
-        <citeProperty name="Rights" label="Rights" type="string"> </citeProperty>
-
+        <citeProperty name="OtherUrn" label="Another URN" type="citeurn">
+            <indexRelation rdfverb="cite:madeUp" inverseverb="cite:upMade"/>
+        </citeProperty>
+        <citeProperty name="Rights" label="Rights" type="string"></citeProperty>
+        <citeProperty name="testUV1" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing1" type="citeurn"></citeProperty>
+        <citeProperty name="testUV2" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing2" type="citeurn"></citeProperty>
+        <citeProperty name="testBoolean" label="testing boolean values" type="boolean"></citeProperty>
     </citeCollection>
-
-
-
 
 </collectionService>
