@@ -50,7 +50,7 @@ if (hasProperty('pub')) {
 
 
 group = "edu.holycross.shot"
-version = '0.4.0'
+version = '1.0.0'
 
 
 buildscript {
@@ -85,7 +85,7 @@ dependencies {
   testCompile 'junit:junit:4.11'
   testCompile 'org.concordion:concordion:1.4.4'
   testCompile group :'xmlunit', name: 'xmlunit', version: xmlunitversion
-  
+
   //   testCompile group: 'junit', name: 'junit', version: junitversion
   // testCompile group :'xmlunit', name: 'xmlunit', version: xmlunitversion
 
@@ -94,7 +94,7 @@ dependencies {
 
 uploadArchives {
     repositories.mavenDeployer {
-        repository(url: nexusRepo) {                   
+        repository(url: nexusRepo) {
             authentication (userName: nexusUser, password: nexusPassword)
         }
     }
@@ -104,12 +104,12 @@ uploadArchives {
 task cleanTest () {
     doLast {
         File out1 = new File("testdata/testoutput")
-        if (out1.exists()) { 
+        if (out1.exists()) {
             out1.listFiles().each { f ->
                 System.err.println "Delete " + f
                 f.delete()
             }
-            out1.delete() 
+            out1.delete()
         }
         out1.mkdir()
     }
@@ -188,7 +188,7 @@ addVersion.doLast {
   tokenMap["version"] = version
   tokenMap["deps"] = """
     <tr><td>cite</td><td>${citeversion}</td></tr>
-""".toString() 
+""".toString()
 }
 
 
