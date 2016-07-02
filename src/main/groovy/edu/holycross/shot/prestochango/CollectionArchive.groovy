@@ -501,9 +501,11 @@ class CollectionArchive {
     ArrayList getCollectionList() {
         def collectionList = []
         def invroot = new XmlParser().parse(this.inventory)
-        invroot[cite.citeCollection].each { cc ->
+		def tempString
+		invroot[cite.citeCollection].each { cc ->
             def nsMap = cc[cite.namespaceMapping][0]
-            collectionList.add("${cc.'@uri'}")
+			tempString = cc.'@urn'
+            collectionList.add("${tempString}")
         }
         return collectionList
     }
