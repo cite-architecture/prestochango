@@ -9,6 +9,7 @@ import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 
 import org.apache.commons.io.FilenameUtils
+//import edu.holycross.shot.prestochango.CiteCollectionSet
 
 /** A CollectionArchive consists of an inventory and a data repository.
 */
