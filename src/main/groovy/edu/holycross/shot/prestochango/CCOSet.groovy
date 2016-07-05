@@ -55,7 +55,11 @@ class CCOSet {
 				throw new Exception("CiteCollectionObjectSet: Set of Cite Collection Objects must have unique sequenceNumbers.")
 			}
 		
-			ccos.sort( { objA, objB -> objA.getSequence() <=> objB.getSequence() } as Comparator)*.key
+			//ccos.sort( { objA, objB -> objA.getSequence() <=> objB.getSequence() } as Comparator)*.key
+			// We order first on dynamic property and then name property.
+			def orderBySeq = new OrderBy([{ it.getSequence() }])
+			def sortedCcos = ccos.sort(orderBySeq)
+ 
 
 			this.ccos = ccos	
 
