@@ -36,6 +36,48 @@ class CiteCollectionObject {
 		Map objectProperties )
     throws Exception {
 
+		// check properties for correct types
+		String tempType = ""
+		float f
+		objectProperties.each { key, value ->
+			tempType = collection.getPropertyType(key)
+			switch(tempType){
+				case "citeurn":
+					try {
+					    CiteUrn tcite = new CiteUrn(value)			
+					} catch (Exception e) {
+						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE URN. " + e)
+					}
+
+				break;
+				case "ctsurn":
+					try {
+					    CiteUrn tcts = new CtsUrn(value)			
+					} catch (Exception e) {
+						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CTS URN. " + e)
+					}
+				break;
+				case "number":
+					try {
+						  f = Float.valueOf(value.trim()).floatValue();
+						}
+						catch (NumberFormatException nfe)
+						{
+						  throw new Exception("CiteCollectionObject: Could not conver '${value} to a number. " + nfe.getMessage());
+						}
+				break;
+				case "boolean":
+					if ((value != "true") && (value != "false")){
+						  throw new Exception("CiteCollectionObject: '${value} was supposed to be either 'true' or 'false'. " )
+					}
+
+				break;
+				default:
+
+				break;
+			}	
+		}
+
 		this.urn = urn
 		this.collection = collection
 		this.objectProperties = objectProperties
