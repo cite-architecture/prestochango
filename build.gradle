@@ -81,7 +81,6 @@ dependencies {
 
     compile group: 'com.thaiopensource', name:'jing', version: jingversion
 
-
   testCompile 'junit:junit:4.11'
   testCompile 'org.concordion:concordion:1.4.4'
   testCompile group :'xmlunit', name: 'xmlunit', version: xmlunitversion
