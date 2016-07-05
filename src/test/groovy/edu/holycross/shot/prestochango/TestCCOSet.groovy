@@ -83,6 +83,7 @@ class TestCCOSet extends GroovyTestCase {
 	CCOSet ccoset = new CCOSet(ccOrdered,ccos)
 
 	assert ccoset
+	assert ccoset.countObjects() == 3
 
  }
 
@@ -154,6 +155,42 @@ class TestCCOSet extends GroovyTestCase {
  }
 
 
+ @Test void testConstructorUrns() {
+
+    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1-three.v1")	
+
+	ArrayList ccos = []
+	ccos << cco1
+	ccos << cco2
+	ccos << cco3
+
+	CCOSet ccoset = new CCOSet(ccOrdered,ccos)
+
+	assert ccoset
+	assert ccoset.countObjects() == 3
+	assert ccoset.startUrn.toString() == "urn:cite:testNs:testColl.one.v1"
+	assert ccoset.endUrn.toString() == "urn:cite:testNs:testColl.three.v1"
+	assert ccoset.urn.toString() == urn.toString()
+
+ }
+
+ @Test void testConstructorOneOnly() {
+
+    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")	
+
+	ArrayList ccos = []
+	ccos << cco1
+
+	CCOSet ccoset = new CCOSet(ccOrdered,ccos)
+
+	assert ccoset
+	assert ccoset.countObjects() == 1
+	assert ccoset.startUrn.toString() == "urn:cite:testNs:testColl.one.v1"
+	assert ccoset.endUrn.toString() == "urn:cite:testNs:testColl.one.v1"
+	assert ccoset.urn.toString() == urn.toString()
+	assert ccoset.urn.toString() == "urn:cite:testNs:testColl.one.v1"
+
+ }
 
 }
 

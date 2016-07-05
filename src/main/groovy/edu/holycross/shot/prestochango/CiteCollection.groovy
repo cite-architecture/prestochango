@@ -158,8 +158,20 @@ class CiteCollection {
   }
 
 
+  /** Returns an string identifying the Full Namespace of a given property
+	* @param String property name
+   * @returns String
+   */
   public String getNsFull() {
     return this.nsFull
+  }
+
+  /** Returns an string identifying the abbreviated Namespace of a given property
+	* @param String property name
+   * @returns String
+   */
+  public String getNsAbbr() {
+    return this.nsAbbr
   }
   
 }

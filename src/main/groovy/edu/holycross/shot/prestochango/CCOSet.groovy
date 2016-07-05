@@ -10,6 +10,10 @@ class CCOSet {
   /** CITE URN for this set */
   public CiteUrn urn = null
 
+  /** CITE URN for this first and last elements of this set; may be the same */
+  public CiteUrn startUrn = null
+  public CiteUrn endUrn = null
+
   /** CITE Collection to which this object belongs **/
   public CiteCollection collection = null
 
@@ -55,6 +59,26 @@ class CCOSet {
 
 			this.ccos = ccos	
 
+			// get boundary urns for easy access
+			this.startUrn = ccos[0].urn
+			this.endUrn = ccos[-1].urn
+
+			//Construct URN out of first and last cco
+			String tempUrnString = this.startUrn.toString()
+			if (this.startUrn.toString() != this.endUrn.toString() ) {
+				System.err.println(this.endUrn.getObjectWithoutCollection())
+				tempUrnString += "-${this.endUrn.getObjectWithoutCollection()}"
+			}
+			this.urn = new CiteUrn(tempUrnString)
+			
+
 		}
+
+  /** Return the number of objects in this set.
+   * @returns BigInteger
+   */
+  	  public BigInteger countObjects(){
+			BigInteger howMany = this.ccos.size()
+	  }
   
 }
