@@ -81,6 +81,7 @@ class CiteProperty {
     }
   }
 
+
   /** Overrides default. */
   String toString() {
     return("${this.propertyName} (${this.propertyType})")

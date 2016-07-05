@@ -27,6 +27,7 @@ class TestCsv2 extends GroovyTestCase {
 
 
         File testOut = new File("testdata/testoutput/collections-out.ttl")
+        testOut.text = ""
         cc.ttl(testOut)
         System.err.println "TTL in ${testOut}"
     }

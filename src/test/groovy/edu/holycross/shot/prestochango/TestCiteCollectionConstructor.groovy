@@ -32,6 +32,7 @@ class TestCiteCollectionConstructor extends GroovyTestCase {
     CiteCollection cc = new CiteCollection(collUrn, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
 
 	assert cc
+	assert cc.isValid()
 /*
     CiteCollection(
 		CiteUrn urn, 
@@ -40,7 +41,7 @@ class TestCiteCollectionConstructor extends GroovyTestCase {
 		String orderedByProp, 
 		String nsAbbr, 
 		String nsFull, 
-		ArrayList properties ,
+		ArrayList collProperties ,
 		ArrayList extendedBy)
 		*/
  }
@@ -85,17 +86,103 @@ class TestCiteCollectionConstructor extends GroovyTestCase {
     CiteCollection cc = new CiteCollection(collUrn, idProp, labelProp, null, nsAbbr, nsFull, collProps, null)
 
 	assert cc
-/*
-    CiteCollection(
-		CiteUrn urn, 
-		String canonicalIdProp, 
-		String labelProp, 
-		String orderedByProp, 
-		String nsAbbr, 
-		String nsFull, 
-		ArrayList properties ,
-		ArrayList extendedBy)
-		*/
+	assert cc.isValid()
  }
 
+ @Test void testIsOrdered() {
+
+	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	
+	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
+	CiteProperty labelProp = new CiteProperty("label","string","description of object")
+	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
+
+	ArrayList collProps = [idProp, labelProp, orderedByProp]
+	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
+	
+	String orderedProp = "orderedBy"
+	String nsAbbr = "testNs"
+	String nsFull = "http://www.testNs.org/datans"
+	 
+    CiteCollection ccOrdered = new CiteCollection(collUrn, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
+
+	assert ccOrdered.isValid()
+	assert ccOrdered.isOrderedCollection == true
+
+    CiteCollection ccUnordered = new CiteCollection(collUrn, idProp, labelProp, null, nsAbbr, nsFull, collProps, extensions)
+
+	assert ccUnordered.isValid()
+	assert ccUnordered.isOrderedCollection == false
+ }
+
+ @Test void testGetPropNames() {
+
+	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	
+	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
+	CiteProperty labelProp = new CiteProperty("label","string","description of object")
+	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
+
+	ArrayList collProps = [idProp, labelProp, orderedByProp]
+	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
+	
+	String orderedProp = "orderedBy"
+	String nsAbbr = "testNs"
+	String nsFull = "http://www.testNs.org/datans"
+	 
+    CiteCollection cc = new CiteCollection(collUrn, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
+
+	assert cc.isValid()
+	assert cc.getPropertyNames()[0] == "urn"
+	assert cc.getPropertyNames()[1] == "label"
+	assert cc.getPropertyNames()[2] == "seq"
+
+ }
+ @Test void testAboutProperties() {
+
+	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	
+	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
+	CiteProperty labelProp = new CiteProperty("label","string","description of object")
+	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
+
+	ArrayList collProps = [idProp, labelProp, orderedByProp]
+	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
+	
+	String orderedProp = "orderedBy"
+	String nsAbbr = "testNs"
+	String nsFull = "http://www.testNs.org/datans"
+	 
+    CiteCollection cc = new CiteCollection(collUrn, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
+
+	assert cc.isValid()
+	assert cc.getPropertyNames()[0] == "urn"
+	assert cc.collProperties.size() == 3
+	assert cc.collProperties[0].propertyName == "urn"
+
+
+ }
+
+ @Test void testMoreAboutProperties() {
+
+	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	
+	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
+	CiteProperty labelProp = new CiteProperty("label","string","description of object")
+	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
+
+	ArrayList collProps = [idProp, labelProp, orderedByProp]
+	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
+	
+	String orderedProp = "orderedBy"
+	String nsAbbr = "testNs"
+	String nsFull = "http://www.testNs.org/datans"
+	 
+    CiteCollection cc = new CiteCollection(collUrn, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
+
+	assert cc.getPropertyType("urn") == "citeurn"
+	assert cc.getPropertyType("label") == "string"
+	assert cc.getPropertyType("seq") == "number"
+
+ }
 }

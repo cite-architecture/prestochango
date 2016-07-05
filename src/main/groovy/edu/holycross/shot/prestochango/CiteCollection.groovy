@@ -40,7 +40,7 @@ class CiteCollection {
   public ArrayList extendedBy = []
 
   // all properties
-  public ArrayList properties = []
+  public ArrayList collProperties = []
 
   
   /** Constructor for CollectionArchive using local file storage.
@@ -58,7 +58,7 @@ class CiteCollection {
 		CiteProperty orderedByProp, 
 		String nsAbbr, 
 		String nsFull, 
-		ArrayList properties,
+		ArrayList collProperties,
 		ArrayList extendedBy ) 
     throws Exception {
 
@@ -70,11 +70,11 @@ class CiteCollection {
 
 		  this.urn = urn 
 
-		  if ( (properties == null) || (properties.size() < 2) ) {
+		  if ( (collProperties == null) || (collProperties.size() < 2) ) {
 			  throw new Exception("CiteCollection constructor: there must be at least two properties identified in the ArrayList param 'properties'.")
 		  }
 
-		  this.properties = properties 
+		  this.collProperties = collProperties 
 
 		  if ( canonicalIdProp == null ) {
 			  throw new Exception("CiteCollection constructor: String param canonicalIdProp cannot be null or empty.")
@@ -129,8 +129,32 @@ class CiteCollection {
 	   && (labelProp != null)
 	   && (nsAbbr == urn.getNs())
 	   && (nsFull != null)
-	   && (sources.size() > 1) // we need at least two properties
+	   && (collProperties.size() > 1) // we need at least two properties
 	  )
+  }
+
+  /** Returns an ArrayList of property names
+   * @returns ArrayList of property names
+   */
+  ArrayList getPropertyNames() {
+		def pn = []
+		this.collProperties.each { p ->
+			pn << p.propertyName
+		}
+		return pn
+  }
+
+  
+  /** Returns an string identifying the type of a given property
+	* @param String property name
+   * @returns String
+   */
+  String getPropertyType(String pn) {
+	  	String tt = ""
+		this.collProperties.each { p ->
+			if (p.propertyName == pn){ tt = p.propertyType }
+		}
+		return tt
   }
 
 
