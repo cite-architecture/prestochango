@@ -197,6 +197,12 @@ class CiteCollectionObject {
 		return tt
   }
 
+  BigDecimal getSequence(){
+		String orderedByProp = collection.orderedByProp.propertyName
+		return new BigDecimal(this.objectProperties[orderedByProp])
+
+  }
+
 
 
 

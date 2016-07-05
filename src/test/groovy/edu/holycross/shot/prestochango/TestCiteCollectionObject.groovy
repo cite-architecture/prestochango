@@ -197,5 +197,22 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
  }
 
+ @Test void testGetSequence() {
+
+	/* Make some property values */
+
+	def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
+
+    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")	
+	CiteUrn prevUrn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+	CiteUrn nextUrn = new CiteUrn("urn:cite:testNs:testColl.three.v1")
+
+	CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
+
+	assert cco.urn.toString() == urn.toString()
+	assert cco.getSequence() == 2
+	
+ }
+
 }
 

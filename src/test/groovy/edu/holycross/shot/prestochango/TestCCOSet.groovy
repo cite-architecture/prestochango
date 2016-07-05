@@ -135,6 +135,24 @@ class TestCCOSet extends GroovyTestCase {
 
  }
 
+ @Test void testConstructorObjectOutOfOrder() {
+
+    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1-three.v1")	
+
+	ArrayList ccos = []
+	ccos << cco1
+	ccos << cco3
+	ccos << cco2
+
+	CCOSet ccoset = new CCOSet(ccOrdered,ccos)
+
+	assert ccoset
+	assert ccoset.ccos[0].getSequence() == 1
+	assert ccoset.ccos[1].getSequence() == 2
+	assert ccoset.ccos[2].getSequence() == 3
+
+ }
+
 
 
 }

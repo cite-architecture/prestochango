@@ -41,34 +41,17 @@ class CCOSet {
 			}
 
 			//Test ccos for unique sequence numbers
-			// Use closure with one parameter.
-			String orderedByParam = collection.orderedByProp.propertyName
-			//def seqList = ccos.collect { it.objectProperties.find(propertyName == orderedByParam).propertyValue } as Set 
 			def seqList = []
 			ccos.each { cco ->
-				cco.objectProperties.each { key, value ->
-					System.err.println( "${key} :: ${value} " )
-					if ( key == orderedByParam ){
-						seqList << value
-					}	
-				}
+						seqList << cco.getSequence()
 			}
-			System.err.println( seqList )
 			def uniquedSeqList = seqList as Set
 
 			if (uniquedSeqList.size() != ccos.size()) {
 				throw new Exception("CiteCollectionObjectSet: Set of Cite Collection Objects must have unique sequenceNumbers.")
 			}
 		
-
-			System.err.println( "testing: ${testUrns}" )
-			/*
-			def uniqueEmail = [mrhaki1, mrhaki2, hubert1, hubert2].unique { user ->
-				user.email
-			}
-			*/
-
-
+			ccos.sort( { objA, objB -> objA.getSequence() <=> objB.getSequence() } as Comparator)*.key
 
 			this.ccos = ccos	
 
