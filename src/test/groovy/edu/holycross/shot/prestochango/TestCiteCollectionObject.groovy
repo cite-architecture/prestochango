@@ -214,5 +214,22 @@ class TestCiteCollectionObject extends GroovyTestCase {
 	
  }
 
+ @Test void testGetSequenceFailsWithUnordered() {
+
+	/* Make some property values */
+
+	def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
+
+    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")	
+
+		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
+
+		assert cco.urn.toString() == urn.toString()
+	shouldFail{
+		assert cco.getSequence() == 2
+	}
+	
+ }
+
 }
 

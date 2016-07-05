@@ -197,7 +197,12 @@ class CiteCollectionObject {
 		return tt
   }
 
-  BigDecimal getSequence(){
+  BigDecimal getSequence()
+    throws Exception {
+		if (this.collection.isOrderedCollection != true){
+			throw new Exception( "CITE Collection Object: ${this.collection.urn} is not an ordered collection, but you asked for sequence on an object.")
+		}
+
 		String orderedByProp = collection.orderedByProp.propertyName
 		return new BigDecimal(this.objectProperties[orderedByProp])
 
