@@ -55,13 +55,20 @@ class CCOSet {
 				throw new Exception("CiteCollectionObjectSet: Set of Cite Collection Objects must have unique sequenceNumbers.")
 			}
 		
-			//ccos.sort( { objA, objB -> objA.getSequence() <=> objB.getSequence() } as Comparator)*.key
-			// We order first on dynamic property and then name property.
-			def orderBySeq = new OrderBy([{ it.getSequence() }])
-			def sortedCcos = ccos.sort(orderBySeq)
- 
+		/** Start **/	
+			// Trying to sort under both jdk7 and jdk8
 
-			this.ccos = ccos	
+			// fails on jdk7 or is it Groovy version?
+			//ccos.sort( { objA, objB -> objA.getSequence() <=> objB.getSequence() } as Comparator)*.key
+			ccos.sort {
+				CiteCollectionObject o1, CiteCollectionObject o2 -> o1.getSequence().compareTo(o2.getSequence())
+			}
+
+			//String sequenceProp = this.collection.orderedByProp
+			//ccos.sort( { objA, objB -> objA.objectProperties[sequenceProp] <=> objB.objectProperties[sequenceProp] } as Comparator)*.key
+
+			this.ccos = ccos
+		/** End **/
 
 			// get boundary urns for easy access
 			this.startUrn = ccos[0].urn
@@ -70,7 +77,6 @@ class CCOSet {
 			//Construct URN out of first and last cco
 			String tempUrnString = this.startUrn.toString()
 			if (this.startUrn.toString() != this.endUrn.toString() ) {
-				System.err.println(this.endUrn.getObjectWithoutCollection())
 				tempUrnString += "-${this.endUrn.getObjectWithoutCollection()}"
 			}
 			this.urn = new CiteUrn(tempUrnString)
