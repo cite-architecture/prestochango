@@ -10,7 +10,6 @@ project.ext {
     opencsvversion = '2.0'
 
     // Note this:
-    //citeversion = '1.+'
-	citeversion = '1.5.1'
+    citeversion = '1.+'
 
 }

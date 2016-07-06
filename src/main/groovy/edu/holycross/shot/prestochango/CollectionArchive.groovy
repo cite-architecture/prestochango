@@ -48,6 +48,7 @@ class CollectionArchive {
 @prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix olo:     <http://purl.org/ontology/olo/core#> .
 @prefix dse:  <http://www.homermultitext.org/dse/rdf/> .
+@prefix hmt:  <http://www.homermultitext.org/datans/> .
 """.toString()
 
   /** Default character encoding, can be reset dynamically. */
