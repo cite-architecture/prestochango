@@ -37,19 +37,19 @@ class TestSequence extends GroovyTestCase {
 	def numCorrect = 0
 
 	testOut.eachLine { l ->
-		if ( l.contains("urn:cite:hmt:vaimg.VA082RN-0083.v1" )) {
+		if ( l.contains("urn:cite:hmt:vaimg.VA082RN_0083.v1" )) {
 			if (l.contains("olo:item")){
 				assert l.contains(" 1 ")
 				numCorrect++
 			}
 		}
-		if ( l.contains("urn:cite:hmt:vaimg.VA083RN-0084.v1" )) {
+		if ( l.contains("urn:cite:hmt:vaimg.VA083RN_0084.v1" )) {
 			if (l.contains("olo:item")){
 				assert l.contains(" 2 ")
 				numCorrect++
 			}
 		}
-		if ( l.contains("urn:cite:hmt:vaimg.VA084RN-0085.v1" )) {
+		if ( l.contains("urn:cite:hmt:vaimg.VA084RN_0085.v1" )) {
 			if (l.contains("olo:item")){
 				assert l.contains(" 3 ")
 				numCorrect++
@@ -62,21 +62,21 @@ class TestSequence extends GroovyTestCase {
 	numCorrect = 0
 
 	testOut.eachLine { l ->
-		if ( l.contains("urn:cite:hmt:vaimg.VA082RN-0083.v1> olo:next" )) {
+		if ( l.contains("urn:cite:hmt:vaimg.VA082RN_0083.v1> olo:next" )) {
 			if (l.contains("olo:next")){
-				assert l.contains("urn:cite:hmt:vaimg.VA083RN-0084.v1")
+				assert l.contains("urn:cite:hmt:vaimg.VA083RN_0084.v1")
 				numCorrect++
 			}
 		}
-		if ( l.contains("urn:cite:hmt:vaimg.VA083RN-0084.v1> olo:next")) {
+		if ( l.contains("urn:cite:hmt:vaimg.VA083RN_0084.v1> olo:next")) {
 			if (l.contains("olo:next")){
-				assert l.contains("urn:cite:hmt:vaimg.VA084RN-0085.v1")
+				assert l.contains("urn:cite:hmt:vaimg.VA084RN_0085.v1")
 				numCorrect++
 			}
 		}
-		if ( l.contains("urn:cite:hmt:vaimg.VA083RN-0084.v1> olo:previous" )) {
+		if ( l.contains("urn:cite:hmt:vaimg.VA083RN_0084.v1> olo:previous" )) {
 			if (l.contains("olo:previous")){
-				assert l.contains("urn:cite:hmt:vaimg.VA082RN-0083.v1")
+				assert l.contains("urn:cite:hmt:vaimg.VA082RN_0083.v1")
 				numCorrect++
 			}
 		}

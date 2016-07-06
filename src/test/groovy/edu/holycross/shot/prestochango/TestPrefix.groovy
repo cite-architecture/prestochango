@@ -62,7 +62,7 @@ class TestPrefix extends GroovyTestCase {
 			if (l.contains("@prefix")) { countPrefixParts++ }
 		}
 
-		assert countPrefixParts == 6
+		assert countPrefixParts == 7
 
         System.err.println "TTL in ${testOut} and ${testOut2}"
 
