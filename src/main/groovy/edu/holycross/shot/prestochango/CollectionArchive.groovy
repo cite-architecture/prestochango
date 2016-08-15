@@ -97,6 +97,7 @@ class CollectionArchive {
 	try {
 		validateInventory(schemaFile)
 	} catch (Exception invException) {
+	  System.err.println ("Could not validate inventory ${inv}"
 		throw invException
 	}
 	this.citeConfig = configureFromFile()
@@ -104,6 +105,7 @@ class CollectionArchive {
 	if (debug > 0) { System.err.println "Configuration map = " + this.citeConfig} 
 	}
 
+  
 
 	/** Constructor for CollectionArchive using Google Tables for data storage.
 	 *  @param inv Inventory file.
