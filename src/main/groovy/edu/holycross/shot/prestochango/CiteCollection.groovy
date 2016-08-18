@@ -51,71 +51,73 @@ class CiteCollection {
    * @param extendedBy May be null. An array list of Strings naming extensions
    * @param properties May be null. An ArrayList of CollectionProperty objects must have at least two.
    */
-    CiteCollection(
-		CiteUrn urn, 
-		CiteProperty canonicalIdProp, 
-		CiteProperty labelProp, 
-		CiteProperty orderedByProp, 
-		String nsAbbr, 
-		String nsFull, 
-		ArrayList collProperties,
-		ArrayList extendedBy ) 
-    throws Exception {
+  CiteCollection(
+    CiteUrn urn,
+    // ADD DESCRIPTION/LABEL FOR WHOLE COLLECION
+    CiteProperty canonicalIdProp, 
+    CiteProperty labelProp, 
+    CiteProperty orderedByProp, 
+    String nsAbbr, 
+    String nsFull, 
+    ArrayList collProperties,
+    ArrayList extendedBy
+  ) 
+  throws Exception {
 
-        try {
+    try {
             
-		  if ( (urn == null) ) {
-			  throw new Exception("CiteCollection constructor: collUrn parameter cannot be null.")
-		  }
+      if ( (urn == null) ) {
+	throw new Exception("CiteCollection constructor: collUrn parameter cannot be null.")
+      }
 
-		  this.urn = urn 
+      this.urn = urn 
 
-		  if ( (collProperties == null) || (collProperties.size() < 2) ) {
-			  throw new Exception("CiteCollection constructor: there must be at least two properties identified in the ArrayList param 'properties'.")
-		  }
+      if ( (collProperties == null) || (collProperties.size() < 2) ) {
+	throw new Exception("CiteCollection constructor: there must be at least two properties identified in the ArrayList param 'properties'.")
+      }
+      
+      this.collProperties = collProperties 
 
-		  this.collProperties = collProperties 
+      if ( canonicalIdProp == null ) {
+	throw new Exception("CiteCollection constructor: String param canonicalIdProp cannot be null or empty.")
+      }
 
-		  if ( canonicalIdProp == null ) {
-			  throw new Exception("CiteCollection constructor: String param canonicalIdProp cannot be null or empty.")
-		  }
+      this.canonicalIdProp = canonicalIdProp
 
-		  this.canonicalIdProp = canonicalIdProp
+      if ( (nsAbbr == null) || (nsAbbr == "") ) {
+	throw new Exception("CiteCollection constructor: String param nsAbbr cannot be null or empty.")
+      }
 
-		  if ( (nsAbbr == null) || (nsAbbr == "") ) {
-			  throw new Exception("CiteCollection constructor: String param nsAbbr cannot be null or empty.")
-		  }
+      this.nsAbbr = nsAbbr
 
-		  this.nsAbbr = nsAbbr
+      if ( (nsFull == null) || (nsFull == "") ) {
+	throw new Exception("CiteCollection constructor: String param nsFull cannot be null or empty.")
+      }
 
-		  if ( (nsFull == null) || (nsFull == "") ) {
-			  throw new Exception("CiteCollection constructor: String param nsFull cannot be null or empty.")
-		  }
+      this.nsFull = nsFull
 
-		  this.nsFull = nsFull
+      if ( (labelProp == null) || (labelProp == "") ) {
+	throw new Exception("CiteCollection constructor: String param idProp cannot be null or empty.")
+      }
 
-		  if ( (labelProp == null) || (labelProp == "") ) {
-			  throw new Exception("CiteCollection constructor: String param idProp cannot be null or empty.")
-		  }
-
-		  this.labelProp = labelProp
+      this.labelProp = labelProp
 
 
-		  if (( orderedByProp != null) && (orderedByProp.propertyName != "")){
-			    if (orderedByProp.propertyType != "number"){
-					throw new Exception("CiteCollection constructor: OrderedBy property must have type of 'numbver'.")
-				}
-				this.orderedByProp = orderedByProp
-				this.isOrderedCollection = true	
-		  } else {
-				this.orderedByProp = null
-				this.isOrderedCollection = false
-		  }
+      if (( orderedByProp != null) && (orderedByProp.propertyName != "")){
+	if (orderedByProp.propertyType != "number"){
+	  throw new Exception("CiteCollection constructor: OrderedBy property must have type of 'numbver'.")
+	}
+	this.orderedByProp = orderedByProp
+	this.isOrderedCollection = true	
+      } else {
+	this.orderedByProp = null
+	this.isOrderedCollection = false
+      }
 
-        } catch (Exception ccException) {
-            throw ccException
-        }
+    } catch (Exception ccException) {
+      throw ccException
     }
+  }
 
 
 

@@ -15,255 +15,258 @@ import org.apache.commons.io.FilenameUtils
  */
 class CollectionArchive {
 
-	Integer SCREAM = 3
-	Integer DEBUGMSG = 2
-	Integer WARN = 1
-	public Integer debug = 0
-
-	/** CITE Collection inventory serialized in XML to a File. */
-	File inventory
-
-	/** Root directory of file system containing archival files.  */
-	File baseDirectory
-
-	/** Hash map with key information from the inventory file for
-	 * easy access without having to navigate complex XML. */
-	LinkedHashMap citeConfig
-
-	/** Hash map with rdf verbs for each supported extension. */
-	LinkedHashMap extensionsMap = [:]
+  public Integer debug = 0
 
 
-	/** Groovy XML namespace for CITE. */
-	final groovy.xml.Namespace cite = new groovy.xml.Namespace("http://chs.harvard.edu/xmlns/cite")
-
-	/** Groovy XML namespace for Dublin Core. */
-	final groovy.xml.Namespace dc = new groovy.xml.Namespace("http://purl.org/dc/elements/1.1/")
-
-	/** RDF namespace declarations. */
-	final String prefix = """
-	@prefix cite:        <http://www.homermultitext.org/cite/rdf/> .
-	@prefix citedata:        <http://www.homermultitext.org/citedata/> .
-	@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. 
-	@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .
-	@prefix olo:     <http://purl.org/ontology/olo/core#> .
-	@prefix dse:  <http://www.homermultitext.org/dse/rdf/> .
-	@prefix hmt:  <http://www.homermultitext.org/datans/> .
-	""".toString()
-
-	/** Default character encoding, can be reset dynamically. */
-	String charEnc = "UTF-8"
+  /** Root directory of file system containing archival files.  */
+  File baseDirectory
+  
+  /** Hash map of CiteCollection objects keyed by String value
+   * of Collection URN.*/
+  LinkedHashMap collections
 
 
-	/** Constructor for CollectionArchive using local file storage.
-	 * @param inv Collection inventory.
-	 * @param baseDir Directory where collection data are stored, 
-	 * one file per collection.
-	 */
-	CollectionArchive(File inv, String schemaFileName, File baseDir) 
-	throws Exception {
-	try {
-		if (!baseDir.canRead()) {
-			throw new Exception("CollectionArchive: cannot read directory ${baseDir}")
-		}
-		this.baseDirectory = baseDir
-		this.inventory = inv
-		if (debug > 0) { System.err.println "constructing CA from inventory ${inv} with baseDir ${baseDir}"}
+  /** Hash map of implementation info keyed by String value
+   * of Collection URN.*/
+  LinkedHashMap implementations
 
-		try {
-			validateInventory(schemaFileName)
-		} catch (Exception invException) {
-			throw invException
-		}
-		this.citeConfig = configureFromFile()
-
-		if (debug > 0) { System.err.println "Configuration map = " + this.citeConfig} 
-
-	} catch (Exception e) {
-		throw e
-	}
-	}
-
-
-	CollectionArchive(File inv, File schemaFile, File baseDir) 
-	throws Exception {
-	if (!baseDir.canRead()) {
-		throw new Exception("CollectionArchive: cannot read directory ${baseDir}")
-	}
-	this.baseDirectory = baseDir
-	this.inventory = inv
-	if (debug > 0) { System.err.println "constructing CA from inventory ${inv} with baseDir ${baseDir}"}
-
-	try {
-		validateInventory(schemaFile)
-	} catch (Exception invException) {
-	  System.err.println ("Could not validate inventory ${inv}"
-		throw invException
-	}
-	this.citeConfig = configureFromFile()
-
-	if (debug > 0) { System.err.println "Configuration map = " + this.citeConfig} 
-	}
 
   
 
-	/** Constructor for CollectionArchive using Google Tables for data storage.
-	 *  @param inv Inventory file.
-	 */
-	CollectionArchive(File inv, String schemaFileName) 
-	throws Exception {
-	this.inventory = inv
-	try {
-		validateInventory(schemaFileName)
-	} catch (Exception invException) {
-		throw invException
+  /** Hash map with rdf verbs for each supported extension. */
+  LinkedHashMap extensionsMap = [:]
+
+  /** Groovy XML namespace for CITE. */
+  final groovy.xml.Namespace cite = new groovy.xml.Namespace("http://chs.harvard.edu/xmlns/cite")
+
+  /** Groovy XML namespace for Dublin Core. */
+  final groovy.xml.Namespace dc = new groovy.xml.Namespace("http://purl.org/dc/elements/1.1/")
+
+  /** RDF namespace declarations. */
+  final String prefix = """
+@prefix cite:        <http://www.homermultitext.org/cite/rdf/> .
+@prefix citedata:        <http://www.homermultitext.org/citedata/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. 
+@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix olo:     <http://purl.org/ontology/olo/core#> .
+@prefix dse:  <http://www.homermultitext.org/dse/rdf/> .
+@prefix hmt:  <http://www.homermultitext.org/datans/> .
+""".toString()
+
+  /** Default character encoding, can be reset dynamically. */
+  String charEnc = "UTF-8"
+
+
+  /** Constructor for CollectionArchive using local file storage.
+   * @param inv Collection inventory.
+   * @param baseDir Directory where collection data are stored, 
+   * one file per collection.
+   */
+  CollectionArchive(File inv, String schemaFileName, File baseDir) 
+  throws Exception {
+    try {
+      if (!baseDir.canRead()) {
+	throw new Exception("CollectionArchive: cannot read directory ${baseDir}")
+      }
+      this.baseDirectory = baseDir
+      if (debug > 0) { System.err.println "constructing CA from inventory ${inv} with baseDir ${baseDir}"}
+
+      try {
+	validateInventory(inv, schemaFileName)
+      } catch (Exception invException) {
+	throw invException
+      }
+
+      this.extensionsMap = mapExtensions(inv)
+      this.collections = configureFromFile(inv)
+
+      if (debug > 0) { System.err.println "Collections = " + this.collections} 
+
+    } catch (Exception e) {
+      throw e
+    }
+  }
+
+  /** Constructor for CollectionArchive using local file storage.
+   * @param inv Collection inventory.
+   * @param schemaFile Schema for inventory (an RNG file).
+   * @param baseDir Directory where collection data are stored, 
+   * one file per collection.
+   */
+  CollectionArchive(File inv, File schemaFile, File baseDir) 
+  throws Exception {
+    if (!baseDir.canRead()) {
+      throw new Exception("CollectionArchive: cannot read directory ${baseDir}")
+    }
+    this.baseDirectory = baseDir
+    if (debug > 0) { System.err.println "constructing CA from inventory ${inv} with baseDir ${baseDir}"}
+
+    try {
+      validateInventory(inv,schemaFile)
+    } catch (Exception invException) {
+      System.err.println ("Could not validate inventory ${inv}")
+      throw invException
+    }
+    this.extensionsMap = mapExtensions(inv)
+    this.collections = configureFromFile(inv)
+
+    if (debug > 0) { System.err.println "Configuration map = " + this.collections} 
+  }
+
+  /** Validates the XML serialization of the collection's schema
+   * against the published schema for a CITE TextInventory.
+   * @param schemaFileName String name of a file with RNG schema for inventory.
+   * @throws Exception if the XML does not validate.
+   */
+  void validateInventory(File inventory, String schemaFileName) 
+  throws Exception {
+    try {
+      File schemaFile = new File(schemaFileName)
+      validateInventory(inventory, schemaFile)
+    } catch (Exception e) {
+      throw e
+    }
+  }
+
+  
+  /** Validates the XML serialization of the collection's schema
+   * against the published schema for a CITE TextInventory.
+   * @param schemaFile File with RNG schema for inventory.
+   * @throws Exception if the XML does not validate.
+   */
+  void validateInventory(File inventory, File schemaFile) 
+  throws Exception {
+    System.setProperty("javax.xml.validation.SchemaFactory:"+XMLConstants.RELAXNG_NS_URI,  "com.thaiopensource.relaxng.jaxp.XMLSyntaxSchemaFactory");
+    def factory = SchemaFactory.newInstance(XMLConstants.RELAXNG_NS_URI)
+    def schema = factory.newSchema(schemaFile)
+    def validator = schema.newValidator()
+    try {
+      validator.validate(inventory)
+    } catch (Exception e) {
+      throw e
+    }
+  }
+
+
+  LinkedHashMap mapExtensions(File f) {
+    groovy.util.Node root 
+    try {
+      root = new XmlParser().parse(f)
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive: unable to parse inventory file ${f}")
+    }
+    def extensionsMap = [:]
+    root[cite.extensions][cite.extension].each { extension ->
+      if (debug > 0){ System.err.println "Extension; ${extension}" }
+      extensionsMap[extension.'@abbr'] = extension.'@uri'
+    }
+    extensionsMap.each { if (debug > 0){System.err.println it} }
+    if (debug > 0) { System.err.println "Extension Map:" }
+    if (debug > 0) { System.err.println extensionsMap }
+    return extensionsMap
+  }
+
+  /** Creates a map of the configuration data 
+   * in an XML capabilities file.
+   * @param f The XML capabilities file.
+   * @returns A map of configuration data.
+   * @throws Exception if the file could not be parsed.
+   */
+  LinkedHashMap configureFromFile(File f) {
+    groovy.util.Node root 
+    try {
+      root = new XmlParser().parse(f)
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive: unable to parse inventory file ${f}")
+    }
+    
+    def configuredCollections = [:]
+    root[cite.citeCollection].each { c ->
+      configuredCollections.putAt("${c.'@urn'}", configureCollection(c))
+    }
+    return configuredCollections
+  }
+
+
+  /** Creates a configuration map for given collection,
+   * represented by a parsed XML node from an inventory file.
+   * @param c Collection entry from an XML source, parsed.
+   * @returns Configuration map for the collection.
+   */
+  //
+  
+  CiteCollection configureCollection(groovy.util.Node c) {
+    String title = c.'@urn'
+    c[dc.description].each {
+      title = it.text()
+    }
+
+    String sourceType = ""
+    String source = ""
+    c[cite.source].each { src ->
+      sourceType = "${src.'@type'}"
+      source = "${src.'@value'}"
+    }
+
+    def propertyList = []
+    c[cite.citeProperty].each { cp ->
+      def prop = [:]
+      prop['name'] = "${cp.'@name'}"
+      prop['label'] = "${cp.'@label'}"
+      prop['type'] = "${cp.'@type'}"
+      prop['universalValue'] = "${cp.'@universalValue'}"
+      prop['rdfverb'] = ""
+      prop['inverseverb'] = ""
+
+
+      // can only be zero or one of these:
+      cp[cite.indexRelation].each { idx ->
+	prop['rdfverb'] = idx.'@rdfverb'
+	if (idx.'@inverseverb') {
+	  prop['inverseverb'] = idx.'@inverseverb'
 	}
-	this.citeConfig = configureFromFile()
-	}
+      }
 
-	/** Validates the XML serialization of the collection's schema
-	 * against the published schema for a CITE TextInventory.
-	 * @throws Exception if the XML does not validate.
-	 */
-	void validateInventory(String schemaFileName) 
-	throws Exception {
-	try {
-		File schemaFile = new File(schemaFileName)
-		validateInventory(schemaFile)
-	} catch (Exception e) {
-		throw e
-	}
-	}
+      def valList = []
+      cp[cite.valueList][cite.value].each {
+	valList.add("${it.text()}")
+      }
+      prop['valueList'] = valList
+	
+      propertyList.add(prop)
+    } 
 
-	void validateInventory(File schemaFile) 
-	throws Exception {
-	System.setProperty("javax.xml.validation.SchemaFactory:"+XMLConstants.RELAXNG_NS_URI,
-	"com.thaiopensource.relaxng.jaxp.XMLSyntaxSchemaFactory");
-	def factory = SchemaFactory.newInstance(XMLConstants.RELAXNG_NS_URI)
-	def schema = factory.newSchema(schemaFile)
-	def validator = schema.newValidator()
-	try {
-		validator.validate(this.inventory)
-	} catch (Exception e) {
-		throw e
-	}
-	}
+    def seq = ""
+    if (c.orderedBy) {
+      seq = "${c.orderedBy[0].'@property'}"
+    }
+    String groupProp = null
+    if (c.'@groupProperty') {
+      groupProp = c.'@groupProperty'
+    }
 
+    def citeExtensions = []
+    c[cite.extendedBy].each { ce ->
+      citeExtensions << "${ce.'@extension'}"
+    }
 
-	/**  Creates a map of the configuration data 
-	 * in this collection's XML capabilities file.
-	 * @returns A map of configuration data or null
-	 * if the inventory file could not be parsed.
-	 */
-	LinkedHashMap configureFromFile() {
-		return configureFromFile(this.inventory)
-	}
-
-	/** Creates a map of the configuration data 
-	 * in an XML capabilities file.
-	 * @param f The XML capabilities file.
-	 * @returns A map of configuration data.
-	 * @throws Exception if the file could not be parsed.
-	 */
-	LinkedHashMap configureFromFile(File f) {
-		def root 
-		try {
-			root = new XmlParser().parse(f)
-		} catch (Exception e) {
-			throw new Exception("CollectionArchive: unable to parse inventory file ${f}")
-		}
-
-
-
-		root[cite.extensions][cite.extension].each { extension ->
-			if (debug > 0){ System.err.println "Extension; ${extension}" }
-			this.extensionsMap[extension.'@abbr'] = extension.'@uri'
-		}
-		this.extensionsMap.each { if (debug > 0){System.err.println it} }
-		if (debug > 0) { System.err.println "Extension Map:" }
-		if (debug > 0) { System.err.println this.extensionsMap }
-
-		def configuredCollections = [:]
-		root[cite.citeCollection].each { c ->
-			String title = c.'@urn'
-			c[dc.description].each {
-				title = it.text()
-			}
-
-
-			String sourceType = ""
-			String source = ""
-			c[cite.source].each { src ->
-				sourceType = "${src.'@type'}"
-				source = "${src.'@value'}"
-			}
-
-
-			def propertyList = []
-			c[cite.citeProperty].each { cp ->
-				def prop = [:]
-				prop['name'] = "${cp.'@name'}"
-				prop['label'] = "${cp.'@label'}"
-				prop['type'] = "${cp.'@type'}"
-				prop['universalValue'] = "${cp.'@universalValue'}"
-				prop['rdfverb'] = ""
-				prop['inverseverb'] = ""
-
-
-				// can only be zero or one of these:
-				cp[cite.indexRelation].each { idx ->
-					prop['rdfverb'] = idx.'@rdfverb'
-					if (idx.'@inverseverb') {
-						prop['inverseverb'] = idx.'@inverseverb'
-					}
-				}
-
-				def valList = []
-				cp[cite.valueList][cite.value].each {
-					valList.add("${it.text()}")
-				}
-				prop['valueList'] = valList
-
-				propertyList.add(prop)
-			} 
-
-			def seq = ""
-			if (c.orderedBy) {
-				seq = "${c.orderedBy[0].'@property'}"
-			}
-			String groupProp = null
-			if (c.'@groupProperty') {
-				groupProp = c.'@groupProperty'
-
-
-			}
-
-
-			def citeExtensions = []
-			c[cite.extendedBy].each { ce ->
-				citeExtensions << "${ce.'@extension'}"
-			}
-
-			def collData = [
-			"title" : title,
-			"canonicalId" : "${c.'@canonicalId'}",
-			"labelProp" : "${c.'@label'}",
-
-			"groupProperty" : groupProp,
-			"nsabbr" : "${c[cite.namespaceMapping][0].'@abbr'}", 
-			"nsfull" :"${c[cite.namespaceMapping][0].'@uri'}",
-			"orderedBy" : seq,
-			"citeExtensions" : citeExtensions,
-			"properties" : propertyList,
-			"sourceType" : sourceType,
-			"source" : source
-			]
-			configuredCollections.putAt("${c.'@urn'}",collData)
-		}
-		return configuredCollections
-	}
-
-
+    def collData = [
+      "title" : title,
+      "canonicalId" : "${c.'@canonicalId'}",
+      "labelProp" : "${c.'@label'}",
+      
+      "groupProperty" : groupProp,
+      "nsabbr" : "${c[cite.namespaceMapping][0].'@abbr'}", 
+      "nsfull" :"${c[cite.namespaceMapping][0].'@uri'}",
+      "orderedBy" : seq,
+      "citeExtensions" : citeExtensions,
+      "properties" : propertyList,
+      "sourceType" : sourceType,
+      "source" : source
+    ]
+    return collData
+  }
+  
 
 	String getUriForExtension(String extensAbbr) 
 		throws Exception {
@@ -282,12 +285,12 @@ class CollectionArchive {
 	 * @returns 
 	 */
 	ArrayList getValueList(CiteUrn urn, String propertyName) {
-		def config =  this.citeConfig[urn.toString()]
+		def config =  this.collections[urn.toString()]
 
 		def vals = []
 		if (config) {
 			config['properties'].each { p ->
-				if (debug > WARN) {
+				if (debug > 2) {
 					System.err.println "CollectionArchive:getValueList: examine property " + p
 				}
 
@@ -310,7 +313,7 @@ class CollectionArchive {
 	ArrayList getExtensionList(CiteUrn urn) 
 	throws Exception {
 	try {
-		def config =  this.citeConfig[urn.toString()]
+		def config =  this.collections[urn.toString()]
 		return config['citeExtensions']
 	} catch (Exception e) {
 		throw new Exception("CollectionArchive:getExtensionList: no collection ${urn} configured.")
@@ -327,7 +330,7 @@ class CollectionArchive {
 	String getCanonicalIdProperty(CiteUrn urn) 
 	throws Exception {
 	try {
-		def config =  this.citeConfig[urn.toString()]
+		def config =  this.collections[urn.toString()]
 		return config['canonicalId']
 	} catch (Exception e) {
 		throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
@@ -347,7 +350,7 @@ class CollectionArchive {
 	String rdfVerb = null
 	def config
 	try {
-		config =  this.citeConfig[urn.toString()]
+		config =  this.collections[urn.toString()]
 	} catch (Exception e) {
 		throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
 	}
@@ -385,7 +388,7 @@ class CollectionArchive {
 	String inverseVerb = null
 	def config
 	try {
-		config =  this.citeConfig[urn.toString()]
+		config =  this.collections[urn.toString()]
 	} catch (Exception e) {
 		throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
 	}
@@ -420,7 +423,7 @@ class CollectionArchive {
 	String getLabelProperty(CiteUrn urn) 
 	throws Exception {
 	try {
-		def config =  this.citeConfig[urn.toString()]
+		def config =  this.collections[urn.toString()]
 		return config['labelProp']
 	} catch (Exception e) {
 		throw new Exception("CollectionArchive:getLabelProperty: no collection ${urn} configured.")
@@ -438,7 +441,7 @@ class CollectionArchive {
 	String getTitle(CiteUrn urn) 
 	throws Exception {
 	try {
-		def config =  this.citeConfig[urn.toString()]
+		def config =  this.collections[urn.toString()]
 		return config['title']
 	} catch (Exception e) {
 		throw new Exception("CollectionArchive:getLabelProperty: no collection ${urn} configured.")
@@ -454,7 +457,7 @@ class CollectionArchive {
 	 * @returns An ArrayList containing the two items.
 	 */
 	ArrayList getSourcePair(CiteUrn urn) {
-		def config = this.citeConfig[urn.toString()]
+		def config = this.collections[urn.toString()]
 		def pair = [config['sourceType'], config['source']]
 		return pair
 	}
@@ -468,18 +471,20 @@ class CollectionArchive {
 		if (debug > 5) {
 			System.err.println "Get ordered prop for " + urn
 		}
-		def config =  this.citeConfig[urn.toString()]
+		def config =  this.collections[urn.toString()]
 		return config['orderedBy']
 	}
 
 
+  /*
 	String getClassName(CiteUrn urn) {
-		def config =  this.citeConfig[urn.toString()]
+		def config =  this.collections[urn.toString()]
 		return config['className']
 	}
-
+  */
+  
 	boolean isOrdered(CiteUrn urn) {
-		def config =  this.citeConfig[urn.toString()]
+		def config =  this.collections[urn.toString()]
 		return (config['orderedBy']?.size() > 0)
 	}
 
@@ -487,14 +492,14 @@ class CollectionArchive {
 
 	//  What the heck is this supposed to mean?
 	boolean isGrouped(CiteUrn urn) {
-		def config =  this.citeConfig[urn.toString()]
+		def config =  this.collections[urn.toString()]
 		return (config['groupedBy']?.size() > 0)
 	}
 
 
 	// do we really want the whole collection in one NS?
 	def getNs() {
-		def invroot = new XmlParser().parse(this.inventory)
+	  //def invroot = new XmlParser().parse(this.inventory)
 
 	}
 
@@ -503,14 +508,16 @@ class CollectionArchive {
 
 
 	ArrayList getCollectionList() {
+	  
 		def collectionList = []
+		/*
 		def invroot = new XmlParser().parse(this.inventory)
 		def tempString
 		invroot[cite.citeCollection].each { cc ->
 			def nsMap = cc[cite.namespaceMapping][0]
 			tempString = cc.'@urn'
 			collectionList.add("${tempString}")
-		}
+			}*/
 		return collectionList
 	}
 
@@ -523,7 +530,7 @@ class CollectionArchive {
 
 
 	ArrayList getPropNameList(String collectionUrn) {
-		def config =  this.citeConfig[collectionUrn]
+		def config =  this.collections[collectionUrn]
 		def propList = []
 
 		if (config) {
@@ -542,7 +549,7 @@ class CollectionArchive {
 	}
 
 	ArrayList getPropLabelList(String collectionUrn) {
-		def config =  this.citeConfig[collectionUrn]
+		def config =  this.collections[collectionUrn]
 		def propList = []
 		config['properties'].each { p ->
 			propList.add(p['label'])
@@ -557,7 +564,7 @@ class CollectionArchive {
 	}
 
 	ArrayList getPropTypeList(String collectionUrn) {
-		def config =  this.citeConfig[collectionUrn]
+		def config =  this.collections[collectionUrn]
 		def propList = []
 		config['properties'].each { p ->
 			propList.add(p['type'])
@@ -575,7 +582,7 @@ class CollectionArchive {
 	String turtlizeInventory() 
 	throws Exception {
 	StringBuffer ttl = new StringBuffer()
-
+	/*
 	def invroot = new XmlParser().parse(this.inventory)
 
 	invroot[cite.extensions][cite.extension].each { extension ->
@@ -627,7 +634,7 @@ class CollectionArchive {
 		ttl.append("\n")
 
 
-		/* document configured properties: */
+		// document configured properties:
 		cc[cite.citeProperty].each { prop ->
 			String propUri = "citedata:${urn.getCollection()}_${prop.'@name'}"
 			ttl.append( "<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:collProperty  ${propUri} .\n")
@@ -649,222 +656,218 @@ class CollectionArchive {
 			ttl.append("\n")
 		}
 
-	}
+	}*/
 	return ttl.toString()
 	}
 
 
-	/**  Writes an RDF description, in TTL format, of a single object.
-	 * @param cols An array of data values.
-	 * @param headingIndex An array of property names, in the same order
-	 * as the data values in the cols array.
-	 * @param canonical Name of the canonical ID property in this collection.
-	 * @param label Name of the rdf:label property in this collection.
-	 * @throws Exception if collection not configured
-	 */
-	String turtlizeOneRow(ArrayList cols, ArrayList headingIndex, String canonical, String label, boolean ordered) 
-	throws Exception {
-	if (debug > 2) {
-		System.err.println "TURLTELIZE ROW " + cols
-		System.err.println "Use headings " + headingIndex
+  /**  Writes an RDF description, in TTL format, of a single object.
+   * @param cols An array of data values.
+   * @param headingIndex An array of property names, in the same order
+   * as the data values in the cols array.
+   * @param canonical Name of the canonical ID property in this collection.
+   * @param label Name of the rdf:label property in this collection.
+   * @throws Exception if collection not configured
+   */
+  String turtlizeOneRow(ArrayList cols, ArrayList headingIndex, String canonical, String label, boolean ordered) 
+  throws Exception {
+    if (debug > 2) {
+      System.err.println "TURLTELIZE ROW " + cols
+      System.err.println "Use headings " + headingIndex
+    }
+
+    StringBuffer oneRow  = new StringBuffer()
+    CiteUrn urn
+    CiteUrn collUrn
+
+    // Generate statements about canonical ID of object:
+    cols.eachWithIndex { column, idx ->
+      if (debug > 3) { System.err.println "${idx}. Looking at ${headingIndex[idx]} vs ${canonical}" }
+      if (headingIndex[idx] == canonical) {
+	
+	if (debug > 3) { 
+	  System.err.println "Found canonical ${canonical}:" 
+	  System.err.println "at ${column}"
 	}
 
-	StringBuffer oneRow  = new StringBuffer()
-	CiteUrn urn
-	CiteUrn collUrn
+	try {
+	  if (debug > 3) { System.err.println "Try to make URN from ${column}" }
 
-	// Generate statements about canonical ID of object:
-	cols.eachWithIndex { column, idx ->
-		if (debug > 3) { System.err.println "${idx}. Looking at ${headingIndex[idx]} vs ${canonical}" }
-		if (headingIndex[idx] == canonical) {
+	  urn = new CiteUrn(column)
+	  if (debug > 3) { System.err.println "OK!" }
+	  
+	  collUrn = new CiteUrn("urn:cite:${urn.getNs()}:${urn.getCollection()}")
+	  oneRow.append("<${column}> cite:belongsTo <${collUrn}> .\n")
+	  oneRow.append("<${collUrn}> cite:possesses <${column}> .\n")
 
-			if (debug > 3) { 
-				System.err.println "Found canonical ${canonical}:" 
-				System.err.println "at ${column}"
+	  if (urn.hasVersion()){
+	    oneRow.append("<${urn}> cite:isVersionOf <${urn.reduceToObject()}> .\n")
+	    oneRow.append("<${urn.reduceToObject()}> cite:hasVersion <${urn}> .\n")
+	    oneRow.append("<${urn.reduceToObject()}> cite:belongsTo <${collUrn}> .\n")
+	    oneRow.append("<${collUrn}> cite:possesses <${urn.reduceToObject()}> .\n")
+	  }
+
+
+	  if (!ordered) {
+	    oneRow.append("<${column}> cite:ordered " + '"false" .\n')
+	  }
+
+	  if (debug > 3) { System.err.println "appended to oneRow, now ${oneRow}" }
+	} catch (Exception e) {
+	  System.err.println "turtlizeOneRow: unable to make urn from ${column}"
 			}
+      }
+    }
 
-			try {
-				if (debug > 3) { System.err.println "Try to make URN from ${column}" }
+    def collConf = this.collections["${collUrn}"]
 
-				urn = new CiteUrn(column)
-				if (debug > 3) { System.err.println "OK!" }
+    if (collConf == null) {
+      throw new Exception("CollectionArchive:turtlizeOneRow: no configuration for collection ${collUrn}")
+    }
 
-				collUrn = new CiteUrn("urn:cite:${urn.getNs()}:${urn.getCollection()}")
-				oneRow.append("<${column}> cite:belongsTo <${collUrn}> .\n")
-				oneRow.append("<${collUrn}> cite:possesses <${column}> .\n")
+    /*
+      if (debug > 0) {
+      System.err.println "Config for ${collUrn} is " + collConf
+      }
+    */
 
-				if (urn.hasVersion()){
-					oneRow.append("<${urn}> cite:isVersionOf <${urn.reduceToObject()}> .\n")
-					oneRow.append("<${urn.reduceToObject()}> cite:hasVersion <${urn}> .\n")
-					oneRow.append("<${urn.reduceToObject()}> cite:belongsTo <${collUrn}> .\n")
-					oneRow.append("<${collUrn}> cite:possesses <${urn.reduceToObject()}> .\n")
-				}
+    collConf["properties"].each { confProp ->
+      if ((confProp["universalValue"] != null) && (confProp["universalValue"] != "null")){
+	def c = confProp["universalValue"]
+	switch (confProp["type"]) {
 
+	case "boolean":
+	if ( (c == true) || (c == "true")){
+	  oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} true .\n")
+	} else {
+	  oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} false .\n")
+	}
+	break
 
-				if (!ordered) {
-					oneRow.append("<${column}> cite:ordered " + '"false" .\n')
-				}
+	case "number":
+	oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} ${c} .\n")
+	
+	if (getRdfVerb(collUrn, confProp["name"])) {
+	  System.err.println "doing getRdfVerb"
+	  System.err.println "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} ${c} .\n"
+	  oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} ${c} .\n")
+	}
+	if (getInverseVerb(collUrn, confProp["name"])) {
+	  oneRow.append( "${c} ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
+	}
+	break
 
-				if (debug > 3) { System.err.println "appended to oneRow, now ${oneRow}" }
-			} catch (Exception e) {
-				System.err.println "turtlizeOneRow: unable to make urn from ${column}"
-			}
-		}
+	case "markdown":              
+	case "geojson":
+	case "string":
+	oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} " + '"' + c + '" .\n')
+	if (getRdfVerb(collUrn, confProp["name"])) {
+	  oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} " + '"' + c + '" .\n')
+	}
+	if (getInverseVerb(collUrn, confProp["name"])) {
+	  oneRow.append( "'" + c + "' ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
 	}
 
-	def collConf = this.citeConfig["${collUrn}"]
+	break
 
-	if (collConf == null) {
-		throw new Exception("CollectionArchive:turtlizeOneRow: no configuration for collection ${collUrn}")
+	case "citeurn":
+	case "citeimg":
+	case "ctsurn":
+	oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} <${c}> .\n")
+	
+	if (getRdfVerb(collUrn, confProp["name"])) {
+	  oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} <${c}> .\n")
 	}
-
-	/*
-	if (debug > 0) {
-	System.err.println "Config for ${collUrn} is " + collConf
+	if (getInverseVerb(collUrn, confProp["name"])) {
+	  oneRow.append( "<${c}> ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
 	}
-	 */
-
-	collConf["properties"].each { confProp ->
-		if ((confProp["universalValue"] != null) && (confProp["universalValue"] != "null")){
-			def c = confProp["universalValue"]
-			switch (confProp["type"]) {
-
-				case "boolean":
-				if ( (c == true) || (c == "true")){
-					oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} true .\n")
-				} else {
-					oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} false .\n")
-				}
-				break
-
-				case "number":
-				oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} ${c} .\n")
-
-				if (getRdfVerb(collUrn, confProp["name"])) {
-					System.err.println "doing getRdfVerb"
-					System.err.println "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} ${c} .\n"
-					oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} ${c} .\n")
-				}
-				if (getInverseVerb(collUrn, confProp["name"])) {
-					oneRow.append( "${c} ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
-				}
-
-				break
-
-				case "markdown":              
-				case "geojson":
-				case "string":
-				oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} " + '"' + c + '" .\n')
-				if (getRdfVerb(collUrn, confProp["name"])) {
-					oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} " + '"' + c + '" .\n')
-				}
-				if (getInverseVerb(collUrn, confProp["name"])) {
-					oneRow.append( "'" + c + "' ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
-				}
-
-				break
-
-				case "citeurn":
-				case "citeimg":
-				case "ctsurn":
-				oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} <${c}> .\n")
-
-				if (getRdfVerb(collUrn, confProp["name"])) {
-					oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} <${c}> .\n")
-				}
-				if (getInverseVerb(collUrn, confProp["name"])) {
-					oneRow.append( "<${c}> ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
-				}
-
-				break
+	break
 
 
-
-				default : 
-				System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
-				break
-			}
-		}
+	default : 
+	System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
+	break
 	}
+      }
+    }
 
-	cols.eachWithIndex { c, i ->
+    cols.eachWithIndex { c, i ->
+      if (headingIndex[i] == label) {
+	oneRow.append("<${urn}> rdf:label " + '"' + c + '" .\n')
+      } 
+      if ((c != null) && (c != "") ){
+	if (debug > 4) { System.err.println "column value of ${headingIndex[i]} is #" + c + "#" }
+	// NS change:  also output property for rdf:label (so it appears *twice*)
+	if (headingIndex[i] != canonical) {
+	  collConf["properties"].each { confProp ->
+	    if (confProp["name"] == headingIndex[i]) {
+	      switch (confProp["type"]) {
+		
+	      case "boolean":
+	      if ( (c == true) || (c == "true")){
+		oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} true .\n")
+	      } else {
+		oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} false .\n")
+	      }
+	      break
+	      
+	      case "number":
+	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} ${c} .\n")
+	      
+	      if (getRdfVerb(collUrn, headingIndex[i])) {
+		System.err.println "doing getRdfVerb"
+		System.err.println "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} ${c} .\n"
+		oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} ${c} .\n")
+	      }
+	      if (getInverseVerb(collUrn, headingIndex[i])) {
+		oneRow.append( "${c} ${getInverseVerb(collUrn, headingIndex[i])} <${urn}> .\n")
+	      }
 
-		if (headingIndex[i] == label) {
-			oneRow.append("<${urn}> rdf:label " + '"' + c + '" .\n')
-		} 
-		if ((c != null) && (c != "") ){
-			if (debug > 4) { System.err.println "column value of ${headingIndex[i]} is #" + c + "#" }
-			// NS change:  also output property for rdf:label (so it appears *twice*)
-			if (headingIndex[i] != canonical) {
-				collConf["properties"].each { confProp ->
-					if (confProp["name"] == headingIndex[i]) {
-						switch (confProp["type"]) {
+	      break
 
-							case "boolean":
-							if ( (c == true) || (c == "true")){
-								oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} true .\n")
-							} else {
-								oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} false .\n")
-							}
-							break
+	      case "markdown":              
+	      case "geojson":
+	      case "string":
+	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
+	      if (getRdfVerb(collUrn, headingIndex[i])) {
+		oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} " + '"' + c + '" .\n')
+	      }
+	      if (getInverseVerb(collUrn, headingIndex[i])) {
+		oneRow.append( "'" + c + "' ${getInverseVerb(collUrn, headingIndex[i])} <${urn}> .\n")
+	      }
 
-							case "number":
-							oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} ${c} .\n")
+	      break
 
-							if (getRdfVerb(collUrn, headingIndex[i])) {
-								System.err.println "doing getRdfVerb"
-								System.err.println "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} ${c} .\n"
-								oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} ${c} .\n")
-							}
-							if (getInverseVerb(collUrn, headingIndex[i])) {
-								oneRow.append( "${c} ${getInverseVerb(collUrn, headingIndex[i])} <${urn}> .\n")
-							}
+	      case "citeurn":
+	      case "citeimg":
+	      case "ctsurn":
+	      oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
 
-							break
-
-							case "markdown":              
-							case "geojson":
-							case "string":
-							oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} " + '"' + c + '" .\n')
-							if (getRdfVerb(collUrn, headingIndex[i])) {
-								oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} " + '"' + c + '" .\n')
-							}
-							if (getInverseVerb(collUrn, headingIndex[i])) {
-								oneRow.append( "'" + c + "' ${getInverseVerb(collUrn, headingIndex[i])} <${urn}> .\n")
-							}
-
-							break
-
-							case "citeurn":
-							case "citeimg":
-							case "ctsurn":
-							oneRow.append("<${urn}> citedata:${urn.getCollection()}_${headingIndex[i]} <${c}> .\n")
-
-							if (getRdfVerb(collUrn, headingIndex[i])) {
-								oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} <${c}> .\n")
-							}
-							if (getInverseVerb(collUrn, headingIndex[i])) {
-								oneRow.append( "<${c}> ${getInverseVerb(collUrn, headingIndex[i])} <${urn}> .\n")
-							}
-
-							break
-
+	      if (getRdfVerb(collUrn, headingIndex[i])) {
+		oneRow.append( "<${urn}> ${getRdfVerb(collUrn, headingIndex[i])} <${c}> .\n")
+	      }
+	      if (getInverseVerb(collUrn, headingIndex[i])) {
+		oneRow.append( "<${c}> ${getInverseVerb(collUrn, headingIndex[i])} <${urn}> .\n")
+	      }
+	      
+	      break
 
 
-							default : 
-							System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
-							break
 
-						}
-					} 
-				}
-			}
-
-		} 
-	} 
-	if (debug > 3) { System.err.println "Turtleized row: " + oneRow }
-	return oneRow.toString()
+	      default : 
+	      System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
+	      break
+	      
+	      }
+	    } 
+	  }
 	}
+	
+      } 
+    }
+    if (debug > 3) { System.err.println "Turtleized row: " + oneRow }
+    return oneRow.toString()
+  }
 
 
 
@@ -979,7 +982,7 @@ class CollectionArchive {
 	Reader wrapper = new InputStreamReader(new FileInputStream(f), "utf-8");
 	CSVReader reader = new CSVReader(wrapper)
 	reader.readAll().each { cols ->
-		if (debug >= SCREAM) {System.err.println "READ COLS " + cols + " of size " + cols.size()}
+		if (debug >= 4) {System.err.println "READ COLS " + cols + " of size " + cols.size()}
 		reply.append("\n")
 		if (lineCount == 0) {
 			headingIndex = cols.toList()
@@ -1007,50 +1010,50 @@ class CollectionArchive {
 
 
 
-	/**  Writes an RDF description, in TTL format, of the data 
-	 * contained in a single file in comma-separated value format.
-	 * @param f The file of data.
-	 * @param urnVal The URN, as a String, identifying the collection.
-	 * @returns A String composed of TTL statements.
-	 * @throws Exception if data in f cannote be parsed.
-	 */
-	String turtlizeCsv(File f, String urnVal) 
-	throws Exception {
-	// change this to get Collection URN from any level CITE URN.
-	CiteUrn collUrn
+  /**  Writes an RDF description, in TTL format, of the data 
+   * contained in a single file in comma-separated value format.
+   * @param f The file of data.
+   * @param urnVal The URN, as a String, identifying the collection.
+   * @returns A String composed of TTL statements.
+   * @throws Exception if data in f cannote be parsed.
+   */
+  String turtlizeCsv(File f, String urnVal) 
+  throws Exception {
+    // change this to get Collection URN from any level CITE URN.
+    CiteUrn collUrn
 
-	try {
-		collUrn = new CiteUrn(urnVal)
-	} catch (Exception e) {
-		System.err.println "Unable to parse urn " + urnVal
-		throw e
-	}
-	boolean ordered = isOrdered(collUrn)
+    try {
+      collUrn = new CiteUrn(urnVal)
+    } catch (Exception e) {
+      System.err.println "Unable to parse urn " + urnVal
+      throw e
+    }
+    boolean ordered = isOrdered(collUrn)
 
-	StringBuffer rowBuffer = new StringBuffer()
+    StringBuffer rowBuffer = new StringBuffer()
 
-	String basicCsv 
+    String basicCsv 
 
-	try {
-		basicCsv = ttlBasicCsvData(f,collUrn, ordered)
-	} catch (Exception e) {
-		System.err.println("CollectionArchive:turtlizeCsv: unable to turtlize data in ${f}")
-		throw e
-	}
+    try {
+      basicCsv = ttlBasicCsvData(f,collUrn, ordered)
+    } catch (Exception e) {
+      System.err.println("CollectionArchive:turtlizeCsv: unable to turtlize data in ${f}")
+      throw e
+    }
+    
+    if (debug > 0 ) {System.err.println "Got basic csv len " + basicCsv.size()}
+    rowBuffer.append (basicCsv )
 
-	if (debug > 0 ) {System.err.println "Got basic csv len " + basicCsv.size()}
-	rowBuffer.append (basicCsv )
+    if (debug > 0) { System.err.println "Got basic CSV data OK (string size ${basicCsv.size()})"}
 
-	if (debug > 0) { System.err.println "Got basic CSV data OK (string size ${basicCsv.size()})"}
+    if (ordered) {
+      if (debug > 0) { System.err.println "${collUrn} is ordered, so get olo data" }
+      String oloData = addOloCsvData(f, collUrn)
+      rowBuffer.append(oloData)
+    } 
 
-	if (ordered) {
-		if (debug > 0) { System.err.println "${collUrn} is ordered, so get olo data" }
-		String oloData = addOloCsvData(f, collUrn)
-		rowBuffer.append(oloData)
-	} 
-
-	return rowBuffer.toString()
-	}
+    return rowBuffer.toString()
+  }
 
 
 
@@ -1222,7 +1225,7 @@ class CollectionArchive {
 	 */
 	void ttl(File outFile) 
 	throws Exception{
-	if (debug > WARN) {
+	if (debug > 2) {
 		System.err.println "Trying to turtilize entire archive ..."
 	}
 	try {
@@ -1230,7 +1233,7 @@ class CollectionArchive {
 	} catch (Exception e) {
 		throw e
 	}
-	if (debug > WARN) {
+	if (debug > 2) {
 		System.err.println "Ran ttl without exceptions"
 	}
 	}
@@ -1253,28 +1256,28 @@ class CollectionArchive {
 
 
 	// Cycle each configured collection:
-	this.citeConfig.keySet().each { u ->
-		CiteUrn urn = new CiteUrn(u)
-		if (debug > 3) {System.err.println "TURTLIZE " + u}
-		def src = getSourcePair(urn)
-		if (debug > 3) { System.err.println "examine " + src}
+	this.collections.keySet().each { u ->
+	  CiteUrn urn = new CiteUrn(u)
+	  if (debug > 3) {System.err.println "TURTLIZE " + u}
+	  def src = getSourcePair(urn)
+	  if (debug > 3) { System.err.println "examine " + src}
 
-		switch (src[0]) {
-			case "file":
-			try {
-				File f = new File("${this.baseDirectory}/${src[1]}")
-				if (src[1] ==~ /.+csv/) {
-					if (debug > 0) { System.err.println "Turtlize ${f} as csv"}
-					String ttlData 
-					try {
-						ttlData = turtlizeCsv(f, u)
-					} catch (Exception e) {
-						System.err.println "CollectionArchive:ttl with prefix: could not turtlize data in ${f}"
-						System.err.println e
-						throw new Exception("CollectionArchive:ttl: exception ${e}")
-					}
-
-					if (debug > WARN) {System.err.println "Turtlized ${f} successfully: appending data"}
+	  switch (src[0]) {
+	  case "file":
+	  try {
+	    File f = new File("${this.baseDirectory}/${src[1]}")
+	    if (src[1] ==~ /.+csv/) {
+	      if (debug > 0) { System.err.println "Turtlize ${f} as csv"}
+	      String ttlData 
+	      try {
+		ttlData = turtlizeCsv(f, u)
+	      } catch (Exception e) {
+		System.err.println "CollectionArchive:ttl with prefix: could not turtlize data in ${f}"
+		System.err.println e
+		throw new Exception("CollectionArchive:ttl: exception ${e}")
+	      }
+	      
+	      if (debug > 2) {System.err.println "Turtlized ${f} successfully: appending data"}
 					ttl.append(ttlData, charEnc)
 				} else if (src[1] ==~ /.+tsv/) {
 					if (debug > 0) { System.err.println "Turtlize ${f} as tsv"}
