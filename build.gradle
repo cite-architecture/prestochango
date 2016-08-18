@@ -75,11 +75,13 @@ dependencies {
 
     compile group: 'commons-io', name: 'commons-io', version: commonsioversion
 
-    compile group: 'net.sf.opencsv', name: 'opencsv', version : opencsvversion
+    //compile group: 'net.sf.opencsv', name: 'opencsv', version : opencsvversion
 
     compile group: 'edu.harvard.chs', name : 'cite' , version: citeversion
 
     compile group: 'com.thaiopensource', name:'jing', version: jingversion
+
+    compile group: 'edu.holycross.shot', name: 'safecsv', version: safecsvversion
 
   testCompile 'junit:junit:4.11'
   testCompile 'org.concordion:concordion:1.4.4'
