@@ -2,7 +2,7 @@ package edu.holycross.shot.prestochango
 
 import edu.harvard.chs.cite.CiteUrn
 
-import au.com.bytecode.opencsv.CSVReader
+//import au.com.bytecode.opencsv.CSVReader
 
 import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
@@ -17,7 +17,6 @@ class CollectionArchive {
 
   public Integer debug = 0
 
-
   /** Root directory of file system containing archival files.  */
   File baseDirectory
   
@@ -25,13 +24,9 @@ class CollectionArchive {
    * of Collection URN.*/
   LinkedHashMap collections
 
-
   /** Hash map of implementation info keyed by String value
    * of Collection URN.*/
   LinkedHashMap implementations
-
-
-  
 
   /** Hash map with rdf verbs for each supported extension. */
   LinkedHashMap extensionsMap = [:]
@@ -79,6 +74,8 @@ class CollectionArchive {
 
       this.extensionsMap = mapExtensions(inv)
       this.collections = configureFromFile(inv)
+      this.implementations = configureImplsFromFile(inv)
+
 
       if (debug > 0) { System.err.println "Collections = " + this.collections} 
 
@@ -109,10 +106,17 @@ class CollectionArchive {
     }
     this.extensionsMap = mapExtensions(inv)
     this.collections = configureFromFile(inv)
+    this.implementations = configureImplsFromFile(inv)
 
     if (debug > 0) { System.err.println "Configuration map = " + this.collections} 
   }
 
+
+  LinkedHashMap configureImplsFromFile(File inv) {
+    def impls = [:]
+    return impls
+  }
+  
   /** Validates the XML serialization of the collection's schema
    * against the published schema for a CITE TextInventory.
    * @param schemaFileName String name of a file with RNG schema for inventory.
@@ -187,7 +191,86 @@ class CollectionArchive {
     return configuredCollections
   }
 
+  CitePropertyType propTypeForXmlAttr(String s) {
+    switch (s) {
 
+    case "ctsurn":
+    return CitePropertyType.CTS_URN
+    break
+    case "citeurn":
+    return CitePropertyType.CITE_URN
+    break
+    case "string":
+    return CitePropertyType.STRING
+    break
+    case "number":
+    return CitePropertyType.NUM
+    break
+    case "boolean":
+    return CitePropertyType.BOOLEAN
+    break
+    case "markdown":
+    return CitePropertyType.MARKDOWN
+    break
+    }
+    //citeimg ??
+  }
+
+  ArrayList collectExtensions(groovy.util.Node c ) {
+    ArrayList extensions = []
+    c[cite.extendedBy].each { ce ->
+      extensions << "${ce.'@extension'}"
+    }
+    return extensions
+  }
+
+
+  ArrayList collectProperties(groovy.util.Node c ) {
+    ArrayList propertyList = []
+    c[cite.citeProperty].each { cp ->
+      CiteProperty citeProperty
+            
+      String propName = "${cp.'@name'}"
+      String propLabel = "${cp.'@label'}"
+
+      
+      String rdfVerb = ""
+      String inverseVerb = ""
+      cp[cite.indexRelation].each { idx ->
+	rdfVerb = idx.'@rdfverb'
+	if (idx.'@inverseverb') {
+	  inverseVerb = idx.'@inverseverb'
+	}
+      }
+      RdfVerb rdf = null
+      if ((rdfVerb != "") && (inverseVerb != "")) {
+	rdf = new RdfVerb(rdfVerb,inverseVerb)
+      }
+      
+      def valList = []
+      cp[cite.valueList][cite.value].each {
+	valList.add("${it.text()}")
+      }
+      def propType = propTypeForXmlAttr("${cp.'@type'}")
+
+      if (valList.size() > 0) {
+	citeProperty = new CiteProperty(propName,propLabel,valList as Set)
+      } else {
+	citeProperty = new CiteProperty(propName,propType,propLabel)
+      }
+      if (rdf != null) {
+	citeProperty.setRdf(rdf)
+      }
+
+      if ("${cp.'@universalValue'}") {
+	citeProperty.setSingleValue("${cp.'@universalValue'}")
+      }
+	
+      propertyList.add(citeProperty)
+    }
+    return propertyList
+  }
+  
   /** Creates a configuration map for given collection,
    * represented by a parsed XML node from an inventory file.
    * @param c Collection entry from an XML source, parsed.
@@ -195,76 +278,54 @@ class CollectionArchive {
    */
   //
   
+  CiteProperty findPropertyByName(ArrayList propList, String propName) {
+    // implement...
+    // find it.propertyName == propName
+  }
+  
   CiteCollection configureCollection(groovy.util.Node c) {
-    String title = c.'@urn'
+    CiteUrn collUrn
+    String descr = ""
+    try {
+      collUrn = new CiteUrn(c.'@urn')
+    } catch (Exception e) {
+      System.err.println("Could not configure collection from URN value "  + c.'@urn')
+      throw e
+    }
     c[dc.description].each {
-      title = it.text()
+      // take last one at random:
+      descr = it.text()
     }
 
+    // can you have more than 1 ns mapping?
+    String nsAbbr = "${c[cite.namespaceMapping][0].'@abbr'}"
+    String nsFull ="${c[cite.namespaceMapping][0].'@uri'}"
+
+    ArrayList extensions = collectExtensions(c)
+    ArrayList collProps = collectProperties(c)
+
+    String orderingPropName = ""
+    if (c.orderedBy) {
+      orderingPropName = "${c.orderedBy[0].'@property'}"
+    }
+    // Find these by name in array of properties
+    CiteProperty idProp = findPropertyByName(collProps, c.'@canonicalId')
+    CiteProperty labelProp == findPropertyByName(collProps, c.'@label')
+    CiteProperty orderedByProp = findPropertyByName(collProps, orderingPropName)
+
+    return new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
+
+
+
+    // GET THIS SEPARATELY
+    /*
     String sourceType = ""
     String source = ""
     c[cite.source].each { src ->
       sourceType = "${src.'@type'}"
       source = "${src.'@value'}"
     }
-
-    def propertyList = []
-    c[cite.citeProperty].each { cp ->
-      def prop = [:]
-      prop['name'] = "${cp.'@name'}"
-      prop['label'] = "${cp.'@label'}"
-      prop['type'] = "${cp.'@type'}"
-      prop['universalValue'] = "${cp.'@universalValue'}"
-      prop['rdfverb'] = ""
-      prop['inverseverb'] = ""
-
-
-      // can only be zero or one of these:
-      cp[cite.indexRelation].each { idx ->
-	prop['rdfverb'] = idx.'@rdfverb'
-	if (idx.'@inverseverb') {
-	  prop['inverseverb'] = idx.'@inverseverb'
-	}
-      }
-
-      def valList = []
-      cp[cite.valueList][cite.value].each {
-	valList.add("${it.text()}")
-      }
-      prop['valueList'] = valList
-	
-      propertyList.add(prop)
-    } 
-
-    def seq = ""
-    if (c.orderedBy) {
-      seq = "${c.orderedBy[0].'@property'}"
-    }
-    String groupProp = null
-    if (c.'@groupProperty') {
-      groupProp = c.'@groupProperty'
-    }
-
-    def citeExtensions = []
-    c[cite.extendedBy].each { ce ->
-      citeExtensions << "${ce.'@extension'}"
-    }
-
-    def collData = [
-      "title" : title,
-      "canonicalId" : "${c.'@canonicalId'}",
-      "labelProp" : "${c.'@label'}",
-      
-      "groupProperty" : groupProp,
-      "nsabbr" : "${c[cite.namespaceMapping][0].'@abbr'}", 
-      "nsfull" :"${c[cite.namespaceMapping][0].'@uri'}",
-      "orderedBy" : seq,
-      "citeExtensions" : citeExtensions,
-      "properties" : propertyList,
-      "sourceType" : sourceType,
-      "source" : source
-    ]
-    return collData
+    */
   }
   
 
@@ -880,6 +941,7 @@ class CollectionArchive {
 	 * @returns String of RDF statements in the OLO ontology.
 	 */
 	String addOloCsvData(File f, CiteUrn collUrn) {
+	  /*
 		String canonical = getCanonicalIdProperty(collUrn)
 		String label = getLabelProperty(collUrn)
 		String orderProp = getOrderedByProperty(collUrn)
@@ -887,7 +949,7 @@ class CollectionArchive {
 		def headingIndex = [:]
 		def seqs = [:]
 
-		/* First, cycle though file to construct a map of sequence numbers to URNs: */
+		// First, cycle though file to construct a map of sequence numbers to URNs: 
 		int count = 0
 		CSVReader reader = new CSVReader(new FileReader(f))        
 		reader.readAll().each { cols ->
@@ -914,8 +976,8 @@ class CollectionArchive {
 			count++;
 		}
 		if (debug > 0) {System.err.println "Generated ${seqs.keySet().size()} sequence mappings"}
-		/* then, use the sequences index to generate prev-next 
-		statements for each object in the list: */
+		//then, use the sequences index to generate prev-next 
+		//statements for each object in the list: 
 		StringBuffer replyBuff = new StringBuffer()
 		def lnCount = 0
 
@@ -951,7 +1013,7 @@ class CollectionArchive {
 				}
 			}
 			lnCount++
-		}
+		} */
 		return replyBuff.toString()
 	}
 
@@ -978,7 +1040,7 @@ class CollectionArchive {
 
 	def headingIndex = []
 	def lineCount = 0
-
+	/*
 	Reader wrapper = new InputStreamReader(new FileInputStream(f), "utf-8");
 	CSVReader reader = new CSVReader(wrapper)
 	reader.readAll().each { cols ->
@@ -1002,7 +1064,7 @@ class CollectionArchive {
 			// empty line, ignore
 		}
 		lineCount++
-	}
+		}*/
 	return reply.toString()
 	}
 

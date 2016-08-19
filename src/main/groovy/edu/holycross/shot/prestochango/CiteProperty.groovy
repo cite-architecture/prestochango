@@ -1,6 +1,9 @@
 package edu.holycross.shot.prestochango
 
 import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.CtsUrn
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 
 /** A class representing the implementation of a CITE Collection
@@ -31,6 +34,8 @@ class CiteProperty {
    */
   Set valueSet = []
 
+  String singleValue = ""
+  
   /** Constructor with three required values.
    * @param propName Name of the property.
    * @param propType One of the allowed values for property type.
@@ -75,7 +80,7 @@ class CiteProperty {
    */
   Set getVocabulary()
   throws Exception {
-    if (this.propertyType != "string") {
+    if (this.propertyType != PropertyType.STRING) {
       throw new Exception("CiteProperty: cannot get controlled vocabulary on object of type ${this.propertyType}")
     } else {
       return this.valueSet
@@ -83,6 +88,55 @@ class CiteProperty {
   }
 
 
+  Object getSingleValue() {
+    if (this.singleValue  == "") {
+      throw new Exception("Single value note defined for property ${propertyName}")
+    }
+    switch (this.propertyType) {
+    case (PropertyType.CITE_URN):
+    try {
+      return new CiteUrn(this.singleValue)
+    } catch(Exception e) {
+      System.err.println this.singleValue + " is not a valid CITE URN"
+      throw e
+    }
+    break
+
+
+    case (PropertyType.CTS_URN):
+    try {
+      return new CtsUrn(this.singleValue)
+    } catch(Exception e) {
+      System.err.println this.singleValue + " is not a valid CTS URN"
+      throw e
+    }
+    break
+
+    case (PropertyType.MARKDOWN):
+    case (PropertyType.STRING):
+    return this.singleValue
+    break
+
+    case (PropertyType.NUM):
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+    symbols.setGroupingSeparator(',');
+    symbols.setDecimalSeparator('.');
+    String pattern = "#,##0.0#";
+    DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
+    decimalFormat.setParseBigDecimal(true);
+    // parse the string
+    return (BigDecimal) decimalFormat.parse(this.singleValue)
+    break
+
+
+    case (PropertyType.BOOLEAN):
+    return this.singleValue.toBoolean()
+    break
+    
+    }
+  }
+
+  
   /** Overrides default. */
   String toString() {
     return("${this.propertyName} (${this.propertyType})")
