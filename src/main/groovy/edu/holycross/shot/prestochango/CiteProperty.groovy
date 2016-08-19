@@ -11,21 +11,14 @@ import edu.harvard.chs.cite.CiteUrn
  */
 class CiteProperty {
 
-  /** Allowed string values for propertyType */
-  Set citeTypes = ["string",
-		   "number",
-		   "boolean",
-		   "markdown",
-		   "citeurn",
-		   "ctsurn"
-		   ]
+
 
   /** Identifying name of property. */
   String propertyName
 
-  /** Type of property.  String value must be 
+  /** Type of property.  String value must be
    * one of the set citeTypes. */
-  String propertyType
+  CitePropertyType propertyType
 
   /** A human-readable name for this property.  */
   String label
@@ -35,20 +28,16 @@ class CiteProperty {
    * string property.  A null valueSet means that any value is allowed.
    */
   Set valueSet = []
-  
+
   /** Constructor with three required values.
    * @param propName Name of the property.
    * @param propType One of the allowed values for property type.
    * @param propLabel Human-readable label for the property.
    */
-  CiteProperty (String propName, String propType, String propLabel) throws Exception {
-    if (propType in citeTypes) {
+  CiteProperty (String propName, CitePropertyType propType, String propLabel) {
       this.propertyName = propName
       this.propertyType = propType
       this.label = propLabel
-    } else {
-      throw new Exception("CiteProperty: invalid value for type, ${propType}")
-    }
   }
 
 
@@ -59,7 +48,7 @@ class CiteProperty {
    * @param propValues Set of allowed values for this string property.
    */
   CiteProperty (String propName, String propLabel, Set propValues) {
-    this.propertyType = "string"
+    this.propertyType = CitePropertyType.STRING
     this.propertyName = propName
     this.label = propLabel
     this.valueSet = propValues
@@ -72,7 +61,7 @@ class CiteProperty {
    * @returns A (possibly empty) set of string values.
    * @throws Exception if the CiteProperty is not a string type property.
    */
-  Set getVocabulary() 
+  Set getVocabulary()
   throws Exception {
     if (this.propertyType != "string") {
       throw new Exception("CiteProperty: cannot get controlled vocabulary on object of type ${this.propertyType}")
@@ -86,5 +75,5 @@ class CiteProperty {
   String toString() {
     return("${this.propertyName} (${this.propertyType})")
   }
-  
+
 }
