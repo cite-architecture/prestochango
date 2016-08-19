@@ -12,8 +12,11 @@ class CiteCollection {
 
 
   /** CITE Collection URN for this collection */
-   public CiteUrn urn = null
+  public CiteUrn urn = null
 
+  /** Human-readable description or label. */
+  public String description = ""
+   
   /** Name of the property with object's URN. */
   public CiteProperty canonicalIdProp = null
 
@@ -53,7 +56,7 @@ class CiteCollection {
    */
   CiteCollection(
     CiteUrn urn,
-    // ADD DESCRIPTION/LABEL FOR WHOLE COLLECION
+    String description,
     CiteProperty canonicalIdProp, 
     CiteProperty labelProp, 
     CiteProperty orderedByProp, 
@@ -63,7 +66,7 @@ class CiteCollection {
     ArrayList extendedBy
   ) 
   throws Exception {
-
+    this.description = description
     try {
             
       if ( (urn == null) ) {

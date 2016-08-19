@@ -5,15 +5,11 @@ import edu.harvard.chs.cite.CiteUrn
 import static org.junit.Assert.*
 import org.junit.Test
 
-
-
-
 /** Class testing prestochange CiteCollection class.
 */
 class TestCollNamespaces extends GroovyTestCase {
 
     String schemaFileName = "schemas/CiteCollectionInventory.rng"
-
 
     String testInventory = "testdata/collections.xml"
     File inv = new File(testInventory)
@@ -21,7 +17,7 @@ class TestCollNamespaces extends GroovyTestCase {
     String dataDir = "testdata/csvs"
     File dir = new File(dataDir)
 
-	String expectedNs = """<http://www.homermultitext.org/datans> rdf:type cite:DataNs ."""
+	  String expectedNs = """<http://www.homermultitext.org/datans> rdf:type cite:DataNs ."""
     String expectedAbbr = """<http://www.homermultitext.org/datans> cite:abbreviatedBy "hmt" ."""
 
     @Test void testNamespacesInObject() {
@@ -30,8 +26,8 @@ class TestCollNamespaces extends GroovyTestCase {
 		assert cc.citeConfig.'urn:cite:hmt:vaimg'.nsfull == "http://www.homermultitext.org/datans"
 		assert cc.citeConfig.'urn:cite:hmt:vaimg'.nsabbr == "hmt"
 
-
     }
+    /*
     @Test void testNamespacesInTTL() {
     	File testOut = new File("testdata/testoutput/testingForNamespaces.ttl")
         CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
@@ -59,6 +55,6 @@ class TestCollNamespaces extends GroovyTestCase {
 
   assert foundFullNS
   assert foundNSAbbr
-  }
+  }*/
 
 }
