@@ -23,6 +23,8 @@ class CiteProperty {
   /** A human-readable name for this property.  */
   String label
 
+  RdfVerb rdf = null
+  
 
   /** Possible null set defining a controlled vocabulary list for a
    * string property.  A null valueSet means that any value is allowed.
@@ -40,6 +42,17 @@ class CiteProperty {
       this.label = propLabel
   }
 
+  CiteProperty (String propName, CitePropertyType propType, String propLabel, RdfVerb rdfVerb) {
+    this.propertyName = propName
+    this.propertyType = propType
+    this.label = propLabel
+    this.rdf = rdfVerb
+
+    if ((propType != CitePropertyType.CITE_URN) && (propType != CitePropertyType.CTS_URN))  {
+      throw new Exception("Cannot create property ${propName} of type ${propType}: RDF relations only apply to URN values")
+    }
+  }
+
 
   /**
    * Constructor with controlled vocabulary list for a string property.
@@ -53,7 +66,6 @@ class CiteProperty {
     this.label = propLabel
     this.valueSet = propValues
   }
-
 
 
   /** Gets set of controlled vocabulary for a string object.
