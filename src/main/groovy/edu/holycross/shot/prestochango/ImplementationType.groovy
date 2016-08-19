@@ -1,17 +1,14 @@
 package edu.holycross.shot.prestochango
 
 /** A class enumerating possible implementations of
-* a CITE Collection
+* a CITE Collection's data.
 */
 public enum ImplementationType {
 
-  /** Recessive accent or persistent accent on antepenult. */
   LOCAL_FILE ("locally stored delimited text file"),
   SQL_DB("SQL database")
 
-
   private String label
-
 
   private ImplementationType(String label) {
     this.label = label
