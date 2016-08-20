@@ -6,11 +6,7 @@ import static org.junit.Assert.*
 import org.junit.Test
 
 
-
-
-/** Class testing output of ttl from prestochango's CollectionArchive class.
-*/
-class TestArchiveCanonicalId extends GroovyTestCase {
+class TestArchiveLabel extends GroovyTestCase {
   String inventoryName = "testdata/signs-collection.xml"
   File inv = new File(inventoryName)
   String schemaFileName = "schemas/CiteCollectionInventory.rng"
@@ -20,8 +16,8 @@ class TestArchiveCanonicalId extends GroovyTestCase {
   CollectionArchive ccarchive = new CollectionArchive(inv, schemaFileName, new File("/dev/null"))
   CiteUrn urn = new CiteUrn("urn:cite:hmt:critsigns")
 
-  String expectedPropertyName = "URN"
-  assert ccarchive.getCanonicalIdProperty(urn).getPropertyName() == expectedPropertyName
+  String expectedPropertyName = "EnglishName"
+  assert ccarchive.getLabelProperty(urn).getPropertyName() == expectedPropertyName
 
  }
 

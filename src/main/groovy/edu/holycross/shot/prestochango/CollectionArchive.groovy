@@ -410,11 +410,9 @@ class CollectionArchive {
 	}
 
 
-  /** Finds name of property with URN identifier
-   * for objects in a collection.
+  /** Finds canonical ID property for collection identifed by a URN.
    * @param urn The Collection in question.
-   * @returns Name of the property.
-   * @throws Exception if urn is not a configured collection.
+   * @returns Property for canonical identification
    */
   CiteProperty getCanonicalIdProperty(CiteUrn urn) 
   throws Exception {
@@ -422,6 +420,18 @@ class CollectionArchive {
     return config.canonicalIdProp
   }
 
+  /** Finds name of property with labelling
+   * information usable in rdf:label description.
+   * @param urn The Collection in question.
+   * @returns Name of the property.
+   * @throws Exception if urn is not a configured collection.
+   */
+  CiteProperty getLabelProperty(CiteUrn urn) 
+  throws Exception {
+     def config =  this.collections[urn.toString()]
+     System.err.println "LABEL PROP: " + config.labelProp
+    return config.labelProp
+  }
 
 
   
@@ -501,21 +511,6 @@ class CollectionArchive {
 	}
 
 
-	/** Finds name of property with labelling
-	 * information usable in rdf:label description.
-	 * @param urn The Collection in question.
-	 * @returns Name of the property.
-	 * @throws Exception if urn is not a configured collection.
-	 */
-	String getLabelProperty(CiteUrn urn) 
-	throws Exception {
-	try {
-		def config =  this.collections[urn.toString()]
-		return config['labelProp']
-	} catch (Exception e) {
-		throw new Exception("CollectionArchive:getLabelProperty: no collection ${urn} configured.")
-	}
-	}
 
 
 
