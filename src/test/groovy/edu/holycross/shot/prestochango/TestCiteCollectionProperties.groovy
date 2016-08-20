@@ -37,19 +37,18 @@ class TestCiteCollectionProperties extends GroovyTestCase {
 	assert cc.getPropertyNames()[2] == "seq"
 
  }
- /*
+
  @Test void testAboutProperties() {
 
 	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
   String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
-	CiteProperty labelProp = new CiteProperty("label","string","description of object")
-	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
+	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+	CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
+	CiteProperty orderedByProp = new CiteProperty("seq",CitePropertyType.NUM,"sequence")
 
 	ArrayList collProps = [idProp, labelProp, orderedByProp]
 	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
 
-	String orderedProp = "orderedBy"
 	String nsAbbr = "testNs"
 	String nsFull = "http://www.testNs.org/datans"
 
@@ -67,10 +66,9 @@ class TestCiteCollectionProperties extends GroovyTestCase {
 
 	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
   String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
-	CiteProperty labelProp = new CiteProperty("label","string","description of object")
-	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
-
+  CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+  CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
+  CiteProperty orderedByProp = new CiteProperty("seq",CitePropertyType.NUM,"sequence")
 	ArrayList collProps = [idProp, labelProp, orderedByProp]
 	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
 
@@ -80,9 +78,9 @@ class TestCiteCollectionProperties extends GroovyTestCase {
 
     CiteCollection cc = new CiteCollection(collUrn,descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
 
-	assert cc.getPropertyType("urn") == "citeurn"
-	assert cc.getPropertyType("label") == "string"
-	assert cc.getPropertyType("seq") == "number"
+	assert cc.getPropertyType("urn") == CitePropertyType.CITE_URN
+	assert cc.getPropertyType("label") == CitePropertyType.STRING
+	assert cc.getPropertyType("seq") == CitePropertyType.NUM
 
- }*/
+ }
 }

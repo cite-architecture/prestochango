@@ -142,24 +142,24 @@ class CiteCollection {
    * @returns ArrayList of property names
    */
   ArrayList getPropertyNames() {
-		def pn = []
-		this.collProperties.each { p ->
-			pn << p.propertyName
-		}
-		return pn
+    def pn = []
+    this.collProperties.each { p ->
+      pn << p.propertyName
+    }
+    return pn
   }
 
   
-  /** Returns an string identifying the type of a given property
-	* @param String property name
-   * @returns String
+  /** Returns CitePropertyType for a property identified by name.
+   * @param String property name
+   * @returns CitePropertyType for the property.
    */
-  String getPropertyType(String pn) {
-	  	String tt = ""
-		this.collProperties.each { p ->
-			if (p.propertyName == pn){ tt = p.propertyType }
-		}
-		return tt
+  CitePropertyType getPropertyType(String pn) {
+    CitePropertyType cpt = null
+    this.collProperties.each { p ->
+      if (p.propertyName == pn){cpt = p.propertyType }
+    }
+    return cpt
   }
 
 
@@ -167,6 +167,9 @@ class CiteCollection {
 	* @param String property name
    * @returns String
    */
+
+
+  //FIX
   public String getNsFull() {
     return this.nsFull
   }
