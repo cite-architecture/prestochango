@@ -68,7 +68,7 @@ class CiteCollection {
   throws Exception {
     this.description = description
     try {
-            
+             
       if ( (urn == null) ) {
 	throw new Exception("CiteCollection constructor: collUrn parameter cannot be null.")
       }
@@ -82,7 +82,7 @@ class CiteCollection {
       this.collProperties = collProperties 
 
       if ( canonicalIdProp == null ) {
-	throw new Exception("CiteCollection constructor: String param canonicalIdProp cannot be null or empty.")
+	throw new Exception("CiteCollection constructor: canonicalIdProp cannot be null or empty.")
       }
 
       this.canonicalIdProp = canonicalIdProp
@@ -177,6 +177,10 @@ class CiteCollection {
    */
   public String getNsAbbr() {
     return this.nsAbbr
+  }
+
+  public String toString() {
+    return this.description + " (${this.urn})"
   }
   
 }

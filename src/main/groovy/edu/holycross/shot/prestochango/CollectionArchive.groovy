@@ -281,6 +281,14 @@ class CollectionArchive {
   CiteProperty findPropertyByName(ArrayList propList, String propName) {
     // implement...
     // find it.propertyName == propName
+    return propList.find {it.propertyName == propName}
+    /*
+    println "matches is " + matches.getClass()
+    if (matches.size() == 1) {
+      return matches[0]
+    } else {
+      return null
+      }*/
   }
   
   CiteCollection configureCollection(groovy.util.Node c) {
@@ -310,7 +318,7 @@ class CollectionArchive {
     }
     // Find these by name in array of properties
     CiteProperty idProp = findPropertyByName(collProps, c.'@canonicalId')
-    CiteProperty labelProp == findPropertyByName(collProps, c.'@label')
+    CiteProperty labelProp = findPropertyByName(collProps, c.'@label')
     CiteProperty orderedByProp = findPropertyByName(collProps, orderingPropName)
 
     return new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
@@ -382,23 +390,21 @@ class CollectionArchive {
 	}
 
 
-	/** Finds name of property with URN identifier
-	 * for objects in a collection.
-	 * @param urn The Collection in question.
-	 * @returns Name of the property.
-	 * @throws Exception if urn is not a configured collection.
-	 */
-	String getCanonicalIdProperty(CiteUrn urn) 
-	throws Exception {
-	try {
-		def config =  this.collections[urn.toString()]
-		return config['canonicalId']
-	} catch (Exception e) {
-		throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
-	}
-	}
+  /** Finds name of property with URN identifier
+   * for objects in a collection.
+   * @param urn The Collection in question.
+   * @returns Name of the property.
+   * @throws Exception if urn is not a configured collection.
+   */
+  CiteProperty getCanonicalIdProperty(CiteUrn urn) 
+  throws Exception {
+    def config =  this.collections[urn.toString()]
+    return config.canonicalIdProp
+  }
 
 
+
+  
 	/** Finds the value of the rdfVerb for a given property.
 	 * @param urn The Collection in question.
 	 * @param propertyName Name of the property.

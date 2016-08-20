@@ -21,7 +21,7 @@ class CiteCollectionObject {
   public CiteUrn nextUrn = null
 
   /** Map of property names and values
-	* 
+	*
   **/
   public def objectProperties  = [:]
 
@@ -31,7 +31,7 @@ class CiteCollectionObject {
    * @param objectProperties a map of property-name <--> value
    */
     CiteCollectionObject(
-		CiteUrn urn, 
+		CiteUrn urn,
 		CiteCollection collection,
 		Map objectProperties )
     throws Exception {
@@ -44,7 +44,7 @@ class CiteCollectionObject {
 			switch(tempType){
 				case "citeurn":
 					try {
-					    CiteUrn tcite = new CiteUrn(value)			
+					    CiteUrn tcite = new CiteUrn(value)
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE URN. " + e)
 					}
@@ -52,7 +52,7 @@ class CiteCollectionObject {
 				break;
 				case "ctsurn":
 					try {
-					    CiteUrn tcts = new CtsUrn(value)			
+					    CiteUrn tcts = new CtsUrn(value)
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CTS URN. " + e)
 					}
@@ -75,7 +75,7 @@ class CiteCollectionObject {
 				default:
 
 				break;
-			}	
+			}
 		}
 
 		this.urn = urn
@@ -92,7 +92,7 @@ class CiteCollectionObject {
    * @param nextUrn next urn in an ordered collection; may be null
    */
     CiteCollectionObject(
-		CiteUrn urn, 
+		CiteUrn urn,
 		CiteCollection collection,
 		Map objectProperties,
 		CiteUrn prevUrn,
@@ -103,7 +103,7 @@ class CiteCollectionObject {
 			throw new Exception("CiteCollectionObject: You can't have prev and next on an unordered collection.")
 		}
 
-		
+
 		// check properties for correct types
 		String tempType = ""
 		float f
@@ -112,7 +112,7 @@ class CiteCollectionObject {
 			switch(tempType){
 				case "citeurn":
 					try {
-					    CiteUrn tcite = new CiteUrn(value)			
+					    CiteUrn tcite = new CiteUrn(value)
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE URN. " + e)
 					}
@@ -120,7 +120,7 @@ class CiteCollectionObject {
 				break;
 				case "ctsurn":
 					try {
-					    CiteUrn tcts = new CtsUrn(value)			
+					    CiteUrn tcts = new CtsUrn(value)
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CTS URN. " + e)
 					}
@@ -143,7 +143,7 @@ class CiteCollectionObject {
 				default:
 
 				break;
-			}	
+			}
 		}
 
 		this.urn = urn
@@ -208,8 +208,4 @@ class CiteCollectionObject {
 
   }
 
-
-
-
-  
 }
