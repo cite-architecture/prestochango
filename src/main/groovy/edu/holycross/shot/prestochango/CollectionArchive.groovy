@@ -186,6 +186,7 @@ class CollectionArchive {
     
     def configuredCollections = [:]
     root[cite.citeCollection].each { c ->
+      if (debug > 0) { System.err.println "Configure collection " + c.'@urn'}
       configuredCollections.putAt("${c.'@urn'}", configureCollection(c))
     }
     return configuredCollections
@@ -271,39 +272,42 @@ class CollectionArchive {
     return propertyList
   }
   
-  /** Creates a configuration map for given collection,
-   * represented by a parsed XML node from an inventory file.
-   * @param c Collection entry from an XML source, parsed.
-   * @returns Configuration map for the collection.
+ 
+
+  /** Finds a CiteProperty by name from a list of CiteProperty objects.
+   * @param propList List of CiteProperty objects to searech.
+   * @param Name of property to find.
+   * @returns A CiteProperty object.
    */
-  //
-  
   CiteProperty findPropertyByName(ArrayList propList, String propName) {
-    // implement...
-    // find it.propertyName == propName
     return propList.find {it.propertyName == propName}
-    /*
-    println "matches is " + matches.getClass()
-    if (matches.size() == 1) {
-      return matches[0]
-    } else {
-      return null
-      }*/
   }
-  
+
+
+  /** Creates a CiteCollection from a parsed XML inventory document.
+   * @param c Parsed Node for a single collection
+   * @returns A CiteCollection object.
+   */
   CiteCollection configureCollection(groovy.util.Node c) {
     CiteUrn collUrn
-    String descr = ""
+
     try {
       collUrn = new CiteUrn(c.'@urn')
     } catch (Exception e) {
       System.err.println("Could not configure collection from URN value "  + c.'@urn')
       throw e
     }
+
+    String descr = "Collection ${collUrn}"
     c[dc.description].each {
       // take last one at random:
       descr = it.text()
     }
+    /*
+    if (descr == "") {
+      descr = "Collection ${collUrn}"
+      }*/
+      
 
     // can you have more than 1 ns mapping?
     String nsAbbr = "${c[cite.namespaceMapping][0].'@abbr'}"
@@ -316,9 +320,22 @@ class CollectionArchive {
     if (c.orderedBy) {
       orderingPropName = "${c.orderedBy[0].'@property'}"
     }
+
+
     // Find these by name in array of properties
     CiteProperty idProp = findPropertyByName(collProps, c.'@canonicalId')
+    if (idProp == null) {
+      throw new Exception("NO PROPERTY FOR  " + c.'@canonicalId')
+    } else {
+      if (debug > 0) {System.err.println "Using canonical property " + idProp }
+    }
     CiteProperty labelProp = findPropertyByName(collProps, c.'@label')
+    if (labelProp == null) {
+      throw new Exception("NO PROPERTY FOR  #" + c.'@canonicalId' + "# in " + collUrn + " w properties " + collProps)
+    } else {
+      if (debug > 0) { System.err.println "Using labelling property " + labelProp }
+    }
+    
     CiteProperty orderedByProp = findPropertyByName(collProps, orderingPropName)
 
     return new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
@@ -335,7 +352,10 @@ class CollectionArchive {
     }
     */
   }
-  
+
+  CiteCollection getCollection(CiteUrn urn) {
+    return collections[urn.toString()]
+  }
 
 	String getUriForExtension(String extensAbbr) 
 		throws Exception {

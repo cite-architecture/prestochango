@@ -88,7 +88,7 @@ class CiteCollection {
       this.canonicalIdProp = canonicalIdProp
 
       if ( (nsAbbr == null) || (nsAbbr == "") ) {
-	throw new Exception("CiteCollection constructor: String param nsAbbr cannot be null or empty.")
+	throw new Exception("CiteCollection constructor: param nsAbbr cannot be null or empty.")
       }
 
       this.nsAbbr = nsAbbr
@@ -100,7 +100,8 @@ class CiteCollection {
       this.nsFull = nsFull
 
       if ( (labelProp == null) || (labelProp == "") ) {
-	throw new Exception("CiteCollection constructor: String param idProp cannot be null or empty.")
+	System.err.println "Error in constructor:  labelProp = " + labelProp
+	throw new Exception("CiteCollection constructor: param labelProp cannot be null or empty.")
       }
 
       this.labelProp = labelProp
