@@ -108,7 +108,7 @@ class CiteCollection {
 
       if (( orderedByProp != null) && (orderedByProp.propertyName != "")){
 	if (orderedByProp.propertyType != "number"){
-	  throw new Exception("CiteCollection constructor: OrderedBy property must have type of 'numbver'.")
+	  throw new Exception("CiteCollection constructor: OrderedBy property must have type of 'number'.")
 	}
 	this.orderedByProp = orderedByProp
 	this.isOrderedCollection = true	
