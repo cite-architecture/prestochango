@@ -118,6 +118,7 @@ task cleanTest () {
 
 
 // for specs with concordion:
+/*
 sourceSets {
     main {
         java {
@@ -127,16 +128,16 @@ sourceSets {
             srcDir 'src'
         }
     }
-	/*
-    test {
-        java {
-	  srcDir "specs/java"
-        }
-        resources {
-	  srcDir "${buildDir}/specs"
-        }
-    }
-	*/
+	
+//    test {
+  //      java {
+	//  srcDir "specs/java"
+        //}
+        //resources {
+	 // srcDir "${buildDir}/specs"
+       // }
+   // }
+
 }
 
 task cpResources(type: Copy) {
@@ -149,7 +150,7 @@ task setUpResources(dependsOn: cpResources) {
 setUpResources.doLast {
   println "READING FILE TREE FROM " + mdSrc
   FileTree tree = fileTree(mdSrc) {
-    include "**/*.md"
+    include "** / *.md"
   }
   tree.visit { f ->
     if (f.relativePath.isFile()) {
@@ -200,3 +201,4 @@ task conc(type: Copy, dependsOn: [test, addVersion]) {
   into "${buildDir}/concordion-formatted"
   filter(ReplaceTokens, tokens: tokenMap)
 }
+*/
