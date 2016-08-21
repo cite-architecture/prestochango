@@ -8,7 +8,7 @@ public enum CitePropertyType {
 
   STRING ("string value"),
   NUM ("numeric value"),
-  BOOL ("boolean value"),
+  BOOLEAN ("boolean value"),
   MARKDOWN ("markdown string"),
   CITE_URN ("CITE Object URN"),
   CTS_URN ("CTS URN")

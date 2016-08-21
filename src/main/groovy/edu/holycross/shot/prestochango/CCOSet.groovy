@@ -26,69 +26,68 @@ class CCOSet {
    * @param CiteCollection collection A CiteCollection
    * @param ArrayList ccos an arrayList of CiteCollectionObjects
    */
-    CCOSet(
-		CiteCollection collection,
-		ArrayList ccos ) throws Exception {
+  CCOSet(
+    CiteCollection collection,
+    ArrayList ccos ) throws Exception {
 
 
-			// Test that this is an ordered collection
-			if (collection.isOrderedCollection){
-				this.collection = collection
-			} else {
-				throw new Exception("CiteCollectionObjectSet: Collection ${collection.urn} is not an ordered collection.")
-			}
+    // Test that this is an ordered collection
+    if (collection.isOrderedCollection){
+      this.collection = collection
+    } else {
+      throw new Exception("CiteCollectionObjectSet: Collection ${collection.urn} is not an ordered collection.")
+    }
+    
+    //Test ccos for unique URNs
+    def testUrns = ccos.collect { it.urn.toString() } as Set 
+    if (testUrns.size() != ccos.size()) {
+      throw new Exception("CiteCollectionObjectSet: Set of Cite Collection Objects must have unique URNs.")
+    }
 
-			//Test ccos for unique URNs
-			def testUrns = ccos.collect { it.urn.toString() } as Set 
-			if (testUrns.size() != ccos.size()) {
-				throw new Exception("CiteCollectionObjectSet: Set of Cite Collection Objects must have unique URNs.")
-			}
-
-			//Test ccos for unique sequence numbers
-			def seqList = []
-			ccos.each { cco ->
-						seqList << cco.getSequence()
-			}
-			def uniquedSeqList = seqList as Set
-
-			if (uniquedSeqList.size() != ccos.size()) {
-				throw new Exception("CiteCollectionObjectSet: Set of Cite Collection Objects must have unique sequenceNumbers.")
-			}
+    //Test ccos for unique sequence numbers
+    def seqList = []
+    ccos.each { cco ->
+      seqList << cco.getSequence()
+    }
+    def uniquedSeqList = seqList as Set
+    
+    if (uniquedSeqList.size() != ccos.size()) {
+      throw new Exception("CiteCollectionObjectSet: Set of Cite Collection Objects must have unique sequenceNumbers.")
+    }
 		
-		/** Start **/	
-			// Trying to sort under both jdk7 and jdk8
+    /** Start **/	
+    // Trying to sort under both jdk7 and jdk8
+    
+    // fails on jdk7 or is it Groovy version?
+    //ccos.sort( { objA, objB -> objA.getSequence() <=> objB.getSequence() } as Comparator)*.key
+    ccos.sort {
+      CiteCollectionObject o1, CiteCollectionObject o2 -> o1.getSequence().compareTo(o2.getSequence())
+    }
 
-			// fails on jdk7 or is it Groovy version?
-			//ccos.sort( { objA, objB -> objA.getSequence() <=> objB.getSequence() } as Comparator)*.key
-			ccos.sort {
-				CiteCollectionObject o1, CiteCollectionObject o2 -> o1.getSequence().compareTo(o2.getSequence())
-			}
+    //String sequenceProp = this.collection.orderedByProp
+    //ccos.sort( { objA, objB -> objA.objectProperties[sequenceProp] <=> objB.objectProperties[sequenceProp] } as Comparator)*.key
 
-			//String sequenceProp = this.collection.orderedByProp
-			//ccos.sort( { objA, objB -> objA.objectProperties[sequenceProp] <=> objB.objectProperties[sequenceProp] } as Comparator)*.key
+    this.ccos = ccos
+    /** End **/
 
-			this.ccos = ccos
-		/** End **/
+    // get boundary urns for easy access
+    this.startUrn = ccos[0].urn
+    this.endUrn = ccos[-1].urn
 
-			// get boundary urns for easy access
-			this.startUrn = ccos[0].urn
-			this.endUrn = ccos[-1].urn
-
-			//Construct URN out of first and last cco
-			String tempUrnString = this.startUrn.toString()
-			if (this.startUrn.toString() != this.endUrn.toString() ) {
-				tempUrnString += "-${this.endUrn.getObjectWithoutCollection()}"
-			}
-			this.urn = new CiteUrn(tempUrnString)
+    //Construct URN out of first and last cco
+    String tempUrnString = this.startUrn.toString()
+    if (this.startUrn.toString() != this.endUrn.toString() ) {
+      tempUrnString += "-${this.endUrn.getObjectWithoutCollection()}"
+    }
+    this.urn = new CiteUrn(tempUrnString)
 			
-
-		}
-
+  }
+  
   /** Return the number of objects in this set.
    * @returns BigInteger
    */
-  	  public BigInteger countObjects(){
-			BigInteger howMany = this.ccos.size()
-	  }
+  public BigInteger countObjects(){
+    BigInteger howMany = this.ccos.size()
+  }
   
 }

@@ -118,6 +118,8 @@ class CiteCollection {
 	this.isOrderedCollection = false
       }
 
+      this.extendedBy = extendedBy
+
     } catch (Exception ccException) {
       throw ccException
     }
