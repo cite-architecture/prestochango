@@ -369,6 +369,7 @@ class CollectionArchive {
     return collections.values()
   }
 
+  
   /** Finds canonical ID property for collection identifed by a URN.
    * @param urn The Collection in question.
    * @returns Property for canonical identification
@@ -391,6 +392,11 @@ class CollectionArchive {
     return config.labelProp
   }
 
+  // get list of properteis of collection IDed by URN
+  ArrayList getProperties(CiteUrn urn) {
+    return this.collections[urn.toString()].collProperties
+  }
+  
   // get description of collection IDed by URN
   String getDescription(CiteUrn urn) {
     return this.collections[urn.toString()].description
@@ -424,6 +430,8 @@ class CollectionArchive {
       return config.isOrdered()
     }
   }
+
+
 
   ArrayList getVocabulary(CiteUrn urn, String propertyName){
   }
@@ -605,56 +613,7 @@ class CollectionArchive {
 
 
 
-  /* 
-  ArrayList getPropNameList(CiteUrn collectionUrn) {
-    return getPropNameList(collectionUrn.toString())
-  }
 
-
-	ArrayList getPropNameList(String collectionUrn) {
-		def config =  this.collections[collectionUrn]
-		def propList = []
-
-		if (config) {
-			config['properties'].each { p ->
-				propList.add(p['name'])
-			}
-		}
-		return propList
-	}
-
-
-
-
-	ArrayList getPropLabelList(CiteUrn collectionUrn) {
-		return getPropLabelList(collectionUrn.toString())
-	}
-
-	ArrayList getPropLabelList(String collectionUrn) {
-		def config =  this.collections[collectionUrn]
-		def propList = []
-		config['properties'].each { p ->
-			propList.add(p['label'])
-		}
-		return propList
-	}
-
-
-
-	ArrayList getPropTypeList(CiteUrn collectionUrn) {
-		return getPropTypeList(collectionUrn.toString())
-	}
-
-	ArrayList getPropTypeList(String collectionUrn) {
-		def config =  this.collections[collectionUrn]
-		def propList = []
-		config['properties'].each { p ->
-			propList.add(p['type'])
-		}
-		return propList
-	}
-
-*/
 
 	/**  Writes an RDF description, in TTL format, of the data about
 	 * a collection expressed by the Collection Inventory.
