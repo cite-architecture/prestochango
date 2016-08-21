@@ -52,6 +52,12 @@ class CollectionArchive {
   String charEnc = "UTF-8"
 
 
+  // DC metadata applying to whole archive:
+  def dcMeta = [:]
+  //  String description
+  //  String title
+  //  String rights
+
   /** Constructor for CollectionArchive using local file storage.
    * @param inv Collection inventory.
    * @param baseDir Directory where collection data are stored, 
@@ -72,9 +78,11 @@ class CollectionArchive {
 	throw invException
       }
 
+      this.dcMeta = configureMetaData(inv)
+      this.collections = configureCollections(inv)
       this.extensionsMap = mapExtensions(inv)
-      this.collections = configureFromFile(inv)
-      this.implementations = configureImplsFromFile(inv)
+
+      this.implementations = configureImplementations(inv)
 
 
       if (debug > 0) { System.err.println "Collections = " + this.collections} 
@@ -104,16 +112,26 @@ class CollectionArchive {
       System.err.println ("Could not validate inventory ${inv}")
       throw invException
     }
+    this.dcMeta = configureMetaData(inv)
     this.extensionsMap = mapExtensions(inv)
-    this.collections = configureFromFile(inv)
-    this.implementations = configureImplsFromFile(inv)
+    this.collections = configureCollections(inv)
+    this.implementations = configureImplementations(inv)
 
     if (debug > 0) { System.err.println "Configuration map = " + this.collections} 
   }
 
 
-  LinkedHashMap configureImplsFromFile(File inv) {
+  LinkedHashMap configureImplementations(File inv) {
     def impls = [:]
+    // Old timey was:
+    /*
+    String sourceType = ""
+    String source = ""
+    c[cite.source].each { src ->
+      sourceType = "${src.'@type'}"
+      source = "${src.'@value'}"
+    }
+    */
     return impls
   }
   
@@ -170,13 +188,21 @@ class CollectionArchive {
     return extensionsMap
   }
 
+
+
+  LinkedHashMap  configureMetaData(inv) {
+    def dcmetadata = [:]
+    return dcmetadata
+  }
+
+  
   /** Creates a map of the configuration data 
    * in an XML capabilities file.
    * @param f The XML capabilities file.
    * @returns A map of configuration data.
    * @throws Exception if the file could not be parsed.
    */
-  LinkedHashMap configureFromFile(File f) {
+  LinkedHashMap configureCollections(File f) {
     groovy.util.Node root 
     try {
       root = new XmlParser().parse(f)
@@ -303,11 +329,6 @@ class CollectionArchive {
       // take last one at random:
       descr = it.text()
     }
-    /*
-    if (descr == "") {
-      descr = "Collection ${collUrn}"
-      }*/
-      
 
     // can you have more than 1 ns mapping?
     String nsAbbr = "${c[cite.namespaceMapping][0].'@abbr'}"
@@ -342,72 +363,19 @@ class CollectionArchive {
 
 
 
-    // GET THIS SEPARATELY
-    /*
-    String sourceType = ""
-    String source = ""
-    c[cite.source].each { src ->
-      sourceType = "${src.'@type'}"
-      source = "${src.'@value'}"
-    }
-    */
+
   }
 
+  
   CiteCollection getCollection(CiteUrn urn) {
     return collections[urn.toString()]
   }
 
-	String getUriForExtension(String extensAbbr) 
-		throws Exception {
-		try {
-			return this.extensionsMap[extensAbbr]
 
-		} catch (Exception e) {
-			throw new Exception("CollectionArchive:  no extension ${extensAbbr} configured.")
-		}
-	}
-
-
-	/** Finds the list of enumerated values allowed for a property.
-	 * @param urn A CiteUrn identifying the collection.
-	 * @param propertyName Name of the property in question.
-	 * @returns 
-	 */
-	ArrayList getValueList(CiteUrn urn, String propertyName) {
-		def config =  this.collections[urn.toString()]
-
-		def vals = []
-		if (config) {
-			config['properties'].each { p ->
-				if (debug > 2) {
-					System.err.println "CollectionArchive:getValueList: examine property " + p
-				}
-
-				if (p['name'] == propertyName) {
-					vals = p['valueList']
-				}
-			}
-		}
-		return vals
-	}
-
-
-	/** Finds list of extensions configured
-	 * for a Collection.
-	 * @param urn The Collection in question.
-	 * @returns List of strings with the abbreviated
-	 * name for each extensions.
-	 * @throws Exception if urn is not a configured collection.
-	 */
-	ArrayList getExtensionList(CiteUrn urn) 
-	throws Exception {
-	try {
-		def config =  this.collections[urn.toString()]
-		return config['citeExtensions']
-	} catch (Exception e) {
-		throw new Exception("CollectionArchive:getExtensionList: no collection ${urn} configured.")
-	}
-	}
+  // get a list of collections
+  ArrayList getCollections() {
+    return collections.values()
+  }
 
 
   /** Finds canonical ID property for collection identifed by a URN.
@@ -428,10 +396,22 @@ class CollectionArchive {
    */
   CiteProperty getLabelProperty(CiteUrn urn) 
   throws Exception {
-     def config =  this.collections[urn.toString()]
-     System.err.println "LABEL PROP: " + config.labelProp
+    def config =  this.collections[urn.toString()]
     return config.labelProp
   }
+
+  String getDescription(CiteUrn urn) {
+    return this.collections[urn.toString()].description
+  }
+
+  String getNsAbbr(CiteUrn urn) {
+    return this.collections[urn.toString()].nsAbbr
+  }
+
+  String getNsFull(CiteUrn urn) {
+    return this.collections[urn.toString()].nsFull
+  }
+
 
 
   
@@ -512,23 +492,65 @@ class CollectionArchive {
 
 
 
+  // EXTENSIONS
+  // ORDERING
+  // VALUE LISTS
+  
+	String getUriForExtension(String extensAbbr) 
+		throws Exception {
+		try {
+			return this.extensionsMap[extensAbbr]
+
+		} catch (Exception e) {
+			throw new Exception("CollectionArchive:  no extension ${extensAbbr} configured.")
+		}
+	}
 
 
-	/** Finds name of property with long description
-	 * of the Collection.
+	/** Finds the list of enumerated values allowed for a property.
+	 * @param urn A CiteUrn identifying the collection.
+	 * @param propertyName Name of the property in question.
+	 * @returns 
+	 */
+	ArrayList getValueList(CiteUrn urn, String propertyName) {
+		def config =  this.collections[urn.toString()]
+
+		def vals = []
+		if (config) {
+			config['properties'].each { p ->
+				if (debug > 2) {
+					System.err.println "CollectionArchive:getValueList: examine property " + p
+				}
+
+				if (p['name'] == propertyName) {
+					vals = p['valueList']
+				}
+			}
+		}
+		return vals
+	}
+
+
+	/** Finds list of extensions configured
+	 * for a Collection.
 	 * @param urn The Collection in question.
-	 * @returns Name of the property.
+	 * @returns List of strings with the abbreviated
+	 * name for each extensions.
 	 * @throws Exception if urn is not a configured collection.
 	 */
-	String getTitle(CiteUrn urn) 
+	ArrayList getExtensionList(CiteUrn urn) 
 	throws Exception {
 	try {
 		def config =  this.collections[urn.toString()]
-		return config['title']
+		return config['citeExtensions']
 	} catch (Exception e) {
-		throw new Exception("CollectionArchive:getLabelProperty: no collection ${urn} configured.")
+		throw new Exception("CollectionArchive:getExtensionList: no collection ${urn} configured.")
 	}
 	}
+
+
+
+
 
 
 
@@ -538,17 +560,19 @@ class CollectionArchive {
 	 * @param urn The Collection in question.
 	 * @returns An ArrayList containing the two items.
 	 */
+
+  ///
 	ArrayList getSourcePair(CiteUrn urn) {
 		def config = this.collections[urn.toString()]
 		def pair = [config['sourceType'], config['source']]
 		return pair
 	}
 
-
+  //
 	String getDCMetadata() {
 	}
 
-
+  //
 	String getOrderedByProperty(CiteUrn urn) {
 		if (debug > 5) {
 			System.err.println "Get ordered prop for " + urn
@@ -557,13 +581,6 @@ class CollectionArchive {
 		return config['orderedBy']
 	}
 
-
-  /*
-	String getClassName(CiteUrn urn) {
-		def config =  this.collections[urn.toString()]
-		return config['className']
-	}
-  */
   
 	boolean isOrdered(CiteUrn urn) {
 		def config =  this.collections[urn.toString()]
@@ -572,43 +589,16 @@ class CollectionArchive {
 
 
 
-	//  What the heck is this supposed to mean?
-	boolean isGrouped(CiteUrn urn) {
-		def config =  this.collections[urn.toString()]
-		return (config['groupedBy']?.size() > 0)
-	}
-
-
-	// do we really want the whole collection in one NS?
-	def getNs() {
-	  //def invroot = new XmlParser().parse(this.inventory)
-
-	}
 
 
 
 
 
-	ArrayList getCollectionList() {
-	  
-		def collectionList = []
-		/*
-		def invroot = new XmlParser().parse(this.inventory)
-		def tempString
-		invroot[cite.citeCollection].each { cc ->
-			def nsMap = cc[cite.namespaceMapping][0]
-			tempString = cc.'@urn'
-			collectionList.add("${tempString}")
-			}*/
-		return collectionList
-	}
 
-
-
-	/* get ordered list of prop names */
-	ArrayList getPropNameList(CiteUrn collectionUrn) {
-		return getPropNameList(collectionUrn.toString())
-	}
+  /* 
+  ArrayList getPropNameList(CiteUrn collectionUrn) {
+    return getPropNameList(collectionUrn.toString())
+  }
 
 
 	ArrayList getPropNameList(String collectionUrn) {
@@ -654,7 +644,7 @@ class CollectionArchive {
 		return propList
 	}
 
-
+*/
 
 	/**  Writes an RDF description, in TTL format, of the data about
 	 * a collection expressed by the Collection Inventory.
