@@ -316,7 +316,6 @@ class CollectionArchive {
    */
   CiteCollection configureCollection(groovy.util.Node c) {
     CiteUrn collUrn
-
     try {
       collUrn = new CiteUrn(c.'@urn')
     } catch (Exception e) {
@@ -342,8 +341,6 @@ class CollectionArchive {
       orderingPropName = "${c.orderedBy[0].'@property'}"
     }
 
-
-    // Find these by name in array of properties
     CiteProperty idProp = findPropertyByName(collProps, c.'@canonicalId')
     if (idProp == null) {
       throw new Exception("NO PROPERTY FOR  " + c.'@canonicalId')
@@ -356,27 +353,21 @@ class CollectionArchive {
     } else {
       if (debug > 0) { System.err.println "Using labelling property " + labelProp }
     }
-    
+
     CiteProperty orderedByProp = findPropertyByName(collProps, orderingPropName)
-
+    
     return new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
-
-
-
-
   }
 
-  
+  // get a collection identified by URN
   CiteCollection getCollection(CiteUrn urn) {
     return collections[urn.toString()]
   }
 
-
-  // get a list of collections
+  // get a list of all collections in archive
   ArrayList getCollections() {
     return collections.values()
   }
-
 
   /** Finds canonical ID property for collection identifed by a URN.
    * @param urn The Collection in question.
@@ -400,18 +391,54 @@ class CollectionArchive {
     return config.labelProp
   }
 
+  // get description of collection IDed by URN
   String getDescription(CiteUrn urn) {
     return this.collections[urn.toString()].description
   }
 
+  // get namespace abbr of collection IDed by URN
   String getNsAbbr(CiteUrn urn) {
     return this.collections[urn.toString()].nsAbbr
   }
 
+  // get full namespace id of collection IDed by URN
   String getNsFull(CiteUrn urn) {
     return this.collections[urn.toString()].nsFull
   }
+  
+  
+  // ORDERING
+  CiteProperty getOrderedByProperty(CiteUrn urn) {
+    if (debug > 5) {
+      System.err.println "Get ordered prop for " + urn
+    }
+    def config =  this.collections[urn.toString()]
+    return config.orderedByProp
+  }
 
+  boolean isOrdered(CiteUrn urn) {
+    def config =  this.collections[urn.toString()]
+    if (config == null) {
+      throw new Exception("CollectionArchive: no collection " + urn)
+    } else {
+      return config.isOrdered()
+    }
+  }
+
+  ArrayList getVocabulary(CiteUrn urn, String propertyName){
+  }
+
+
+  //////// COLLCECTIONS:
+  // VALUE LISTS
+  // UNIVERAL VALUES
+  // DC METADATA
+  // RDF VERBS
+
+
+
+  
+  ////////// EXTENSIONS
 
 
   
@@ -492,9 +519,6 @@ class CollectionArchive {
 
 
 
-  // EXTENSIONS
-  // ORDERING
-  // VALUE LISTS
   
 	String getUriForExtension(String extensAbbr) 
 		throws Exception {
@@ -572,20 +596,6 @@ class CollectionArchive {
 	String getDCMetadata() {
 	}
 
-  //
-	String getOrderedByProperty(CiteUrn urn) {
-		if (debug > 5) {
-			System.err.println "Get ordered prop for " + urn
-		}
-		def config =  this.collections[urn.toString()]
-		return config['orderedBy']
-	}
-
-  
-	boolean isOrdered(CiteUrn urn) {
-		def config =  this.collections[urn.toString()]
-		return (config['orderedBy']?.size() > 0)
-	}
 
 
 

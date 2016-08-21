@@ -29,37 +29,27 @@ class TestCiteCollectionConstructorOrdered extends GroovyTestCase {
 	String nsAbbr = "testNs"
 	String nsFull = "http://www.testNs.org/datans"
 
-   String descr = "Test collection"
-    CiteCollection cc = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
+  String descr = "Test collection"
+  CiteCollection cc = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
 
 	assert cc
 	assert cc.isValid()
-/*
-    CiteCollection(
-		CiteUrn urn,
-		String canonicalIdProp,
-		String labelProp,
-		String orderedByProp,
-		String nsAbbr,
-		String nsFull,
-		ArrayList collProperties ,
-		ArrayList extendedBy)
-		*/
+  assert cc.isOrdered()
  }
-/*
+
  // Ordered colections MUST have a sequence value type of "number"
  @Test void testConstructor_badOrderProp() {
 
 	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
   String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
-	CiteProperty labelProp = new CiteProperty("label","string","description of object")
-	CiteProperty orderedByProp = new CiteProperty("seq","string","sequence")
+  CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+  CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
+	CiteProperty orderedByProp = new CiteProperty("seq",CitePropertyType.STRING,"sequence")
 
 	ArrayList collProps = [idProp, labelProp, orderedByProp]
 	ArrayList extensions = []
 
-	String orderedProp = "orderedBy"
+
 	String nsAbbr = "testNs"
 	String nsFull = "http://www.testNs.org/datans"
 
@@ -75,12 +65,11 @@ class TestCiteCollectionConstructorOrdered extends GroovyTestCase {
 
 	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
   String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
-	CiteProperty labelProp = new CiteProperty("label","string","description of object")
+  CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+  CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
 
 	ArrayList collProps = [idProp, labelProp]
 
-	String orderedProp = "orderedBy"
 	String nsAbbr = "testNs"
 	String nsFull = "http://www.testNs.org/datans"
 
@@ -88,102 +77,8 @@ class TestCiteCollectionConstructorOrdered extends GroovyTestCase {
 
 	assert cc
 	assert cc.isValid()
+  assert (! cc.isOrdered())
  }
+ 
 
- @Test void testIsOrdered() {
-
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
-  String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
-	CiteProperty labelProp = new CiteProperty("label","string","description of object")
-	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
-
-	ArrayList collProps = [idProp, labelProp, orderedByProp]
-	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
-
-	String orderedProp = "orderedBy"
-	String nsAbbr = "testNs"
-	String nsFull = "http://www.testNs.org/datans"
-
-    CiteCollection ccOrdered = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
-
-	assert ccOrdered.isValid()
-	assert ccOrdered.isOrderedCollection == true
-
-    CiteCollection ccUnordered = new CiteCollection(collUrn,descr, idProp, labelProp, null, nsAbbr, nsFull, collProps, extensions)
-
-	assert ccUnordered.isValid()
-	assert ccUnordered.isOrderedCollection == false
- }
-
- @Test void testGetPropNames() {
-
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
-  String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
-	CiteProperty labelProp = new CiteProperty("label","string","description of object")
-	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
-
-	ArrayList collProps = [idProp, labelProp, orderedByProp]
-	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
-
-	String orderedProp = "orderedBy"
-	String nsAbbr = "testNs"
-	String nsFull = "http://www.testNs.org/datans"
-
-    CiteCollection cc = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
-
-	assert cc.isValid()
-	assert cc.getPropertyNames()[0] == "urn"
-	assert cc.getPropertyNames()[1] == "label"
-	assert cc.getPropertyNames()[2] == "seq"
-
- }
- @Test void testAboutProperties() {
-
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
-  String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
-	CiteProperty labelProp = new CiteProperty("label","string","description of object")
-	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
-
-	ArrayList collProps = [idProp, labelProp, orderedByProp]
-	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
-
-	String orderedProp = "orderedBy"
-	String nsAbbr = "testNs"
-	String nsFull = "http://www.testNs.org/datans"
-
-    CiteCollection cc = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
-
-	assert cc.isValid()
-	assert cc.getPropertyNames()[0] == "urn"
-	assert cc.collProperties.size() == 3
-	assert cc.collProperties[0].propertyName == "urn"
-
-
- }
-
- @Test void testMoreAboutProperties() {
-
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
-  String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn","citeurn","canonical id")
-	CiteProperty labelProp = new CiteProperty("label","string","description of object")
-	CiteProperty orderedByProp = new CiteProperty("seq","number","sequence")
-
-	ArrayList collProps = [idProp, labelProp, orderedByProp]
-	ArrayList extensions = ["cite:CiteImage","cite:Geo"]
-
-	String orderedProp = "orderedBy"
-	String nsAbbr = "testNs"
-	String nsFull = "http://www.testNs.org/datans"
-
-    CiteCollection cc = new CiteCollection(collUrn,descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
-
-	assert cc.getPropertyType("urn") == "citeurn"
-	assert cc.getPropertyType("label") == "string"
-	assert cc.getPropertyType("seq") == "number"
-
- }*/
 }

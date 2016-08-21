@@ -123,7 +123,9 @@ class CiteCollection {
     }
   }
 
-
+  boolean isOrdered() {
+    return this.isOrderedCollection
+  }
 
   /** Evaluates configuration of this collection.
    * @returns True if configuration is valid.
