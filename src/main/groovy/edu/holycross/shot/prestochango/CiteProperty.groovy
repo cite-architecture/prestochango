@@ -34,6 +34,8 @@ class CiteProperty {
    */
   Set valueSet = []
 
+  // string expression of a single value of any type,
+  // converted to type defined in propertyType on retreival
   String singleValue = ""
   
   /** Constructor with three required values.
@@ -80,7 +82,7 @@ class CiteProperty {
    */
   Set getVocabulary()
   throws Exception {
-    if (this.propertyType != PropertyType.STRING) {
+    if (this.propertyType != CitePropertyType.STRING) {
       throw new Exception("CiteProperty: cannot get controlled vocabulary on object of type ${this.propertyType}")
     } else {
       return this.valueSet
@@ -89,21 +91,23 @@ class CiteProperty {
 
 
   Object getSingleValue() {
-    if (this.singleValue  == "") {
+    if (this.singleValue  == null) {
       throw new Exception("Single value note defined for property ${propertyName}")
     }
+    println "GETTING SINGLE VAL FOR " + this.propertyType
     switch (this.propertyType) {
-    case (PropertyType.CITE_URN):
+    case (CitePropertyType.CITE_URN):
+    
     try {
       return new CiteUrn(this.singleValue)
     } catch(Exception e) {
-      System.err.println this.singleValue + " is not a valid CITE URN"
+      System.err.println "Single value " + this.singleValue + " is not a valid CITE URN"
       throw e
     }
     break
 
 
-    case (PropertyType.CTS_URN):
+    case (CitePropertyType.CTS_URN):
     try {
       return new CtsUrn(this.singleValue)
     } catch(Exception e) {
@@ -112,12 +116,12 @@ class CiteProperty {
     }
     break
 
-    case (PropertyType.MARKDOWN):
-    case (PropertyType.STRING):
+    case (CitePropertyType.MARKDOWN):
+    case (CitePropertyType.STRING):
     return this.singleValue
     break
 
-    case (PropertyType.NUM):
+    case (CitePropertyType.NUM):
     DecimalFormatSymbols symbols = new DecimalFormatSymbols();
     symbols.setGroupingSeparator(',');
     symbols.setDecimalSeparator('.');
@@ -129,12 +133,62 @@ class CiteProperty {
     break
 
 
-    case (PropertyType.BOOLEAN):
+    case (CitePropertyType.BOOLEAN):
     return this.singleValue.toBoolean()
     break
     
     }
   }
+
+
+
+
+
+
+      /*
+    switch (this.propertyType) {
+    case (CitePropertyType.CITE_URN):
+    try {
+      return new CiteUrn(this.singleValue)
+    } catch(Exception e) {
+      System.err.println this.singleValue + " is not a valid CITE URN"
+      throw e
+    }
+    break
+
+
+    case (CitePropertyType.CTS_URN):
+    try {
+      return new CtsUrn(this.singleValue)
+    } catch(Exception e) {
+      System.err.println this.singleValue + " is not a valid CTS URN"
+      throw e
+    }
+    break
+
+    case (CitePropertyType.MARKDOWN):
+    case (CitePropertyType.STRING):
+    return this.singleValue
+    break
+
+    case (CitePropertyType.NUM):
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+    symbols.setGroupingSeparator(',');
+    symbols.setDecimalSeparator('.');
+    String pattern = "#,##0.0#";
+    DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
+    decimalFormat.setParseBigDecimal(true);
+    // parse the string
+    return (BigDecimal) decimalFormat.parse(this.singleValue)
+    break
+
+
+    case (CitePropertyType.BOOLEAN):
+    return this.singleValue.toBoolean()
+    break
+    
+    }*/
+
 
   
   /** Overrides default. */
