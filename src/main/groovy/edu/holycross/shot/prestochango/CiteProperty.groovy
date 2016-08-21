@@ -89,7 +89,10 @@ class CiteProperty {
     }
   }
 
+  
+ 
 
+  // Creates appropriate type of object from the "universal value" string.
   Object getSingleValue() {
     if (this.singleValue  == null) {
       throw new Exception("Single value note defined for property ${propertyName}")
@@ -97,11 +100,11 @@ class CiteProperty {
     println "GETTING SINGLE VAL FOR " + this.propertyType
     switch (this.propertyType) {
     case (CitePropertyType.CITE_URN):
-    
+    println "CONVERT STRING " + this.singleValue + " to CITE_URN"
     try {
       return new CiteUrn(this.singleValue)
     } catch(Exception e) {
-      System.err.println "Single value " + this.singleValue + " is not a valid CITE URN"
+      System.err.println "Single value '" + this.singleValue + "' is not a valid CITE URN"
       throw e
     }
     break
@@ -139,57 +142,6 @@ class CiteProperty {
     
     }
   }
-
-
-
-
-
-
-      /*
-    switch (this.propertyType) {
-    case (CitePropertyType.CITE_URN):
-    try {
-      return new CiteUrn(this.singleValue)
-    } catch(Exception e) {
-      System.err.println this.singleValue + " is not a valid CITE URN"
-      throw e
-    }
-    break
-
-
-    case (CitePropertyType.CTS_URN):
-    try {
-      return new CtsUrn(this.singleValue)
-    } catch(Exception e) {
-      System.err.println this.singleValue + " is not a valid CTS URN"
-      throw e
-    }
-    break
-
-    case (CitePropertyType.MARKDOWN):
-    case (CitePropertyType.STRING):
-    return this.singleValue
-    break
-
-    case (CitePropertyType.NUM):
-    DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-    symbols.setGroupingSeparator(',');
-    symbols.setDecimalSeparator('.');
-    String pattern = "#,##0.0#";
-    DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
-    decimalFormat.setParseBigDecimal(true);
-    // parse the string
-    return (BigDecimal) decimalFormat.parse(this.singleValue)
-    break
-
-
-    case (CitePropertyType.BOOLEAN):
-    return this.singleValue.toBoolean()
-    break
-    
-    }*/
-
-
   
   /** Overrides default. */
   String toString() {

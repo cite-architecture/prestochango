@@ -167,14 +167,14 @@ class CiteCollection {
     return cpt
   }
 
+  CiteProperty propertyForName (String propName) {
+    return properties.find {it.propertyName == propName}
+  }
+  
+  boolean hasVocabList(String propName) {
 
-  /** Returns an string identifying the Full Namespace of a given property
-	* @param String property name
-   * @returns String
-   */
+  }
 
-
-  //FIX
   public String getNsFull() {
     return this.nsFull
   }

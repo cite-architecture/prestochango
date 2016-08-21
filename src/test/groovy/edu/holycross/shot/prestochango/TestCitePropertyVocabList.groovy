@@ -35,7 +35,7 @@ class TestCitePropertyVocabList extends GroovyTestCase {
     assert shouldFail {
       def vocabList = testProp.getVocabulary()
     }
-    //assert testProp.rdf.uri == "http://www.homermultitext.org/cite/rdf/citeimage"
+  
 	}
 
 }

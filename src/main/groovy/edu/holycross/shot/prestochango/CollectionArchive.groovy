@@ -433,8 +433,8 @@ class CollectionArchive {
 
 
 
-  ArrayList getVocabulary(CiteUrn urn, String propertyName){
-  }
+  //ArrayList getVocabulary(CiteUrn urn, String propertyName){
+  //}
 
 
   //////// COLLCECTIONS:

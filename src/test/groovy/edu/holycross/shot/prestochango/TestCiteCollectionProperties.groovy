@@ -81,6 +81,28 @@ class TestCiteCollectionProperties extends GroovyTestCase {
 	assert cc.getPropertyType("urn") == CitePropertyType.CITE_URN
 	assert cc.getPropertyType("label") == CitePropertyType.STRING
 	assert cc.getPropertyType("seq") == CitePropertyType.NUM
+ }
+
+
+ @Test void findByName() {
+
+   CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+  String descr = "Test collection"
+  CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+  CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
+  CiteProperty orderedByProp = new CiteProperty("seq",CitePropertyType.NUM,"sequence")
+ ArrayList collProps = [idProp, labelProp, orderedByProp]
+ ArrayList extensions = ["cite:CiteImage","cite:Geo"]
+
+ String orderedProp = "orderedBy"
+ String nsAbbr = "testNs"
+ String nsFull = "http://www.testNs.org/datans"
+
+  CiteCollection cc = new CiteCollection(collUrn,descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
+
+  def prop =cc.propertyForName("urn")
+  assert prop.CitePropertyType == CitePropertyType.CITE_URN
+  assert prop.label == "canonical id"
 
  }
 }
