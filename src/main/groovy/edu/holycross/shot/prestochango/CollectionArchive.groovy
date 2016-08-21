@@ -2,14 +2,11 @@ package edu.holycross.shot.prestochango
 
 import edu.harvard.chs.cite.CiteUrn
 
-//import au.com.bytecode.opencsv.CSVReader
-
 import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 
 import org.apache.commons.io.FilenameUtils
-//import edu.holycross.shot.prestochango.CiteCollectionSet
 
 /** A CollectionArchive consists of an inventory and a data repository.
  */
@@ -51,12 +48,9 @@ class CollectionArchive {
   /** Default character encoding, can be reset dynamically. */
   String charEnc = "UTF-8"
 
-
-  // DC metadata applying to whole archive:
+  /** HashMap of three Dublin Core metadata values for the archive: 
+   * description, title and rights */
   def dcMeta = [:]
-  //  String description
-  //  String title
-  //  String rights
 
   /** Constructor for CollectionArchive using local file storage.
    * @param inv Collection inventory.
@@ -83,7 +77,6 @@ class CollectionArchive {
       this.extensionsMap = mapExtensions(inv)
 
       this.implementations = configureImplementations(inv)
-
 
       if (debug > 0) { System.err.println "Collections = " + this.collections} 
 
@@ -433,12 +426,13 @@ class CollectionArchive {
 
 
 
-  //ArrayList getVocabulary(CiteUrn urn, String propertyName){
-  //}
+  ArrayList getVocabulary(CiteUrn urn, String propertyName){
+    return this.collections[urn.toString()].getVocabList(propertyName)
+  }
 
 
   //////// COLLCECTIONS:
-  // VALUE LISTS
+
   // UNIVERAL VALUES
   // DC METADATA
   // RDF VERBS
@@ -536,30 +530,6 @@ class CollectionArchive {
 		} catch (Exception e) {
 			throw new Exception("CollectionArchive:  no extension ${extensAbbr} configured.")
 		}
-	}
-
-
-	/** Finds the list of enumerated values allowed for a property.
-	 * @param urn A CiteUrn identifying the collection.
-	 * @param propertyName Name of the property in question.
-	 * @returns 
-	 */
-	ArrayList getValueList(CiteUrn urn, String propertyName) {
-		def config =  this.collections[urn.toString()]
-
-		def vals = []
-		if (config) {
-			config['properties'].each { p ->
-				if (debug > 2) {
-					System.err.println "CollectionArchive:getValueList: examine property " + p
-				}
-
-				if (p['name'] == propertyName) {
-					vals = p['valueList']
-				}
-			}
-		}
-		return vals
 	}
 
 
@@ -1292,7 +1262,7 @@ class CollectionArchive {
 	throws Exception {
 
 	if (includePrefix) {
-		ttl.append(prefix, charEnc)
+	  ttl.append(prefix, charEnc)
 	}
 	ttl.append(turtlizeInventory(), charEnc)
 

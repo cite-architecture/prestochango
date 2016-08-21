@@ -167,12 +167,25 @@ class CiteCollection {
     return cpt
   }
 
-  CiteProperty propertyForName (String propName) {
-    return properties.find {it.propertyName == propName}
+  CiteProperty propertyForName (String propName)
+  throws Exception {
+    CiteProperty prop = this.collProperties.find {it.propertyName == propName}
+    if (prop == null) {
+      throw new Exception("CiteCollection: no property named  '" + propName +"'")
+    } else {
+      return prop
+    }
   }
   
-  boolean hasVocabList(String propName) {
+  boolean hasVocabList(String propName)
+  throws Exception {
+    return propertyForName(propName).valueSet.size() > 0
+  }
 
+
+  Set getVocabList(String propName)
+  throws Exception {
+    return propertyForName(propName).valueSet
   }
 
   public String getNsFull() {
