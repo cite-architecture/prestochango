@@ -10,7 +10,7 @@ title: prestochango
 Version numbers follow [semantic versioning](http://semver.org/).  The 2.x series of releases is a ground-up rewrite with cleaner organization of fundamental objects in the library.  Version 2.0 introduces the basic objects; version 2.1 is planned to add serialization as RDF.
 
 
-
+A binary package of version 2.x is available from the maven repository at `beta.hpcc.uh.edu/nexus`.  It was compiled for Java 8.
 
 ## Documentation
 
