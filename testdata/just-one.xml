@@ -10,7 +10,7 @@
 
 
     <!-- IMAGE DATA FROM HMT Collections ********************   -->
-    <citeCollection canonicalId="Image" label="Caption" urn="urn:cite:hmt:vaimg">
+    <citeCollection canonicalId="Image" label="Label" urn="urn:cite:hmt:vaimg">
         <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
 
         <extendedBy extension="cite:CiteImage"/>
