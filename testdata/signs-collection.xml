@@ -18,7 +18,7 @@
         <dc:rights>All data in this collection are available under the terms of the Creative Commons
             Attribution-Non-Commercial 3.0 Unported License,
             http://creativecommons.org/licenses/by-nc/3.0/deed.en_US</dc:rights>
-        <source type="file" value="criticalsigns.tsv"/>
+        <source type="file" value="tsvs/criticalsigns.tsv"/>
         <citeProperty label="URN" name="URN" type="citeurn"/>
         <citeProperty label="English name" name="EnglishName" type="string"/>
         <citeProperty label="Greek name" name="GreekName" type="string"/>

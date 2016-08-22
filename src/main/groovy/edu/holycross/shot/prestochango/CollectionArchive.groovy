@@ -79,7 +79,7 @@ class CollectionArchive {
       this.collections = configureCollections(inv)
       this.extensionsMap = mapExtensions(inv)
 
-      this.dataSources = configureDataSources(inv)
+      this.dataSources = configureDataSources(inv, baseDir)
 
       if (debug > 0) { System.err.println "Collections = " + this.collections} 
 
@@ -111,13 +111,15 @@ class CollectionArchive {
     this.dcMeta = configureMetaData(inv)
     this.extensionsMap = mapExtensions(inv)
     this.collections = configureCollections(inv)
-    this.dataSources = configureDataSources(inv)
+    this.dataSources = configureDataSources(inv, baseDir)
 
     if (debug > 0) { System.err.println "Configuration map = " + this.collections} 
   }
 
 
-  LinkedHashMap configureDataSources(File inv) {
+  /** 
+   */
+  LinkedHashMap configureDataSources(File inv, File baseDir) {
     groovy.util.Node root 
     try {
       root = new XmlParser().parse(inv)
@@ -128,19 +130,19 @@ class CollectionArchive {
     def configuredSources = [:]
     root[cite.citeCollection].each { c ->
       if (debug > 0) { System.err.println "Configure data source for " + c.'@urn'}
-      configuredSources.putAt("${c.'@urn'}", configureDataSource(c))
+      configuredSources.putAt("${c.'@urn'}", configureDataSource(c, baseDir))
     }
     return configuredSources
   }
 
 
   // configure a single collection
-  CiteDataSource configureDataSource(groovy.util.Node c) {
+  CiteDataSource configureDataSource(groovy.util.Node c, File baseDir) {
     CiteDataSource cds
     c[cite.source].each { src ->
       switch (src.'@type') {
       case "file":
-      File f = new File(baseDirectory,src.'@value')
+      File f = new File(baseDir,src.'@value')
       cds = new LocalFileSource(f)
       break
       
@@ -473,7 +475,6 @@ class CollectionArchive {
     return this.collections[urn.toString()].nsFull
   }
   
-  
   // ORDERING
   CiteProperty getOrderedByProperty(CiteUrn urn) {
     if (debug > 5) {
@@ -516,34 +517,7 @@ class CollectionArchive {
 
 
 
-
-
-
-
-
-
-
-  
-  //////// COLLCECTIONS: VERSION 2.0 TESTS
-  // UNIVERSAL VALUES
-
-
-  
-
-
-
-
-
-  
-
-  
-
-
-
-  /// VERSION 2.1 TESTS:
-  // DC METADATA
-
-
+  /*
   
 	String getUriForExtension(String extensAbbr) 
 		throws Exception {
@@ -555,7 +529,9 @@ class CollectionArchive {
 		}
 	}
 
+  */
 
+  
 	/** Finds list of extensions configured
 	 * for a Collection.
 	 * @param urn The Collection in question.
@@ -563,6 +539,9 @@ class CollectionArchive {
 	 * name for each extensions.
 	 * @throws Exception if urn is not a configured collection.
 	 */
+
+  ///
+  /*
 	ArrayList getExtensionList(CiteUrn urn) 
 	throws Exception {
 	try {
@@ -573,29 +552,10 @@ class CollectionArchive {
 	}
 	}
 
+  */
 
 
 
-
-
-
-	/** Finds a single pairing of source type and source name
-	 * for a Collection.  Currently, only 'file' source type is
-	 * implemented, and source name should be a local file name.
-	 * @param urn The Collection in question.
-	 * @returns An ArrayList containing the two items.
-	 */
-
-  ///
-	ArrayList getSourcePair(CiteUrn urn) {
-		def config = this.collections[urn.toString()]
-		def pair = [config['sourceType'], config['source']]
-		return pair
-	}
-
-  //
-	String getDCMetadata() {
-	}
 
 
 
