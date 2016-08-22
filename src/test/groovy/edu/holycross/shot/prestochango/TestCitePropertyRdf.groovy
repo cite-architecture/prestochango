@@ -14,7 +14,7 @@ class TestCitePropertyRdf extends GroovyTestCase {
 
 
 	@Test void testRdf() {
-		RdfVerb rdf = new RdfVerb("dse:illustratedBy", "dse:illustrates")
+		RdfVerb rdf = new RdfVerb("dse:illustratedBy","http://www.homermultitext.org/dse/rdf/illustratedBy/illustratedBy")
 		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
 		assert testProp
 		assert testProp.propertyName == "img"
@@ -24,7 +24,28 @@ class TestCitePropertyRdf extends GroovyTestCase {
       def vocabList = testProp.getVocabulary()
     }
     assert testProp.rdfPair.abbr == "dse:illustratedBy"
-		assert testProp.rdfPair.inverseAbbr == "dse:illustrates"
+		assert testProp.rdfPair.full == "http://www.homermultitext.org/dse/rdf/illustratedBy/illustratedBy"
 	}
 
+
+
+  	@Test void testRdf2() {
+  		RdfVerb rdf = new RdfVerb
+      (
+        "dse:illustratedBy",
+        "http://www.homermultitext.org/dse/rdf/illustratedBy/illustratedBy",
+        "dse:illustrates",
+        "http://www.homermultitext.org/dse/rdf/illustratedBy/illustrates"
+        )
+  		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
+  		assert testProp
+  		assert testProp.propertyName == "img"
+  		assert testProp.propertyType == CitePropertyType.CITE_URN
+  		assert testProp.label == "Default image"
+      assert shouldFail {
+        def vocabList = testProp.getVocabulary()
+      }
+      assert testProp.rdfPair.abbr == "dse:illustratedBy"
+  		assert testProp.rdfPair.inverseAbbr == "dse:illustrates"
+  	}
 }

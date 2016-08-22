@@ -13,13 +13,20 @@ import org.junit.Test
 class TestRdfVerb extends GroovyTestCase {
 
 
-	// Ordered colections MUST have a sequence value
+
+
 	@Test void testConstructor1() {
-    RdfVerb rdf = new RdfVerb( "dse:illustratedBy","dse:illustrates")
+    RdfVerb rdf = new RdfVerb( "dse:illustratedBy","http://www.homermultitext.org/dse/rdf/illustratedBy/illustratedBy")
     assert rdf.abbr == "dse:illustratedBy"
-		assert rdf.inverseAbbr == "dse:illustrates"
+		assert rdf.full == "http://www.homermultitext.org/dse/rdf/illustratedBy/illustratedBy"
 
 	}
 
+  	@Test void testConstructor2() {
+      RdfVerb rdf = new RdfVerb( "dse:illustratedBy","http://www.homermultitext.org/dse/rdf/illustratedBy/illustratedBy","dse:illustrates","http://www.homermultitext.org/dse/rdf/illustratedBy/illustrates")
+      assert rdf.abbr == "dse:illustratedBy"
+  		assert rdf.inverseAbbr == "dse:illustrates"
+
+  	}
 
 }
