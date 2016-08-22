@@ -45,19 +45,20 @@
             label="Comments"
             name="Comments"
             type="string">
-            <indexRelation rdfverb="rdf:label"/>
+        	<indexRelation rdfAbbr="rdfs:label" rdfFull="http://www.w3.org/2000/01/rdf-schema#"/>
         </citeProperty>
         <citeProperty
             label="Visual evidence"
             name="VisualEvidence"
             type="citeurn">
-        <indexRelation rdfverb="dse:illustratedBy" inverseverb="dse:illustrates"/>
+        	<indexRelation rdfAbbr="dse:illustratedBy"  rdfFull="http://www.homermultitext.org/dse/rdf/illustratedBy" inverseAbbr="dse:illustrates" inverseFull="http://www.homermultitext.org/dse/rdf/illustrates"/>
         </citeProperty>
         <citeProperty
             label="Folio URN"
             name="FolioUrn"
             type="citeurn">
-            <indexRelation rdfverb="dse:appearsOn" inverseverb="dse:hasOnIt"/>
+        	<indexRelation rdfFull="http://www.homermultitext.org/dse/rdf/appearsOn" rdfAbbr="dse:appearsOn"  inverseFull="http://www.homermultitext.org/dse/rdf/hasOnIt"
+        		inverseAbbr="dse:hasOnIt"/>
         </citeProperty>
     </citeCollection>
     <!-- INVENTORY OF SCHOLIA: ************************************************* ********************   -->

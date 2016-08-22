@@ -30,7 +30,7 @@
         <citeProperty name="Image" label="Image URN" type="citeurn"/>
         <citeProperty name="Label" label="Caption" type="string"/>
         <citeProperty name="OtherUrn" label="Another URN" type="citeurn">
-            <indexRelation rdfverb="cite:madeUp" inverseverb="cite:upMade"/>
+            <indexRelation rdfFull="http://dev.null" rdfAbbr="cite:upMade" inverseFull="http://dev.null" inverseAbbr="cite:madeUp"/>
         </citeProperty>
         <citeProperty name="Rights" label="Rights" type="string"></citeProperty>
         <citeProperty name="testUV1" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing1" type="citeurn"></citeProperty>

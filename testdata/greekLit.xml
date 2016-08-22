@@ -26,8 +26,8 @@
         <citeProperty label="URN" name="URN" type="citeurn"/>
         <citeProperty label="CTS URN" type="ctsurn" name="CTSURN"/>
         <citeProperty label="Group URN" type="citeurn" name="GroupURN">
-            <indexRelation rdfverb="http://www.homermultitext.org/cite/rdf/inherits"
-                inverseverb="http://www.homermultitext.org/cite/rdf/isInheritedBy"/>
+            <indexRelation rdfFull = "http://www.homermultitext.org/cite/rdf/inherits" rdfAbbr="hmt:inherits"
+                inverseFull ="http://www.homermultitext.org/cite/rdf/isInheritedBy" inverseAbbr="hmt:isInheritedBy"/>
         </citeProperty>
         <citeProperty label="English Name" name="EnglishName" type="string"/>
         <citeProperty label="Latin Name" name="LatinName" type="string"/>
