@@ -4,10 +4,10 @@ package edu.holycross.shot.prestochango
 class RdfVerb  {
 
 
-  String full
-  String abbr
-  String inverseFull
-  String inverseAbbr
+  String full = null
+  String abbr = null
+  String inverseFull = null
+  String inverseAbbr = null
 
   RdfVerb( String abbreviated,String fullUri) {
     this.abbr = abbreviated

@@ -24,7 +24,11 @@ class TestCiteCollectionRdf extends GroovyTestCase {
 	CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
 
 
-  RdfVerb rdf = new RdfVerb("dse:illustratedBy", "dse:illustrates")
+  RdfVerb rdf = new RdfVerb
+  (
+      "dse:illustratedBy", "http://www.homermultitext.org/dse/rdf/illustratedBy",
+  "dse:illustrates", "http://www.homermultitext.org/dse/rdf/illustrates"
+      )
   CiteProperty img = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
 
 	ArrayList collProps = [idProp, labelProp, pageSide, img]
@@ -36,7 +40,8 @@ class TestCiteCollectionRdf extends GroovyTestCase {
 
   CiteCollection cc = new CiteCollection(collUrn, descr, idProp, labelProp, null, nsAbbr, nsFull, collProps, null)
 
-  println "RDF: " + cc.getRdf("img")
+  assert cc.getRdf("img").abbr == "dse:illustratedBy"
+  assert cc.getRdf("img").inverseAbbr == "dse:illustrates"
 
  }
 

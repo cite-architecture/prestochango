@@ -398,7 +398,7 @@ class CollectionArchive {
     }
     CiteProperty labelProp = findPropertyByName(collProps, c.'@label')
     if (labelProp == null) {
-      throw new Exception("NO PROPERTY FOR  #" + c.'@canonicalId' + "# in " + collUrn + " w properties " + collProps)
+      throw new Exception("NO PROPERTY FOR  #" + c.'@label' + "# in " + collUrn + " w properties " + collProps)
     } else {
       if (debug > 0) { System.err.println "Using labelling property " + labelProp }
     }

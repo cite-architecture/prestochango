@@ -16,9 +16,12 @@ class TestRdfVerb extends GroovyTestCase {
 
 
 	@Test void testConstructor1() {
-    RdfVerb rdf = new RdfVerb( "dse:illustratedBy","http://www.homermultitext.org/dse/rdf/illustratedBy/illustratedBy")
+    RdfVerb rdf = new RdfVerb
+    ( "dse:illustratedBy",
+    "http://www.homermultitext.org/dse/rdf/illustratedBy"
+    )
     assert rdf.abbr == "dse:illustratedBy"
-		assert rdf.full == "http://www.homermultitext.org/dse/rdf/illustratedBy/illustratedBy"
+		assert rdf.full == "http://www.homermultitext.org/dse/rdf/illustratedBy"
 
 	}
 
