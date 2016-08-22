@@ -310,17 +310,29 @@ class CollectionArchive {
       String propLabel = "${cp.'@label'}"
 
       
-      String rdfVerb = ""
-      String inverseVerb = ""
+      String rdfAbbr = ""
+      String rdfFull = ""
+      String inverseAbbr = ""
+      String inverseFull = ""
       cp[cite.indexRelation].each { idx ->
-	rdfVerb = idx.'@rdfverb'
-	if (idx.'@inverseverb') {
-	  inverseVerb = idx.'@inverseverb'
+	rdfAbbr = idx.'@rdfAbbr'
+	rdfFull = idx.'@rdfFull'
+	if (idx.'@inverseAbbr') {
+	  inverseAbbr = idx.'@inverseAbbr'
+	  inverseFull = idx.'@inverseFull'
 	}
       }
       RdfVerb rdf = null
-      if ((rdfVerb != "") && (inverseVerb != "")) {
-	rdf = new RdfVerb(rdfVerb,inverseVerb)
+      
+      if ((rdfAbbr != "")
+	  && (rdfFull != "")
+	  &&  (inverseAbbr != "")
+	  &&  (inverseFull != "")
+	 ) {
+	rdf = new RdfVerb(rdfAbbr,rdfFull,inverseAbbr,inverseFull)
+      } else if ((rdfAbbr != "")
+		 && (rdfFull != "")) {
+	rdf = new RdfVerb(rdfAbbr,rdfFull)
       }
       
       def valList = []
