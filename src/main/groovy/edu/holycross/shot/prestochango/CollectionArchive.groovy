@@ -21,9 +21,9 @@ class CollectionArchive {
    * of Collection URN.*/
   LinkedHashMap collections
 
-  /** Hash map of implementation info keyed by String value
+  /** Hash map of CiteDataSource objects keyed by String value
    * of Collection URN.*/
-  LinkedHashMap implementations
+  LinkedHashMap dataSources
 
   /** Hash map with rdf verbs for each supported extension. */
   LinkedHashMap extensionsMap = [:]
@@ -76,7 +76,7 @@ class CollectionArchive {
       this.collections = configureCollections(inv)
       this.extensionsMap = mapExtensions(inv)
 
-      this.implementations = configureImplementations(inv)
+      this.dataSources = configureDataSources(inv)
 
       if (debug > 0) { System.err.println "Collections = " + this.collections} 
 
@@ -108,24 +108,45 @@ class CollectionArchive {
     this.dcMeta = configureMetaData(inv)
     this.extensionsMap = mapExtensions(inv)
     this.collections = configureCollections(inv)
-    this.implementations = configureImplementations(inv)
+    this.dataSources = configureDataSources(inv)
 
     if (debug > 0) { System.err.println "Configuration map = " + this.collections} 
   }
 
 
-  LinkedHashMap configureImplementations(File inv) {
-    def impls = [:]
-    // Old timey was:
-    /*
-    String sourceType = ""
-    String source = ""
-    c[cite.source].each { src ->
-      sourceType = "${src.'@type'}"
-      source = "${src.'@value'}"
+  LinkedHashMap configureDataSources(File inv) {
+    groovy.util.Node root 
+    try {
+      root = new XmlParser().parse(inv)
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive: unable to parse inventory file ${f}")
     }
-    */
-    return impls
+    
+    def configuredSources = [:]
+    root[cite.citeCollection].each { c ->
+      if (debug > 0) { System.err.println "Configure data source for " + c.'@urn'}
+      configuredSources.putAt("${c.'@urn'}", configureDataSource(c))
+    }
+    return configuredSources
+  }
+
+
+  // configure a single collection
+  CiteDataSource configureDataSource(groovy.util.Node c) {
+    CiteDataSource cds
+    c[cite.source].each { src ->
+      switch (src.'@type') {
+      case "file":
+      File f = new File(baseDirectory,src.'@value')
+      cds = new LocalFileSource(f)
+      break
+      
+      default:
+      throw new Exception("CollectionArchive no implementation for data source with type " + src.'@type')
+      break
+      }
+    }
+    return cds    
   }
   
   /** Validates the XML serialization of the collection's schema
