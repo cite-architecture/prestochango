@@ -10,13 +10,13 @@ import org.junit.Test
 
 /** Class testing output of ttl from prestochango's CollectionArchive class.
 */
-class TestLocalFileImpl extends GroovyTestCase {
+class TestLocalDataSource extends GroovyTestCase {
 
 
  @Test void testCsvFile() {
    File shortFile = new File("testdata/csvs/just-one.csv")
-   LocalFileImplementation lfi = new LocalFileImplementation(shortFile)
-   def records = lfi.getRecordArray()
+   LocalFileSource lfs = new LocalFileSource(shortFile)
+   def records = lfs.getRecordArray()
    assert records.size() == 2
    def headers = ["Image", "Label", "Rights", "OtherUrn", "testBoolean", "Sequence"]
    assert records[0] == headers
@@ -24,8 +24,8 @@ class TestLocalFileImpl extends GroovyTestCase {
 
  @Test void testTabFile() {
    File shortFile = new File("testdata/tsvs/just-one.tsv")
-   LocalFileImplementation lfi = new LocalFileImplementation(shortFile)
-   def records = lfi.getRecordArray()
+   LocalFileSource lfs = new LocalFileSource(shortFile)
+   def records = lfs.getRecordArray()
    assert records.size() == 2
    def headers = ["Image", "Label", "Rights", "OtherUrn", "testBoolean", "Sequence"]
    assert records[0] == headers

@@ -1,9 +1,9 @@
 package edu.holycross.shot.prestochango
 
-public interface CollectionImplementation {
+public interface CiteDataSource {
 
   ArrayList getRecordArray()
   String toString()
-  ImplementationType implType
+  CiteDataSourceType implType
 
 }

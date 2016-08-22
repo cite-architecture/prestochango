@@ -3,16 +3,16 @@ package edu.holycross.shot.prestochango
 import edu.holycross.shot.safecsv.SafeCsvReader
 import org.apache.commons.io.FilenameUtils
 
-class LocalFileImplementation implements CollectionImplementation {
+class LocalFileSource implements CiteDataSource {
 
     File delimitedFile
-    ImplementationType implType
+    CiteDataSourceType implType
 
     String fileExtension
 
-    LocalFileImplementation(File f) {
+    LocalFileSource(File f) {
       delimitedFile = f
-      implType = ImplementationType.LOCAL_FILE
+      implType = CiteDataSourceType.LOCAL_FILE
     }
 
     /** Reads delimited file and returns an array of records,
@@ -23,11 +23,11 @@ class LocalFileImplementation implements CollectionImplementation {
       case "csv":
       return getCsvAsArray()
       break
-      
+
       case "tsv":
       return getTabAsArray()
       break
-      
+
       default:
       throw new Exception("Unsupported filename extension in " + delimitedString)
       break
@@ -48,7 +48,7 @@ class LocalFileImplementation implements CollectionImplementation {
     return records
    }
 
-  
+
    String toString() {
      return "Collection implemented in local file " + delimitedFile
    }
