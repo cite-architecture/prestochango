@@ -52,7 +52,7 @@ class CiteCollectionObject {
 				break;
 				case "ctsurn":
 					try {
-					    CiteUrn tcts = new CtsUrn(value)
+					    CtsUrn tcts = new CtsUrn(value)
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CTS URN. " + e)
 					}
