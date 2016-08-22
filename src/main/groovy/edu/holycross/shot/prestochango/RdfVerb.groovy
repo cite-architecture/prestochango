@@ -4,12 +4,12 @@ package edu.holycross.shot.prestochango
 class RdfVerb  {
 
 
-    String uri
-    String abbr
+  String abbr
+  String inverseAbbr
 
-    RdfVerb(String full, String abbreviated) {
-      this.uri = full
+  RdfVerb( String abbreviated,String inverseAbbreviation) {
       this.abbr = abbreviated
+      this.inverseAbbr = inverseAbbreviation
     }
 
 }

@@ -15,9 +15,10 @@ class TestRdfVerb extends GroovyTestCase {
 
 	// Ordered colections MUST have a sequence value
 	@Test void testConstructor1() {
-    RdfVerb rdf = new RdfVerb("http://www.homermultitext.org/cite/rdf/citeimage", "citeimg")
-    assert rdf.abbr == "citeimg"
-		assert rdf.uri == "http://www.homermultitext.org/cite/rdf/citeimage"
+    RdfVerb rdf = new RdfVerb( "dse:illustratedBy","dse:illustrates")
+    assert rdf.abbr == "dse:illustratedBy"
+		assert rdf.inverseAbbr == "dse:illustrates"
+
 	}
 
 
