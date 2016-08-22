@@ -25,6 +25,11 @@ class CollectionArchive {
    * of Collection URN.*/
   LinkedHashMap dataSources
 
+  /** HashMap of three Dublin Core metadata values for the archive: 
+   * description, title and rights */
+  def dcMeta = [:]
+
+  
   /** Hash map with rdf verbs for each supported extension. */
   LinkedHashMap extensionsMap = [:]
 
@@ -48,9 +53,7 @@ class CollectionArchive {
   /** Default character encoding, can be reset dynamically. */
   String charEnc = "UTF-8"
 
-  /** HashMap of three Dublin Core metadata values for the archive: 
-   * description, title and rights */
-  def dcMeta = [:]
+
 
   /** Constructor for CollectionArchive using local file storage.
    * @param inv Collection inventory.
