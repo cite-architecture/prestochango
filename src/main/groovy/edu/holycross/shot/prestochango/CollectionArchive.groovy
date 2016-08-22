@@ -206,9 +206,41 @@ class CollectionArchive {
 
   LinkedHashMap  configureMetaData(inv) {
     def dcmetadata = [:]
+    groovy.util.Node root 
+    try {
+      root = new XmlParser().parse(inv)
+    } catch (Exception e) {
+      throw new Exception("CollectionArchive: unable to parse inventory file ${inv}")
+    }
+
+    root[cite.citeCollection].each { c ->
+      dcmetadata.putAt("${c.'@urn'}",configureDcForCollection(c))
+    }    
     return dcmetadata
   }
 
+  LinkedHashMap configureDcForCollection(groovy.util.Node c) {
+    CiteUrn collUrn
+    try {
+      collUrn = new CiteUrn(c.'@urn')
+    } catch (Exception e) {
+      System.err.println("Could not configure collection from URN value "  + c.'@urn')
+      throw e
+    }
+    def propertyHash = [:]
+    c[dc.title].each {
+      propertyHash["title"] = it.text()
+    }
+
+    c[dc.description].each {
+      propertyHash["description"] = it.text()
+    }
+
+    c[dc.rights].each {
+      propertyHash["rights"] = it.text()
+    }
+    return propertyHash
+  }
   
   /** Creates a map of the configuration data 
    * in an XML capabilities file.
