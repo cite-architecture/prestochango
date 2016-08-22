@@ -188,6 +188,11 @@ class CiteCollection {
     return propertyForName(propName).valueSet
   }
 
+  // find Rdf object for a property
+  RdfVerb getRdf(String propName) {
+    return propertyForName(propName).rdfPair
+  }
+  
   public String getNsFull() {
     return this.nsFull
   }

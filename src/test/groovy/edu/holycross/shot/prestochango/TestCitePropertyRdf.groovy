@@ -13,8 +13,8 @@ import org.junit.Test
 class TestCitePropertyRdf extends GroovyTestCase {
 
 
-	@Test void testConstructor2() {
-		RdfVerb rdf = new RdfVerb("http://www.homermultitext.org/cite/rdf/citeimage", "citeimg")
+	@Test void testRdf() {
+		RdfVerb rdf = new RdfVerb("dse:illustratedBy", "dse:illustrates")
 		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
 		assert testProp
 		assert testProp.propertyName == "img"
@@ -23,8 +23,8 @@ class TestCitePropertyRdf extends GroovyTestCase {
     assert shouldFail {
       def vocabList = testProp.getVocabulary()
     }
-    assert testProp.rdf.uri == "http://www.homermultitext.org/cite/rdf/citeimage"
-		assert testProp.rdf.abbr== "citeimg"
+    assert testProp.rdfPair.abbr == "dse:illustratedBy"
+		assert testProp.rdfPair.inverseAbbr == "dse:illustrates"
 	}
 
 }

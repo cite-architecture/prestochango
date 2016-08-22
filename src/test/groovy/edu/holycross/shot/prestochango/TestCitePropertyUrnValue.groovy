@@ -27,13 +27,13 @@ class TestCitePropertyUrnValue extends GroovyTestCase {
 
 
 	@Test void testConstructor2() {
-		RdfVerb rdf = new RdfVerb("http://www.homermultitext.org/cite/rdf/citeimage", "citeimg")
+		RdfVerb rdf = new RdfVerb("dse:illustratedBy", "dse:illustrates")
 		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
 		assert testProp
 		assert testProp.propertyName == "img"
 		assert testProp.propertyType == CitePropertyType.CITE_URN
 		assert testProp.label == "Default image"
-    assert testProp.rdf.uri == "http://www.homermultitext.org/cite/rdf/citeimage"
+    assert testProp.rdfPair.abbr == "dse:illustratedBy"
 	}
 
 }

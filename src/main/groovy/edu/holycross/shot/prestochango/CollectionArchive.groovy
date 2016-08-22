@@ -424,73 +424,49 @@ class CollectionArchive {
     }
   }
 
-
-
+  // controlled vocabulary
   ArrayList getVocabulary(CiteUrn urn, String propertyName){
     return this.collections[urn.toString()].getVocabList(propertyName)
   }
 
 
-  //////// COLLCECTIONS:
-
-  // UNIVERAL VALUES
-  // DC METADATA
+  //////// COLLCECTIONS: VERSION 2.0 TESTS
+  // UNIVERSAL VALUES
   // RDF VERBS
 
 
+  /// VERSION 2.1 TESTS:
+  // DC METADATA
+
+
+
 
   
-  ////////// EXTENSIONS
-
 
   
-	/** Finds the value of the rdfVerb for a given property.
-	 * @param urn The Collection in question.
-	 * @param propertyName Name of the property.
-	 * @returns The rdfVerb string, or null if none configured.
-	 * @throws Exception if urn is not a configured collection or
-	 * if propertyName does not exist in that collection.
-	 */
-	String getRdfVerb(CiteUrn urn, String propertyName) 
-	throws Exception {
-	String rdfVerb = null
-	def config
-	try {
-		config =  this.collections[urn.toString()]
-	} catch (Exception e) {
-		throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
-	}
-
-	boolean propertyFound
-	config['properties'].each { p ->
-		if (debug > 3) {
-			System.err.println "getRdfVerb: cf property ${p['name']} and ${propertyName}"
-		}
-		if (p['name'] == propertyName) {
-			rdfVerb =  p['rdfverb']
-			propertyFound = true
-			if (debug > 3) {
-				System.err.println "FOUND IT. ${propertyFound}"
-			}
-		}
-	}
-	if (propertyFound) {
-		return rdfVerb
-	} else {
-		throw new Exception("CollectionArchive:getRdfVerb: no property ${propertyName} in collection ${urn}")
-	}
-	}
+  /** Finds the value of the rdfVerb for a given property.
+   * @param urn The Collection in question.
+   * @param propertyName Name of the property.
+   * @returns The rdfVerb string, or null if none configured.
+   * @throws Exception if urn is not a configured collection or
+   * if propertyName does not exist in that collection.
+   */
+  String getRdfVerb(CiteUrn urn, String propertyName) 
+  throws Exception {
+    return this.collections[urn.toString()].getRdf(propertyName)
+  }
 
 
-	/** Finds the value of the inverseverb for a given property.
-	 * @param urn The Collection in question.
-	 * @param propertyName Name of the property.
-	 * @returns The inverseverb string, or null if none configured.
-	 * @throws Exception if urn is not a configured collection or
-	 * if propertyName does not exist in that collection.
-	 */
-	String getInverseVerb(CiteUrn urn, String propertyName) 
-	throws Exception {
+  /** Finds the value of the inverseverb for a given property.
+   * @param urn The Collection in question.
+   * @param propertyName Name of the property.
+   * @returns The inverseverb string, or null if none configured.
+   * @throws Exception if urn is not a configured collection or
+   * if propertyName does not exist in that collection.
+   */
+  String getInverseVerb(CiteUrn urn, String propertyName) 
+  throws Exception {
+  }/*
 	String inverseVerb = null
 	def config
 	try {
@@ -519,7 +495,7 @@ class CollectionArchive {
 	}
 	}
 
-
+   */
 
   
 	String getUriForExtension(String extensAbbr) 

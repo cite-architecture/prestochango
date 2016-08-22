@@ -26,7 +26,7 @@ class CiteProperty {
   /** A human-readable name for this property.  */
   String label
 
-  RdfVerb rdf = null
+  RdfVerb rdfPair = null
   
 
   /** Possible null set defining a controlled vocabulary list for a
@@ -53,7 +53,7 @@ class CiteProperty {
     this.propertyName = propName
     this.propertyType = propType
     this.label = propLabel
-    this.rdf = rdfVerb
+    this.rdfPair = rdfVerb
 
     if ((propType != CitePropertyType.CITE_URN) && (propType != CitePropertyType.CTS_URN))  {
       throw new Exception("Cannot create property ${propName} of type ${propType}: RDF relations only apply to URN values")

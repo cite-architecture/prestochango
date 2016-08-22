@@ -29,12 +29,12 @@ class TestCCOSet extends GroovyTestCase {
 	String orderedProp = "orderedBy"
 	String nsAbbr = "testNs"
 	String nsFull = "http://www.testNs.org/datans"
-
+/*
     CiteCollection ccOrdered = new CiteCollection(collUrn, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
     CiteCollection ccUnordered = new CiteCollection(collUrn, idProp, labelProp, null, nsAbbr, nsFull, collProps, extensions)
-
+*/
 	/* Make some objects */
-
+/*
 	CiteCollectionObject cco1 = new CiteCollectionObject(
 		new CiteUrn("urn:cite:testNs:testColl.one.v1"),
 		ccOrdered,
@@ -70,7 +70,7 @@ class TestCCOSet extends GroovyTestCase {
 		new CiteUrn("urn:cite:testNs:testColl.one.v1"),
 		new CiteUrn("urn:cite:testNs:testColl.three.v1"))
 
-
+*/
  @Test void testConstructor1() {
  }
 

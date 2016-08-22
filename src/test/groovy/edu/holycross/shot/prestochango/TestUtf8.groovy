@@ -17,6 +17,7 @@ class TestUtf8 extends GroovyTestCase {
     @Test void testCsv() {
 
 		String utfString = "ἀστερίσκος"
+    /*
         String testCsvInventory = "testdata/signs-collection.xml"
         File csvInv = new File(testCsvInventory)
 
@@ -34,7 +35,7 @@ class TestUtf8 extends GroovyTestCase {
 			  }
 		}
         System.err.println "TTL in ${testOut}"
-		assert matchedUtf
+		assert matchedUtf*/
     }
 
 
