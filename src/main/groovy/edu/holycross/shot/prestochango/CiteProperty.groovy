@@ -97,10 +97,8 @@ class CiteProperty {
     if (this.singleValue  == null) {
       throw new Exception("Single value note defined for property ${propertyName}")
     }
-    println "GETTING SINGLE VAL FOR " + this.propertyType
     switch (this.propertyType) {
     case (CitePropertyType.CITE_URN):
-    println "CONVERT STRING " + this.singleValue + " to CITE_URN"
     try {
       return new CiteUrn(this.singleValue)
     } catch(Exception e) {

@@ -279,7 +279,7 @@ class CollectionArchive {
 	citeProperty = new CiteProperty(propName,propType,propLabel)
       }
       if (rdf != null) {
-	citeProperty.setRdf(rdf)
+	citeProperty.setRdfPair(rdf)
       }
 
       if ("${cp.'@universalValue'}") {
@@ -429,73 +429,52 @@ class CollectionArchive {
     return this.collections[urn.toString()].getVocabList(propertyName)
   }
 
-
-  //////// COLLCECTIONS: VERSION 2.0 TESTS
-  // UNIVERSAL VALUES
-  // RDF VERBS
-
-
-  /// VERSION 2.1 TESTS:
-  // DC METADATA
-
-
-
-
-  
-
-  
   /** Finds the value of the rdfVerb for a given property.
    * @param urn The Collection in question.
    * @param propertyName Name of the property.
-   * @returns The rdfVerb string, or null if none configured.
+   * @returns The rdf verb, or null if none configured.
    * @throws Exception if urn is not a configured collection or
    * if propertyName does not exist in that collection.
    */
-  String getRdfVerb(CiteUrn urn, String propertyName) 
+  RdfVerb getRdfVerb(CiteUrn urn, String propertyName) 
   throws Exception {
     return this.collections[urn.toString()].getRdf(propertyName)
   }
 
 
-  /** Finds the value of the inverseverb for a given property.
-   * @param urn The Collection in question.
-   * @param propertyName Name of the property.
-   * @returns The inverseverb string, or null if none configured.
-   * @throws Exception if urn is not a configured collection or
-   * if propertyName does not exist in that collection.
-   */
-  String getInverseVerb(CiteUrn urn, String propertyName) 
-  throws Exception {
-  }/*
-	String inverseVerb = null
-	def config
-	try {
-		config =  this.collections[urn.toString()]
-	} catch (Exception e) {
-		throw new Exception("CollectionArchive:getCanonicalIdProperty: no collection ${urn} configured.")
-	}
+  Object getSingleValue(CiteUrn urn, String propertyName){
+    return this.collections[urn.toString()].getSingleValue(propertyName)
+  }
 
-	boolean propertyFound
-	config['properties'].each { p ->
-		if (debug > 3) {
-			System.err.println "getInverseVerb: cf property ${p['name']} and ${propertyName}"
-		}
-		if (p['name'] == propertyName) {
-			inverseVerb =  p['inverseverb']
-			propertyFound = true
-			if (debug > 3) {
-				System.err.println "FOUND IT. ${propertyFound}"
-			}
-		}
-	}
-	if (propertyFound) {
-		return inverseVerb
-	} else {
-		throw new Exception("CollectionArchive:getInverseVerb: no property ${propertyName} in collection ${urn}")
-	}
-	}
 
-   */
+
+
+
+
+
+
+
+
+  
+  //////// COLLCECTIONS: VERSION 2.0 TESTS
+  // UNIVERSAL VALUES
+
+
+  
+
+
+
+
+
+  
+
+  
+
+
+
+  /// VERSION 2.1 TESTS:
+  // DC METADATA
+
 
   
 	String getUriForExtension(String extensAbbr) 

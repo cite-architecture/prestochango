@@ -188,6 +188,14 @@ class CiteCollection {
     return propertyForName(propName).valueSet
   }
 
+
+  // get type-appropriate universal value for property
+  Object getSingleValue(String propName)
+  throws Exception {
+    return propertyForName(propName).getSingleValue()
+  }
+
+  
   // find Rdf object for a property
   RdfVerb getRdf(String propName) {
     return propertyForName(propName).rdfPair
