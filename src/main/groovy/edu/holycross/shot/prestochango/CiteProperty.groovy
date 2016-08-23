@@ -146,4 +146,103 @@ class CiteProperty {
     return("${this.propertyName} (${this.propertyType})")
   }
 
+
+  /** Formats a string representation of this property's
+   * CITE type for use in TTL statements.
+   * @returns A String formatted for use in TTL.
+   */
+  String typeAsRdfString() {
+    String rdf = ""
+    switch(propertyType) {
+
+    case (CitePropertyType.CITE_URN):
+    rdf = "cite:CiteUrn"
+    break
+
+    case (CitePropertyType.CTS_URN):
+    rdf = "cite:CtsUrn"
+    break
+
+    case (CitePropertyType.STRING):
+    rdf = "cite:String"
+    break
+    case (CitePropertyType.MARKDOWN):
+    rdf = "cite:Markdown"
+    break
+    case (CitePropertyType.NUM):
+    rdf = "cite:Numeric"
+    break
+    case (CitePropertyType.BOOLEAN):
+    rdf = "cite:Boolean"
+    break
+
+    default:
+    throw new Exception("CiteProperty: unrecognized type " + propertyType)
+    break
+    }
+    return rdf
+  }
+    
+  /** Formats a string representation of a value for
+   * this property for use in TTL statements.
+   * @param propValue String representation of a 
+   * value for this property.
+   * @returns A String formatted for use in TTL.
+   */
+  String asRdfString(String propValue) {
+    String objectString = null
+    
+    switch (this.propertyType) {
+		
+    case CitePropertyType.BOOLEAN:
+    if (propValue == "true") {
+      objectString = "true"
+    } else {
+      objectString = "false"
+    }
+    break
+    
+    case CitePropertyType.STRING:
+    objectString = '"' + propValue + '"'
+    break
+
+    case CitePropertyType.NUM:
+    objectString = propValue
+    break
+
+    case CitePropertyType.MARKDOWN:
+    // triple quote?
+    objectString = '"' + propValue + '"'
+    break
+
+    
+    case CitePropertyType.CITE_URN:
+    
+    try {
+      CiteUrn urn = new CiteUrn(propValue)
+    } catch (Exception e) {
+      System.err.println("CiteProperty: invalid value for CITE URN " + propValue)
+      throw e
+    }
+    objectString = '<' + propValue + '>'
+    break
+
+    case CitePropertyType.CTS_URN:
+    try {
+      CtsUrn urn = new CtsUrn(propValue)
+    } catch (Exception e) {
+      System.err.println("CiteProperty: invalid value for CTS URN " + propValue)
+      throw e
+    }
+    objectString = '<' + propValue + '>'
+    break
+
+    default : 
+    System.err.println "UNRECOGNIZED TYPE:" + propertyType
+    throw new Exception("CiteProperty: unrecognized type " + propertyType)
+    break
+    }
+    return objectString
+  }
+  
 }

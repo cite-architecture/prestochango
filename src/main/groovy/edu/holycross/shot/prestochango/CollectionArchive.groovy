@@ -627,16 +627,19 @@ class CollectionArchive {
 
 
   String turtleizeArchive() {
+    StringBuilder ttl = new StringBuilder()
     // 0. Handle ttl'ing prefix data
+    ttl.append(prefix)
+    
     // 1. Done once for whole archive:
     // expansion of extension abbr -> URI
     ttl.append(ttlExtensionMap())
-    /*		
-
-    */
 
     // 2. Ttlze each collection
-
+    collections.each { k,v ->
+      ttl.append(turtleizeCollection(v))
+    }
+    return ttl.toString()
   }
 
 
@@ -648,26 +651,79 @@ class CollectionArchive {
     }
     return ttl.toString()
   }
+
+
+
+  /** Composes TTL describing structure of a given property in
+   * a given CITE Collection.
+   * @param prop The property to describe.
+   * @param cc The Collection containing the property.
+   * @returns A String with TTL statements.
+   */
+  String ttlPropertyStructure(CiteProperty prop, CiteCollection cc) {
+    StringBuilder ttl = new StringBuilder()
+
+    String urnStr = "<${cc.urn}>"
+    String propUri = "citedata:${cc.urn.getCollection()}_${prop.propertyName}"
+    
+    ttl.append( urnStr + " cite:collProperty  " + propUri + " .\n")
+    ttl.append( propUri + " rdf:type rdf:Property .\n")
+    ttl.append( propUri + " cite:propType " + prop.typeAsRdfString() + " .\n")
+
+    return ttl.toString()
+  }
+
+
+  /** Composes TTL describing structure of a given CITE Collection.
+   * @param cc The Collection to describe.
+   * @returns A String with TTL statements.
+   */
+  String ttlCollectionStructure(CiteCollection cc) {
+    StringBuilder ttl = new StringBuilder()
+    
+    String urnStr = "<${cc.urn}>"
+    ttl.append(urnStr + " rdfs:label " + '"' + cc.description  + '" . \n')
+
+    String canonicalPropStr = "citedata:${cc.urn.getCollection()}_${cc.canonicalIdProp.propertyName}"
+    ttl.append(urnStr + " cite:idPropName " + canonicalPropStr + " . \n")
+
+    String labelPropStr =  "citedata:${cc.urn.getCollection()}_${cc.labelProp.propertyName.replaceAll(/[\n\t\s]+/,' ')}"
+    ttl.append(urnStr + " cite:labelPropName " + labelPropStr + " . \n")
+
+    cc.collProperties.each { prop ->
+      ttl.append(ttlPropertyStructure(prop, cc))
+    }
+    
+    return ttl.toString()
+  }
   
   String turtleizeCollection(CiteCollection cc) {
     StringBuilder ttl = new StringBuilder()
 
-    /*
-1. turtleize collection structure
-2. turtleize data array
+    //1. turtleize collection structure
+    ttl.append(ttlCollectionStructure(cc))
 
-Done once per collection:
-- ordering
-("<${column}> cite:ordered " + '"false" .\n') or '"true"'
-    */
+    // check for optional ordering and extensions
+    String urnStr = "<${cc.urn}>"
+    
+    // ordering
+    if (cc.isOrderedCollection) {
+      String orderingPropStr = "citedata:${cc.urn.getCollection()}_${cc.orderedByProp.propertyName}"
+      
+      ttl.append(urnStr + " cite:ordered " + '"true" .\n')
+      ttl.append(urnStr + " cite:orderingPropName " + orderingPropStr + " . \n")
+
+    } else {
+      ttl.append(urnStr + " cite:ordered " + '"false" .\n') 
+    }
+    
     // extensions supported:
-            /*
-"<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> cite:extendedBy ${tempExtensionName} . \n")
-"${tempExtensionName} cite:extends <urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> . \n")
-  */
+    ttl.append(ttlExtensionMap())
 
     
-    
+    //2. turtleize data array    
+    LocalFileSource lfs = this.dataSources[cc.urn.toString()]
+    ttl.append(turtleizeDataArray(lfs.getRecordArray(), cc))
     return ttl.toString()
   }
 
@@ -697,55 +753,15 @@ Done once per collection:
     // Compose subject-verb-object statements
     String subject = "<${objectUrn}>"
     String verb = "citedata:${objectUrn.getCollection()}_${colName}"
-
-    String objectString = null
-    switch (prop.propertyType) {
-		
-    case CitePropertyType.BOOLEAN:
-    if (propValue == "true") {
-      objectString = "true"
-    } else {
-      objectString = "false"
-    }
-    break
-    
-    case CitePropertyType.STRING:
+    String objectString = prop.asRdfString(propValue)
     // CHECK CONTROL VOCAB ON STRINGS
-    objectString = '"' + propValue + '"'
-    break
 
-    case CitePropertyType.NUM:
-    objectString = propValue
-    break
-
-    case CitePropertyType.MARKDOWN:
-    objectString = '"' + propValue + '"'
-    break
-
-    
-    case CitePropertyType.CITE_URN:
-    // check urn syntax
-    objectString = '<' + propValue + '>'
-    break
-
-    case CitePropertyType.CTS_URN:
-    // check urn syntax
-    objectString = '<' + propValue + '>'
-    break
-
-    // CITE IMAGE?
-
-    default : 
-    System.err.println "UNRECOGNIZED TYPE:" + prop.propertyType
-    break
-    
-    }
     propertyTtl.append("${subject} ${verb} ${objectString} .\n")
+
     // Check for RDF verbs on property
     if (prop.rdfPair != null) {
       propertyTtl.append(ttlRdfVerb(subject, prop.rdfPair, objectString))
     }
-
     return propertyTtl.toString()
   }
 
@@ -839,83 +855,6 @@ Done once per collection:
 //////////////////////////////////////////////////////////////////////////////////
 /// GET EXAMPLES OF TTL FROM QUARRY BELOW:  ///////////////////////////////////////
 
-
-
-
-//////////////////////////////////////////////////////////////////////////////////
-/// INVENTORY-LEVEL TTL ? ////////////////////////////////////////////////////////v
-  	/*
-  String turtlizeInventory() 
-  throws Exception {
-    StringBuffer ttl = new StringBuffer()
-
-	def invroot = new XmlParser().parse(this.inventory)
-
-	invroot[cite.extensions][cite.extension].each { extension ->
-
-		String extensionUri = extension.'@uri'
-		String extensionAbbr = extension.'@abbr'
-
-		if (debug > 0){System.err.println "CollectionArchive: examine exension ${extensionUri}" }
-		if (debug > 0){System.err.println "It has type ${extensionAbbr}" }
-
-		ttl.append("<${extensionUri}> rdf:type cite:CiteExtension .\n")
-		ttl.append("<${extensionUri}> cite:abbreviatedBy ${extensionAbbr} .\n")
-	}
-
-	invroot[cite.citeCollection].each { cc ->
-		if (!cc.'@urn') {
-			if (debug > 0){
-				System.err.println "CollectionArchive:  cannot turtlieze collection with no URN!"
-				System.err.println "Parsed record was " + cc
-			}
-			throw new Exception("No urn defined for collection.")
-		}
-		CiteUrn urn = new CiteUrn(cc.'@urn')
-		String labelProperty = getLabelProperty(urn)
-		def nsMap = cc[cite.namespaceMapping][0]
-
-		ttl.append("<${nsMap.'@uri'}> rdf:type cite:DataNs .\n")
-		ttl.append("<" + nsMap.'@uri' + "> cite:abbreviatedBy " + '"' + nsMap.'@abbr' +  '" .\n\n')
-
-		ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:type cite:CiteCollection . \n")
-		def rdfLabel = getTitle(urn).replaceAll(/\n/,'')
-
-		ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> rdf:label " + '"' + rdfLabel  + '" . \n')
-
-		ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}> cite:canonicalId citedata:${urn.getCollection()}_${cc.'@canonicalId'} . \n")
-
-		if (cc[cite.orderedBy]) {
-			ttl.append("<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:orderedBy citedata:${urn.getCollection()}_${cc[cite.orderedBy][0].'@property'} .\n")
-		}
-		ttl.append("\n")
-
-
-		// document configured properties:
-		cc[cite.citeProperty].each { prop ->
-			String propUri = "citedata:${urn.getCollection()}_${prop.'@name'}"
-			ttl.append( "<urn:cite:${nsMap.'@abbr'}:${urn.getCollection()}>  cite:collProperty  ${propUri} .\n")
-			ttl.append( "${propUri} rdf:type rdf:Property .\n")
-			ttl.append ("${propUri} cite:propLabel " + '"' + prop.'@label' +  '".\n')
-
-			switch (prop.'@type') {
-				case ("citeurn"):
-				ttl.append ("${propUri} cite:propType cite:CiteUrn .\n")
-				break
-				case ("ctsurn"):
-				ttl.append ("${propUri} cite:propType cite:CtsUrn .\n")
-				break
-
-				default:
-				ttl.append ("${propUri} cite:propType " + '"' + prop.'@type' +  '".\n')
-				break
-			}
-			ttl.append("\n")
-		}
-
-	}
-	return ttl.toString()
-	}*/
 
 
 
