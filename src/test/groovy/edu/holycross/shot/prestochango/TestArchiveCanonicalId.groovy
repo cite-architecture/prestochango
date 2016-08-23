@@ -20,6 +20,7 @@ class TestArchiveCanonicalId extends GroovyTestCase {
   CollectionArchive ccarchive = new CollectionArchive(inv, schemaFileName, new File("/dev/null"))
   CiteUrn urn = new CiteUrn("urn:cite:hmt:critsigns")
 
+  // ???
   String expectedPropertyName = "URN"
   assert ccarchive.getCanonicalIdProperty(urn).getPropertyName() == expectedPropertyName
 
