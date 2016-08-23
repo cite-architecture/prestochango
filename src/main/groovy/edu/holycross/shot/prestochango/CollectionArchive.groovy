@@ -806,7 +806,27 @@ class CollectionArchive {
     }
   }
 
+  String turtleizeUniversalValues(CiteUrn urn, CiteCollection coll) {
+    StringBuilder ttl = new StringBuilder()
+    coll.collProperties.each { p ->
+      try {
+	Object thingie = getSingleValue(p.propertyName)
+	if ((thingie instanceof java.lang.String) &&  (thingie.size() == 0)) {
+	} else {
+	  println "${p} -> " + thingie
 
+	  String subject = "<${urn}>"
+	  String verb = "citedata:${urn.getCollection()}_${p.propertyName}"
+	  String objectString = p.asRdfString("${thingie}")
+	  propertyTtl.append("${subject} ${verb} ${objectString} .\n")
+
+	}
+      } catch (Exception e) {
+	//println "No single value for " + p
+      }
+    }
+    return ttl.toString()
+  }
   
   String turtleizeOneRow(ArrayList cols, ArrayList header, CiteCollection cc)
   throws Exception {
@@ -820,7 +840,9 @@ class CollectionArchive {
     // 
     // ADD UNIVERSAL VALUE PROPERTIES
     // accessible from cc object
+    rowTtl.append(turtleizeUniversalValues(objectUrn, cc))
 
+    
     // All properties with variable values:
     cols.eachWithIndex { column, idx ->
       try {

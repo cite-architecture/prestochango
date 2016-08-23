@@ -217,6 +217,7 @@ class CiteCollection {
     return this.description + " (${this.urn})"
   }
 
+  // get an array of vlaues
   ArrayList findUniversalValues() {
     def uvals = []
     collProperties.each { p ->
