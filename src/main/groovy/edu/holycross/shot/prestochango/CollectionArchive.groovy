@@ -683,7 +683,14 @@ Done once per collection:
   }
 
 
-  
+  /** Composes a TTL representation of of a single instance of a CITE property 
+   * with data value.
+   * @param propValue String representation of the property's value.
+   * @param prop The CiteProperty this value instantiates.
+   * @param colName Name of column in data array.
+   * @param objectUrn URN of the object this data value belongs to.
+   * @returns A String of TTL.
+   */
   String turtleizeProperty(String propValue, CiteProperty prop, String colName, CiteUrn objectUrn) {
     StringBuilder propertyTtl = new StringBuilder()
 
@@ -733,21 +740,22 @@ Done once per collection:
     break
     
     }
-  
-    if (prop.rdfPair != null) {
-      propertyTtl.append(ttlRdfVerb(prop))
-    }
-
     propertyTtl.append("${subject} ${verb} ${objectString} .\n")
-    // ALSO GET:
-    // RDF verbs on property
+    // Check for RDF verbs on property
+    if (prop.rdfPair != null) {
+      propertyTtl.append(ttlRdfVerb(subject, prop.rdfPair, objectString))
+    }
 
     return propertyTtl.toString()
   }
 
-  String propertyTtl (CiteProperty prop) {
+  String ttlRdfVerb (String subjectString, RdfVerb verbs, String objectString) {
     StringBuilder ttl = new StringBuilder()
-    ttl.append()
+    ttl.append(subjectString + " " + verbs.abbr + " " + objectString + " .\n")
+    if (verbs.inverseAbbr != null) {
+      ttl.append(objectString + " " + verbs.inverseAbbr + " " + subjectString + " .\n")
+    }
+    return ttl.toString()
   }
 
   CiteUrn findCanonicalUrn(ArrayList cols, ArrayList header, String canonicalName){
