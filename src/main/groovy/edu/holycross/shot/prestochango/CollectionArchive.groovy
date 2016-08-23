@@ -686,39 +686,44 @@ Done once per collection:
   
   String turtleizeProperty(String propValue, CiteProperty prop, String colName, CiteUrn objectUrn) {
     StringBuilder propertyTtl = new StringBuilder()
-    
+
+    // Compose subject-verb-object statements
+    String subject = "<${objectUrn}>"
+    String verb = "citedata:${objectUrn.getCollection()}_${colName}"
+
+    String objectString = null
     switch (prop.propertyType) {
 		
     case CitePropertyType.BOOLEAN:
     if (propValue == "true") {
-      propertyTtl.append("<${objectUrn}> citedata:${objectUrn.getCollection()}_${colName} true .\n")
+      objectString = "true"
     } else {
-      propertyTtl.append("<${objectUrn}> citedata:${objectUrn.getCollection()}_${colName} false .\n")
+      objectString = "false"
     }
     break
-
+    
     case CitePropertyType.STRING:
     // CHECK CONTROL VOCAB ON STRINGS
-    propertyTtl.append("<${objectUrn}> citedata:${objectUrn.getCollection()}_${colName} " + '"' + propValue + '" .\n')
+    objectString = '"' + propValue + '"'
     break
 
     case CitePropertyType.NUM:
-    propertyTtl.append("<${objectUrn}> citedata:${objectUrn.getCollection()}_${colName} ${propValue} .\n")
+    objectString = propValue
     break
 
     case CitePropertyType.MARKDOWN:
-    propertyTtl.append("<${objectUrn}> citedata:${objectUrn.getCollection()}_${colName} " + '"' + propValue + '" .\n')
+    objectString = '"' + propValue + '"'
     break
 
     
     case CitePropertyType.CITE_URN:
     // check urn syntax
-    propertyTtl.append("<${objectUrn}> citedata:${objectUrn.getCollection()}_${colName} <${propValue}> .\n")
+    objectString = '<' + propValue + '>'
     break
 
     case CitePropertyType.CTS_URN:
     // check urn syntax
-     propertyTtl.append("<${objectUrn}> citedata:${objectUrn.getCollection()}_${colName} <${propValue}> .\n")
+    objectString = '<' + propValue + '>'
     break
 
     // CITE IMAGE?
@@ -726,12 +731,24 @@ Done once per collection:
     default : 
     System.err.println "UNRECOGNIZED TYPE:" + prop.propertyType
     break
+    
+    }
+  
+    if (prop.rdfPair != null) {
+      propertyTtl.append(ttlRdfVerb(prop))
+    }
+
+    propertyTtl.append("${subject} ${verb} ${objectString} .\n")
     // ALSO GET:
     // RDF verbs on property
-    }
+
     return propertyTtl.toString()
   }
 
+  String propertyTtl (CiteProperty prop) {
+    StringBuilder ttl = new StringBuilder()
+    ttl.append()
+  }
 
   CiteUrn findCanonicalUrn(ArrayList cols, ArrayList header, String canonicalName){
     CiteUrn canonical = null
