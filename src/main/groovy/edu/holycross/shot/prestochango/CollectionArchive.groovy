@@ -775,9 +775,6 @@ Done once per collection:
       return canonical
     }
   }
-  
-
-
 
   String findLabelString(ArrayList cols, ArrayList header, String labelPropName){
     String label = null
@@ -792,10 +789,9 @@ Done once per collection:
       return label
     }
   }
+
+
   
-
-
-
   String turtleizeOneRow(ArrayList cols, ArrayList header, CiteCollection cc)
   throws Exception {
     StringBuilder rowTtl = new StringBuilder()
@@ -807,7 +803,7 @@ Done once per collection:
     rowTtl.append("<${objectUrn}> rdfs:label " + '"' + objectLabel + '" .\n')
     // 
     // ADD UNIVERSAL VALUE PROPERTIES
-    //
+    // accessible from cc object
 
     // All properties with variable values:
     cols.eachWithIndex { column, idx ->

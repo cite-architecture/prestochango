@@ -216,5 +216,22 @@ class CiteCollection {
   public String toString() {
     return this.description + " (${this.urn})"
   }
+
+  ArrayList findUniversalValues() {
+    def uvals = []
+    collProperties.each { p ->
+      try {
+	Object thingie = getSingleValue(p.propertyName)
+	if ((thingie instanceof java.lang.String) &&  (thingie.size() == 0)) {
+	} else {
+	  println "${p} -> " + thingie
+	  uvals.add(thingie)
+	}
+      } catch (Exception e) {
+	println "No single value for " + p
+      }
+    }
+    return uvals
+  }
   
 }
