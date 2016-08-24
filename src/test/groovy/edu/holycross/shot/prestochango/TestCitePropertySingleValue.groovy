@@ -24,6 +24,13 @@ class TestCitePropertySingleValue extends GroovyTestCase {
 			CiteUrn retrieved = testProp.getSingleValue() as CiteUrn
 			assert retrieved.toString() == msA.toString()
 
+			CiteProperty noUniversal = new CiteProperty("RV",CitePropertyType.STRING,"recto or verso" )
+
+			def msg = shouldFail {
+				def uval = noUniversal.getSingleValue()
+			}
+      assert msg == "Single value not defined for property RV"
+
 		}
 
 
