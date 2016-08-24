@@ -29,7 +29,7 @@ class TestCitePropertySingleValue extends GroovyTestCase {
 			def msg = shouldFail {
 				def uval = noUniversal.getSingleValue()
 			}
-      assert msg == "Single value not defined for property RV"
+      assert msg == "CiteProperty: single value not defined for property RV"
 
 		}
 

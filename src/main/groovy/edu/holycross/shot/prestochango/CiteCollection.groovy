@@ -222,12 +222,9 @@ class CiteCollection {
     def uvals = []
     collProperties.each { p ->
       try {
-	Object thingie = getSingleValue(p.propertyName)
-	if ((thingie instanceof java.lang.String) &&  (thingie.size() == 0)) {
-	} else {
-	  println "${p} -> " + thingie
-	  uvals.add(thingie)
-	}
+	Object thingie = p.getSingleValue()
+	uvals.add(thingie)
+
       } catch (Exception e) {
 	println "No single value for " + p
       }

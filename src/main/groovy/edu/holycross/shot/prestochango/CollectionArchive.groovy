@@ -397,7 +397,9 @@ class CollectionArchive {
 	citeProperty.setRdfPair(rdf)
       }
 
-      if ("${cp.'@universalValue'}") {
+      if (cp.'@universalValue' != null) {
+	//println "INITIALIZING UVAL: " + cp.'@universalValue'
+	//println cp.attributes()
 	citeProperty.setSingleValue("${cp.'@universalValue'}")
       }
       propertyList.add(citeProperty)
@@ -591,9 +593,13 @@ class CollectionArchive {
    * @throws Exception if urn is not a configured collection or
    * if propertyName does not exist in that collection.
    */
-  Object getSingleValue(CiteUrn urn, String propertyName)
+  Object getSingleValue(CiteUrn collectionUrn, String propertyName)
   throws Exception {
-    return this.collections[urn.toString()].getSingleValue(propertyName)
+    CiteCollection cc = this.collections[collectionUrn.toString()]
+    Object singleVal =  cc.getSingleValue(propertyName)
+    println "CollectionArchive: Single val for ${propertyName}: " + singleVal + " (${singleVal.getClass()})"
+    println "is value ${singleVal} null? ${singleVal == null}"
+    return singleVal
   }
 
   
@@ -810,15 +816,19 @@ class CollectionArchive {
     StringBuilder ttl = new StringBuilder()
     coll.collProperties.each { p ->
       try {
-	Object thingie = getSingleValue(p.propertyName)
-	if ((thingie instanceof java.lang.String) &&  (thingie.size() == 0)) {
-	} else {
-	  println "${p} -> " + thingie
+	Object thingie = getSingleValue(coll.urn, p.propertyName)
+	//	if ((thingie instanceof java.lang.String) &&  (thingie.size() == 0)) {
+	//} else {
+	println "Is the thing null? ${thingie == null}"
+	if (thingie != null) {
+	  println "Because ${p} -> " + thingie + " ... "
 
 	  String subject = "<${urn}>"
 	  String verb = "citedata:${urn.getCollection()}_${p.propertyName}"
 	  String objectString = p.asRdfString("${thingie}")
+
 	  propertyTtl.append("${subject} ${verb} ${objectString} .\n")
+	  println "Appended to " + propertyTtl
 
 	}
       } catch (Exception e) {

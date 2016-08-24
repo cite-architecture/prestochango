@@ -38,6 +38,12 @@ class TestCiteCollectionSingleValue extends GroovyTestCase {
 
   CiteUrn actualUrn = cc.getSingleValue("ms") as CiteUrn
   assert actualUrn.toString() == "urn:cite:hmt:msA"
+
+
+  def msg = shouldFail {
+    def uval = cc.getSingleValue("urn")
+  }
+  assert msg == "CiteProperty: single value not defined for property urn"
  }
 
 

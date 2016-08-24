@@ -36,7 +36,7 @@ class CiteProperty {
 
   // string expression of a single value of any type,
   // converted to type defined in propertyType on retreival
-  String singleValue = ""
+  String singleValue = null
   
   /** Constructor with three required values.
    * @param propName Name of the property.
@@ -95,14 +95,19 @@ class CiteProperty {
   // Creates appropriate type of object from the "universal value" string.
   Object getSingleValue() {
     if (this.singleValue  == null) {
-      throw new Exception("Single value note defined for property ${propertyName}")
+      throw new Exception("CiteProperty: single value not defined for property ${propertyName}")
+    } else {
+      //println "CiteProperty ${propertyName}: single value is " + this.singleValue + " (null? ${this.singleValue == null})"
+      //println "It's a " + singleValue.getClass() + " with size " + singleValue.size()
     }
+
+    Object singleVal = null
     switch (this.propertyType) {
     case (CitePropertyType.CITE_URN):
     try {
-      return new CiteUrn(this.singleValue)
+      singleVal = new CiteUrn(this.singleValue)
     } catch(Exception e) {
-      System.err.println "Single value '" + this.singleValue + "' is not a valid CITE URN"
+      System.err.println "CiteProperty, ${propertyName}: single value '" + this.singleValue + "' is not a valid CITE URN"
       throw e
     }
     break
@@ -110,16 +115,16 @@ class CiteProperty {
 
     case (CitePropertyType.CTS_URN):
     try {
-      return new CtsUrn(this.singleValue)
+      singleVal = new CtsUrn(this.singleValue)
     } catch(Exception e) {
-      System.err.println this.singleValue + " is not a valid CTS URN"
+      System.err.println "CiteProperty, ${propertyName}: single value '" + this.singleValue + "' is not a valid CTS URN"
       throw e
     }
     break
 
     case (CitePropertyType.MARKDOWN):
     case (CitePropertyType.STRING):
-    return this.singleValue
+    singleVal = this.singleValue
     break
 
     case (CitePropertyType.NUM):
@@ -130,14 +135,18 @@ class CiteProperty {
     DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
     decimalFormat.setParseBigDecimal(true);
     // parse the string
-    return (BigDecimal) decimalFormat.parse(this.singleValue)
+    singleVal = (BigDecimal) decimalFormat.parse(this.singleValue)
     break
 
 
     case (CitePropertyType.BOOLEAN):
-    return this.singleValue.toBoolean()
+    singleVal = this.singleValue.toBoolean()
     break
-    
+    }
+    if (singleVal == null) {
+      throw new Exception("CiteProperty: single value not defined for property ${propertyName}")
+    } else {
+      return singleVal
     }
   }
   
