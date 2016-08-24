@@ -28,8 +28,7 @@ class TestArchiveTtlOlo extends GroovyTestCase {
 
     CiteCollection cc = cca.getCollection(new CiteUrn("urn:cite:hmt:critsigns"))
     println cca.oloOrdering(cc)
-    // check for one entry with verb "cite:madeUp" and
-    // one with verb "cite:upMade"
+    // check first and last values...
   }
 
 
