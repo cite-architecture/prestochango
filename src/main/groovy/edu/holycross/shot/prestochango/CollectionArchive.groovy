@@ -703,6 +703,47 @@ class CollectionArchive {
     
     return ttl.toString()
   }
+
+
+  Integer idColumnIndex(String propName, ArrayList header) {
+    Integer idx = null
+    header.eachWithIndex { val, i ->
+      if (val == propName) {
+	idx = i
+      }
+    }
+    return idx
+  }
+  
+  String oloOrdering(CiteCollection cc) {
+    StringBuilder ttl = new StringBuilder()
+
+    // Get data set for collection
+    def records = dataSources[cc.urn.toString()].getRecordArray()
+    ArrayList header = records[0] as ArrayList
+    ArrayList data = records[1..records.size()-1] as ArrayList
+
+    // Find which column has canonical ID:
+    String propName = cc.canonicalIdProp.propertyName
+    def canonicalColumn =  idColumnIndex(propName,header)
+
+    // Write olo sequencing statements:
+    def lastRec = data.size()  - 1
+    data.eachWithIndex { cols, i ->
+      String subj = "<" + cols[canonicalColumn] + ">"
+      def oloCounter = i + 1
+      ttl.append(subj + " olo:item " + oloCounter + " .\n")
+      if (i > 0) {
+	String prevId = "<" + data[i - 1][canonicalColumn] + ">"
+	ttl.append(subj + " olo:previous " + prevId + " .\n")
+      }
+      if (i < lastRec) {
+	String nextId = "<" + data[i + 1][canonicalColumn] + ">"
+	ttl.append(subj + " olo:next " + nextId + " .\n")
+      }
+    }
+    return ttl.toString()
+  }
   
   String turtleizeCollection(CiteCollection cc) {
     StringBuilder ttl = new StringBuilder()
@@ -719,7 +760,9 @@ class CollectionArchive {
       
       ttl.append(urnStr + " cite:ordered " + '"true" .\n')
       ttl.append(urnStr + " cite:orderingPropName " + orderingPropStr + " . \n")
-
+      
+      ttl.append(oloOrdering(cc))
+      
     } else {
       ttl.append(urnStr + " cite:ordered " + '"false" .\n') 
     }
@@ -731,6 +774,7 @@ class CollectionArchive {
     //2. turtleize data array    
     LocalFileSource lfs = this.dataSources[cc.urn.toString()]
     ttl.append(turtleizeDataArray(lfs.getRecordArray(), cc))
+
     return ttl.toString()
   }
 
@@ -890,239 +934,5 @@ class CollectionArchive {
     return oneRow.toString()
   }
 
-  String getADummy(String propValue, CitePropertyType propType) {
-    String objectString = null
-    switch (propType) {
-
-    case CitePropertyType.CITE_URN:
-    
-    try {
-      CiteUrn urn = new CiteUrn(propValue)
-    } catch (Exception e) {
-      System.err.println("CiteProperty: invalid value for CITE URN " + propValue)
-      throw e
-    }
-    objectString = '<' + propValue + '>'
-    break
-    case CitePropertyType.BOOLEAN:
-    if (propValue == "true") {
-      objectString = "true"
-    } else {
-      objectString = "false"
-    }
-    break
-    
-    case CitePropertyType.STRING:
-    objectString = '"' + propValue + '"'
-    break
-
-    case CitePropertyType.NUM:
-    objectString = propValue
-    break
-
-    case CitePropertyType.MARKDOWN:
-    // triple quote?
-    objectString = '"' + propValue + '"'
-    break
-
-    
-
-    case CitePropertyType.CTS_URN:
-    try {
-      CtsUrn urn = new CtsUrn(propValue)
-    } catch (Exception e) {
-      System.err.println("CiteProperty: invalid value for CTS URN " + propValue)
-      throw e
-    }
-    objectString = '<' + propValue + '>'
-    break
-
-    default:
-    objectString =  "Farcical failure on " + propValue
-    break
-    }
-    return objectString
-  }
-
-  String stupidlyDuplicatedConversion(String propValue, CitePropertyType propType) {
-    println "Plese convert ${propValue} kjvalue of type " + propType
-    return "Farcical failure"
-    /*
-    String objectString = null
-    switch (propType) {
-		
-
-    default : 
-    System.err.println "UNRECOGNIZED TYPE:" + propertyType
-    throw new Exception("CiteProperty: unrecognized type " + propertyType)
-    break
-    }
-    if (objectString == null) {
-      throw new Exception("CiteProperty ${propertyName}/${propertyType} not expressed as RDF")
-    } else {
-      //println "CiteProperty ${propertyName} returning RDF  " + objectString
-      return objectString
-      }
-    */
-  }
-
 }
-
-
-
-//////////////////////////////////////////////////////////////////////////////////
-/// GET EXAMPLES OF TTL FROM QUARRY BELOW:  ///////////////////////////////////////
-
-
-
-
- //////////////////////////////////////////////////////////////////////////////////
- ////////////////////////////  RDFING UNIVERSAL VALUE  ////////////////////////////
-  /*
-
-    collConf["properties"].each { confProp ->
-      if ((confProp["universalValue"] != null) && (confProp["universalValue"] != "null")){
-	def c = confProp["universalValue"]
-	switch (confProp["type"]) {
-
-	case "boolean":
-	if ( (c == true) || (c == "true")){
-	  oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} true .\n")
-	} else {
-	  oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} false .\n")
-	}
-	break
-
-	case "number":
-	oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} ${c} .\n")
-	
-	if (getRdfVerb(collUrn, confProp["name"])) {
-	  System.err.println "doing getRdfVerb"
-	  System.err.println "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} ${c} .\n"
-	  oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} ${c} .\n")
-	}
-	if (getInverseVerb(collUrn, confProp["name"])) {
-	  oneRow.append( "${c} ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
-	}
-	break
-
-	case "markdown":              
-	case "geojson":
-	case "string":
-	oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} " + '"' + c + '" .\n')
-	if (getRdfVerb(collUrn, confProp["name"])) {
-	  oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} " + '"' + c + '" .\n')
-	}
-	if (getInverseVerb(collUrn, confProp["name"])) {
-	  oneRow.append( "'" + c + "' ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
-	}
-
-	break
-
-	case "citeurn":
-	case "citeimg":
-	case "ctsurn":
-	oneRow.append("<${urn}> citedata:${urn.getCollection()}_${confProp['name']} <${c}> .\n")
-	
-	if (getRdfVerb(collUrn, confProp["name"])) {
-	  oneRow.append( "<${urn}> ${getRdfVerb(collUrn, confProp['name'])} <${c}> .\n")
-	}
-	if (getInverseVerb(collUrn, confProp["name"])) {
-	  oneRow.append( "<${c}> ${getInverseVerb(collUrn, confProp['name'])} <${urn}> .\n")
-	}
-	break
-
-
-	default : 
-	System.err.println "UNRECOGNIZED TYPE:" + confProp["type"]
-	break
-	}
-      }
-    }
-  */
-
-
-  //////////////////////////////////////////////////////////////////////
-  ////////////OLO TTL FOR ORDERING: ///////////////////////////////////
-  
-
-  	  /*
-	String addOloCsvData(File f, CiteUrn collUrn) {
-
-		String canonical = getCanonicalIdProperty(collUrn)
-		String label = getLabelProperty(collUrn)
-		String orderProp = getOrderedByProperty(collUrn)
-
-		def headingIndex = [:]
-		def seqs = [:]
-
-		// First, cycle though file to construct a map of sequence numbers to URNs: 
-		int count = 0
-		CSVReader reader = new CSVReader(new FileReader(f))        
-		reader.readAll().each { cols ->
-
-			if (count == 0) {
-				headingIndex = cols
-			} else if (cols.size() > 1) {
-				headingIndex.toList().eachWithIndex { h, i ->
-					if (h == orderProp) {
-						def keyCount = cols[i]
-						String urnVal
-						headingIndex.toList().eachWithIndex { h2, i2 ->
-							if (h2 == canonical) {
-								urnVal = cols[i2]
-							}
-						}
-						seqs[keyCount] = urnVal
-
-					}
-				}
-			} else {
-				// empty or not parseable
-			}
-			count++;
-		}
-		if (debug > 0) {System.err.println "Generated ${seqs.keySet().size()} sequence mappings"}
-		//then, use the sequences index to generate prev-next 
-		//statements for each object in the list: 
-		StringBuffer replyBuff = new StringBuffer()
-		def lnCount = 0
-
-
-		CSVReader reader2 = new CSVReader(new FileReader(f))        
-		reader2.readAll().each { cols ->
-			if (lnCount == 0) {
-			} else if (cols.size() > 1) {
-				headingIndex.toList().eachWithIndex { h, i ->
-					if (h == orderProp) {
-						def keyStr = cols[i]
-						String subj = seqs[keyStr]
-						String oloitem = "<${subj}> olo:item ${keyStr} .\n"
-						replyBuff.append(oloitem)
-
-						def keyCount = keyStr.toInteger()
-						def smaller = keyCount - 1
-						def larger = keyCount + 1
-
-						if (seqs[smaller.toString()] != null) {
-							String obj = seqs[smaller.toString()]
-							String prev = "<${subj}> olo:previous <${obj}> .\n"
-							replyBuff.append(prev)
-						}
-
-
-						if (seqs[larger.toString()] != null) {
-							String obj = seqs[larger.toString()]
-							String nxt = "<${subj}> olo:next <${obj}> .\n"
-							replyBuff.append(nxt)
-						}
-					}
-				}
-			}
-			lnCount++
-		}
-		return replyBuff.toString()
-	}
-
- */
 
