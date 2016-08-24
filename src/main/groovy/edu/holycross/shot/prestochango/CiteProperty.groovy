@@ -199,8 +199,8 @@ class CiteProperty {
    * @returns A String formatted for use in TTL.
    */
   String asRdfString(String propValue) {
+
     String objectString = null
-    
     switch (this.propertyType) {
 		
     case CitePropertyType.BOOLEAN:
@@ -251,7 +251,12 @@ class CiteProperty {
     throw new Exception("CiteProperty: unrecognized type " + propertyType)
     break
     }
-    return objectString
+    if (objectString == null) {
+      throw new Exception("CiteProperty ${propertyName}/${propertyType} not expressed as RDF")
+    } else {
+      //println "CiteProperty ${propertyName} returning RDF  " + objectString
+      return objectString
+      }
   }
   
 }

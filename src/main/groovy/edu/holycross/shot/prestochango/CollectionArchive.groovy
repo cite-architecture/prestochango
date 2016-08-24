@@ -1,6 +1,7 @@
 package edu.holycross.shot.prestochango
 
 import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.CtsUrn
 
 import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
@@ -597,8 +598,8 @@ class CollectionArchive {
   throws Exception {
     CiteCollection cc = this.collections[collectionUrn.toString()]
     Object singleVal =  cc.getSingleValue(propertyName)
-    println "CollectionArchive: Single val for ${propertyName}: " + singleVal + " (${singleVal.getClass()})"
-    println "is value ${singleVal} null? ${singleVal == null}"
+    //println "CollectionArchive: Single val for ${propertyName}: " + singleVal + " (${singleVal.getClass()})"
+    //println "is value ${singleVal} null? ${singleVal == null}"
     return singleVal
   }
 
@@ -819,16 +820,24 @@ class CollectionArchive {
 	Object thingie = getSingleValue(coll.urn, p.propertyName)
 	//	if ((thingie instanceof java.lang.String) &&  (thingie.size() == 0)) {
 	//} else {
-	println "Is the thing null? ${thingie == null}"
+	//println "Is the thing null? ${thingie == null}"
 	if (thingie != null) {
-	  println "Because ${p} -> " + thingie + " ... "
-
 	  String subject = "<${urn}>"
 	  String verb = "citedata:${urn.getCollection()}_${p.propertyName}"
-	  String objectString = p.asRdfString("${thingie}")
+	  /*
 
-	  propertyTtl.append("${subject} ${verb} ${objectString} .\n")
-	  println "Appended to " + propertyTtl
+	  println "Because ${p} -> " + thingie + " ... "
+	  println "Universal property: " + p
+	  println "Single val " + p.singleValue
+	  println "of type " + p.propertyType
+*/
+	  // Not sure why this assignment is necessary, but fails if
+	  // p.singleValue is passed in directly!
+	  String propVal = p.singleValue
+	  String objectString = p.asRdfString(propVal)
+	  if (debug > 0) {println "For ${p.propertyName}, obj str = " + objectString}
+	  ttl.append("${subject} ${verb} ${objectString} .\n")
+	  if (debug > 0) {println "Appended to " + ttl}
 
 	}
       } catch (Exception e) {
@@ -880,6 +889,83 @@ class CollectionArchive {
     }
     return oneRow.toString()
   }
+
+  String getADummy(String propValue, CitePropertyType propType) {
+    String objectString = null
+    switch (propType) {
+
+    case CitePropertyType.CITE_URN:
+    
+    try {
+      CiteUrn urn = new CiteUrn(propValue)
+    } catch (Exception e) {
+      System.err.println("CiteProperty: invalid value for CITE URN " + propValue)
+      throw e
+    }
+    objectString = '<' + propValue + '>'
+    break
+    case CitePropertyType.BOOLEAN:
+    if (propValue == "true") {
+      objectString = "true"
+    } else {
+      objectString = "false"
+    }
+    break
+    
+    case CitePropertyType.STRING:
+    objectString = '"' + propValue + '"'
+    break
+
+    case CitePropertyType.NUM:
+    objectString = propValue
+    break
+
+    case CitePropertyType.MARKDOWN:
+    // triple quote?
+    objectString = '"' + propValue + '"'
+    break
+
+    
+
+    case CitePropertyType.CTS_URN:
+    try {
+      CtsUrn urn = new CtsUrn(propValue)
+    } catch (Exception e) {
+      System.err.println("CiteProperty: invalid value for CTS URN " + propValue)
+      throw e
+    }
+    objectString = '<' + propValue + '>'
+    break
+
+    default:
+    objectString =  "Farcical failure on " + propValue
+    break
+    }
+    return objectString
+  }
+
+  String stupidlyDuplicatedConversion(String propValue, CitePropertyType propType) {
+    println "Plese convert ${propValue} kjvalue of type " + propType
+    return "Farcical failure"
+    /*
+    String objectString = null
+    switch (propType) {
+		
+
+    default : 
+    System.err.println "UNRECOGNIZED TYPE:" + propertyType
+    throw new Exception("CiteProperty: unrecognized type " + propertyType)
+    break
+    }
+    if (objectString == null) {
+      throw new Exception("CiteProperty ${propertyName}/${propertyType} not expressed as RDF")
+    } else {
+      //println "CiteProperty ${propertyName} returning RDF  " + objectString
+      return objectString
+      }
+    */
+  }
+
 }
 
 
