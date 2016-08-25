@@ -157,7 +157,11 @@
 		<optional>
 			<element
 				name="dc:description">
-				<text/>
+				<data
+					type="string">
+					<param
+						name="pattern">.+</param>
+				</data>
 			</element>
 		</optional>
 		<optional>
