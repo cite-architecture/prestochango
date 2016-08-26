@@ -33,6 +33,8 @@ class TestArchiveTtlCollection extends GroovyTestCase {
     // check for one entry with verb "cite:madeUp" and
     // one with verb "cite:upMade"
 
+
+    // Test for NS and NS Abbreviation
     Integer checking = 0
     String testVerb = "cite:abbreviatedBy"
     ttl.eachLine{ l ->
@@ -41,8 +43,18 @@ class TestArchiveTtlCollection extends GroovyTestCase {
           checking++
         }
     }
-
     assert checking >= 1
+
+    Integer checkingExtension = 0
+    testVerb = "cite:extendedBy"
+    ttl.eachLine{ l ->
+        if ( l.contains( testVerb )) {
+          System.err.println(l)
+          checkingExtension++
+        }
+    }
+    assert checkingExtension > 0
+
   }
 
 

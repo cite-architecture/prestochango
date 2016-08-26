@@ -698,6 +698,11 @@ class CollectionArchive {
     String nsAbbrStr = "${cc.nsAbbr}"
     ttl.append(nsFullStr + ' cite:abbreviatedBy "' + nsAbbrStr + '" . \n')
 
+    cc.extendedBy.each { em ->
+//       extensionsMap[extension.'@abbr'] = extension.'@uri'
+        ttl.append( urnStr + " cite:extendedBy " + '"' + em + '" . \n')
+    }
+
     String labelPropStr =  "citedata:${cc.urn.getCollection()}_${cc.labelProp.propertyName.replaceAll(/[\n\t\s]+/,' ')}"
     ttl.append(urnStr + " cite:labelPropName " + labelPropStr + " . \n")
 
