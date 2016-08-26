@@ -700,7 +700,7 @@ class CollectionArchive {
 
     cc.extendedBy.each { em ->
 //       extensionsMap[extension.'@abbr'] = extension.'@uri'
-        ttl.append( urnStr + " cite:extendedBy " + '"' + em + '" . \n')
+        ttl.append( urnStr + " cite:extendedBy " + em + ' . \n')
     }
 
     String labelPropStr =  "citedata:${cc.urn.getCollection()}_${cc.labelProp.propertyName.replaceAll(/[\n\t\s]+/,' ')}"
