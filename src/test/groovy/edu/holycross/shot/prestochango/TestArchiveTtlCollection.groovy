@@ -55,6 +55,16 @@ class TestArchiveTtlCollection extends GroovyTestCase {
     }
     assert checkingExtension > 0
 
+    Integer checkingPropLabel = 0
+    testVerb = "cite:propLabel"
+    ttl.eachLine{ l ->
+        if ( l.contains( testVerb )) {
+          System.err.println(l)
+          checkingPropLabel++
+        }
+    }
+    assert checkingPropLabel > 0
+
   }
 
 

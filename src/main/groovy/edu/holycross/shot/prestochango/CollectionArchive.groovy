@@ -676,6 +676,7 @@ class CollectionArchive {
     ttl.append( urnStr + " cite:collProperty  " + propUri + " .\n")
     ttl.append( propUri + " rdf:type rdf:Property .\n")
     ttl.append( propUri + " cite:propType " + prop.typeAsRdfString() + " .\n")
+    ttl.append( propUri + " cite:propLabel " + '"' + prop.label + '" .\n')
 
     return ttl.toString()
   }
