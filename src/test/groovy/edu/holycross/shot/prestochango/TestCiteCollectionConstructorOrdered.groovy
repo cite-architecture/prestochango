@@ -79,6 +79,6 @@ class TestCiteCollectionConstructorOrdered extends GroovyTestCase {
 	assert cc.isValid()
   assert (! cc.isOrdered())
  }
- 
+
 
 }

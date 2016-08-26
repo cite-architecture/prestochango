@@ -17,7 +17,7 @@ class CCOSet {
   /** CITE Collection to which this object belongs **/
   public CiteCollection collection = null
 
-  /** ArrayList of one or more CiteCollectionObjects 
+  /** ArrayList of one or more CiteCollectionObjects
 	* One object for uordered collection, more than one for ranges in an ordered collection
   **/
   public ArrayList ccos = []
@@ -37,9 +37,9 @@ class CCOSet {
     } else {
       throw new Exception("CiteCollectionObjectSet: Collection ${collection.urn} is not an ordered collection.")
     }
-    
+
     //Test ccos for unique URNs
-    def testUrns = ccos.collect { it.urn.toString() } as Set 
+    def testUrns = ccos.collect { it.urn.toString() } as Set
     if (testUrns.size() != ccos.size()) {
       throw new Exception("CiteCollectionObjectSet: Set of Cite Collection Objects must have unique URNs.")
     }
@@ -50,14 +50,14 @@ class CCOSet {
       seqList << cco.getSequence()
     }
     def uniquedSeqList = seqList as Set
-    
+
     if (uniquedSeqList.size() != ccos.size()) {
       throw new Exception("CiteCollectionObjectSet: Set of Cite Collection Objects must have unique sequenceNumbers.")
     }
-		
-    /** Start **/	
+
+    /** Start **/
     // Trying to sort under both jdk7 and jdk8
-    
+
     // fails on jdk7 or is it Groovy version?
     //ccos.sort( { objA, objB -> objA.getSequence() <=> objB.getSequence() } as Comparator)*.key
     ccos.sort {
@@ -80,14 +80,14 @@ class CCOSet {
       tempUrnString += "-${this.endUrn.getObjectWithoutCollection()}"
     }
     this.urn = new CiteUrn(tempUrnString)
-			
+
   }
-  
+
   /** Return the number of objects in this set.
    * @returns BigInteger
    */
   public BigInteger countObjects(){
     BigInteger howMany = this.ccos.size()
   }
-  
+
 }

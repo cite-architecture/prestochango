@@ -6,8 +6,7 @@
     <citeCollection canonicalId="URN" label="GreekLit Text Groups" urn="urn:cite:chs:textgroup">
         <namespaceMapping abbr="chs" uri="http://chs.harvard.edu/cite/chs"/>
         <dc:creator>The Center for Hellenic Studies of Harvard University</dc:creator>
-        <dc:description>TextGroup identifiers for ancient Greek texts transmitted by manuscript
-            copying.</dc:description>
+        <dc:description>TextGroup identifiers for ancient Greek texts transmitted by manuscript copying.</dc:description>
         <dc:rights>Public Domain</dc:rights>
         <source type="file" value="greekLit-groups.csv"/>
         <citeProperty label="URN" name="URN" type="citeurn"/>
@@ -19,8 +18,7 @@
     <citeCollection canonicalId="URN" label="GreekLit Works" urn="urn:cite:chs:work">
         <namespaceMapping abbr="chs" uri="http://chs.harvard.edu/cite/chs"/>
         <dc:creator>The Center for Hellenic Studies of Harvard University</dc:creator>
-        <dc:description>Work identifiers for ancient Greek texts transmitted by manuscript
-            copying.</dc:description>
+        <dc:description>Work identifiers for ancient Greek texts transmitted by manuscript  copying.</dc:description>
         <dc:rights>Public Domain</dc:rights>
         <source type="file" value="greekLit-works.csv"/>
         <citeProperty label="URN" name="URN" type="citeurn"/>
