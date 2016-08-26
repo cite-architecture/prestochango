@@ -695,8 +695,8 @@ class CollectionArchive {
     ttl.append(urnStr + " cite:idPropName " + canonicalPropStr + " . \n")
 
     String nsFullStr = "<${cc.nsFull}>"
-    String nsAbbrStr = "'${cc.nsAbbr}''"
-    ttl.append(urnStr + " cite:abbreviatedBy " + nsAbbrStr + " . \n")
+    String nsAbbrStr = "${cc.nsAbbr}"
+    ttl.append(nsFullStr + ' cite:abbreviatedBy "' + nsAbbrStr + '" . \n')
 
     String labelPropStr =  "citedata:${cc.urn.getCollection()}_${cc.labelProp.propertyName.replaceAll(/[\n\t\s]+/,' ')}"
     ttl.append(urnStr + " cite:labelPropName " + labelPropStr + " . \n")

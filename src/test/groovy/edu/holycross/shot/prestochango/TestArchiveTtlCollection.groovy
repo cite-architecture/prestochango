@@ -32,13 +32,14 @@ class TestArchiveTtlCollection extends GroovyTestCase {
     println "Resulting tt:\n" + ttl
     // check for one entry with verb "cite:madeUp" and
     // one with verb "cite:upMade"
-    System.err.println(cc.nsFull)
-    System.err.println(cc.nsAbbr)
 
     Integer checking = 0
     String testVerb = "cite:abbreviatedBy"
     ttl.eachLine{ l ->
-        if ( l.contains( testVerb )) { checking++ }
+        if ( l.contains( testVerb )) {
+          System.err.println(l)
+          checking++
+        }
     }
 
     assert checking >= 1
