@@ -17,7 +17,7 @@ class CollectionArchive {
 
   /** Root directory of file system containing archival files.  */
   File baseDirectory
-  
+
   /** Hash map of CiteCollection objects keyed by String value
    * of Collection URN.*/
   LinkedHashMap collections
@@ -26,11 +26,11 @@ class CollectionArchive {
    * of Collection URN.*/
   LinkedHashMap dataSources
 
-  /** HashMap of three Dublin Core metadata values for the archive: 
+  /** HashMap of three Dublin Core metadata values for the archive:
    * description, title and rights */
   def dcMeta = [:]
 
-  
+
   /** Hash map with rdf verbs for each supported extension. */
   LinkedHashMap extensionsMap = [:]
 
@@ -44,7 +44,7 @@ class CollectionArchive {
   final String prefix = """
 @prefix cite:        <http://www.homermultitext.org/cite/rdf/> .
 @prefix citedata:        <http://www.homermultitext.org/citedata/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. 
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix olo:     <http://purl.org/ontology/olo/core#> .
@@ -59,10 +59,10 @@ class CollectionArchive {
 
   /** Constructor for CollectionArchive using local file storage.
    * @param inv Collection inventory.
-   * @param baseDir Directory where collection data are stored, 
+   * @param baseDir Directory where collection data are stored,
    * one file per collection.
    */
-  CollectionArchive(File inv, String schemaFileName, File baseDir) 
+  CollectionArchive(File inv, String schemaFileName, File baseDir)
   throws Exception {
     try {
       if (!baseDir.canRead()) {
@@ -83,7 +83,7 @@ class CollectionArchive {
 
       this.dataSources = configureDataSources(inv, baseDir)
 
-      if (debug > 0) { System.err.println "Collections = " + this.collections} 
+      if (debug > 0) { System.err.println "Collections = " + this.collections}
 
     } catch (Exception e) {
       throw e
@@ -93,10 +93,10 @@ class CollectionArchive {
   /** Constructor for CollectionArchive using local file storage.
    * @param inv Collection inventory.
    * @param schemaFile Schema for inventory (an RNG file).
-   * @param baseDir Directory where collection data are stored, 
+   * @param baseDir Directory where collection data are stored,
    * one file per collection.
    */
-  CollectionArchive(File inv, File schemaFile, File baseDir) 
+  CollectionArchive(File inv, File schemaFile, File baseDir)
   throws Exception {
     if (!baseDir.canRead()) {
       throw new Exception("CollectionArchive: cannot read directory ${baseDir}")
@@ -115,7 +115,7 @@ class CollectionArchive {
     this.collections = configureCollections(inv)
     this.dataSources = configureDataSources(inv, baseDir)
 
-    if (debug > 0) { System.err.println "Configuration map = " + this.collections} 
+    if (debug > 0) { System.err.println "Configuration map = " + this.collections}
   }
 
 
@@ -126,13 +126,13 @@ class CollectionArchive {
    * @returns A map of URN values (as Strings) to CiteDataSource objects.
    */
   LinkedHashMap configureDataSources(File inv, File baseDir) {
-    groovy.util.Node root 
+    groovy.util.Node root
     try {
       root = new XmlParser().parse(inv)
     } catch (Exception e) {
       throw new Exception("CollectionArchive: unable to parse inventory file ${f}")
     }
-    
+
     def configuredSources = [:]
     root[cite.citeCollection].each { c ->
       if (debug > 0) { System.err.println "Configure data source for " + c.'@urn'}
@@ -156,21 +156,21 @@ class CollectionArchive {
       File f = new File(baseDir,src.'@value')
       cds = new LocalFileSource(f)
       break
-      
+
       default:
       throw new Exception("CollectionArchive no implementation for data source with type " + src.'@type')
       break
       }
     }
-    return cds    
+    return cds
   }
-  
+
   /** Validates the XML serialization of the collection's schema
    * against the published schema for a CITE TextInventory.
    * @param schemaFileName String name of a file with RNG schema for inventory.
    * @throws Exception if the XML does not validate.
    */
-  void validateInventory(File inventory, String schemaFileName) 
+  void validateInventory(File inventory, String schemaFileName)
   throws Exception {
     try {
       File schemaFile = new File(schemaFileName)
@@ -180,13 +180,13 @@ class CollectionArchive {
     }
   }
 
-  
+
   /** Validates the XML serialization of the collection's schema
    * against the published schema for a CITE TextInventory.
    * @param schemaFile File with RNG schema for inventory.
    * @throws Exception if the XML does not validate.
    */
-  void validateInventory(File inventory, File schemaFile) 
+  void validateInventory(File inventory, File schemaFile)
   throws Exception {
     System.setProperty("javax.xml.validation.SchemaFactory:"+XMLConstants.RELAXNG_NS_URI,  "com.thaiopensource.relaxng.jaxp.XMLSyntaxSchemaFactory");
     def factory = SchemaFactory.newInstance(XMLConstants.RELAXNG_NS_URI)
@@ -205,7 +205,7 @@ class CollectionArchive {
    * @returns A map of abbreviations (Strings) to URI Strings.
    */
   LinkedHashMap mapExtensions(File f) {
-    groovy.util.Node root 
+    groovy.util.Node root
     try {
       root = new XmlParser().parse(f)
     } catch (Exception e) {
@@ -231,7 +231,7 @@ class CollectionArchive {
    */
   LinkedHashMap  configureMetaData(inv) {
     def dcmetadata = [:]
-    groovy.util.Node root 
+    groovy.util.Node root
     try {
       root = new XmlParser().parse(inv)
     } catch (Exception e) {
@@ -240,7 +240,7 @@ class CollectionArchive {
 
     root[cite.citeCollection].each { c ->
       dcmetadata.putAt("${c.'@urn'}",configureDcForCollection(c))
-    }    
+    }
     return dcmetadata
   }
 
@@ -272,7 +272,7 @@ class CollectionArchive {
     }
     return propertyHash
   }
-  
+
 
   /** Maps URNs for each CITE Collection in the archive to
    * a CiteCollection object.
@@ -280,13 +280,13 @@ class CollectionArchive {
    * @returns A map of URN values (as Strings) to CiteCollection objects.
    */
   LinkedHashMap configureCollections(File f) {
-    groovy.util.Node root 
+    groovy.util.Node root
     try {
       root = new XmlParser().parse(f)
     } catch (Exception e) {
       throw new Exception("CollectionArchive: unable to parse inventory file ${f}")
     }
-    
+
     def configuredCollections = [:]
     root[cite.citeCollection].each { c ->
       if (debug > 0) { System.err.println "Configure collection " + c.'@urn'}
@@ -353,11 +353,11 @@ class CollectionArchive {
     ArrayList propertyList = []
     c[cite.citeProperty].each { cp ->
       CiteProperty citeProperty
-            
+
       String propName = "${cp.'@name'}"
       String propLabel = "${cp.'@label'}"
 
-      
+
       String rdfAbbr = ""
       String rdfFull = ""
       String inverseAbbr = ""
@@ -371,7 +371,7 @@ class CollectionArchive {
 	}
       }
       RdfVerb rdf = null
-      
+
       if ((rdfAbbr != "")
 	  && (rdfFull != "")
 	  &&  (inverseAbbr != "")
@@ -382,7 +382,7 @@ class CollectionArchive {
 		 && (rdfFull != "")) {
 	rdf = new RdfVerb(rdfAbbr,rdfFull)
       }
-      
+
       def valList = []
       cp[cite.valueList][cite.value].each {
 	valList.add("${it.text()}")
@@ -408,7 +408,7 @@ class CollectionArchive {
     return propertyList
   }
 
- 
+
 
   /** Finds a CiteProperty by name from a list of CiteProperty objects.
    * @param propList List of CiteProperty objects to searech.
@@ -465,12 +465,12 @@ class CollectionArchive {
     }
 
     CiteProperty orderedByProp = findPropertyByName(collProps, orderingPropName)
-    
+
     return new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
   }
 
 
-  
+
   /** Gets the CiteCollection object for
    * a collection identified by URN.
    * @param urn URN of the collection to find.
@@ -487,12 +487,12 @@ class CollectionArchive {
     return collections.values()
   }
 
-  
+
   /** Finds canonical ID property for collection identifed by a URN.
    * @param urn The Collection in question.
    * @returns Property for canonical identification
    */
-  CiteProperty getCanonicalIdProperty(CiteUrn urn) 
+  CiteProperty getCanonicalIdProperty(CiteUrn urn)
   throws Exception {
     def config =  this.collections[urn.toString()]
     return config.canonicalIdProp
@@ -504,14 +504,14 @@ class CollectionArchive {
    * @returns Name of the property.
    * @throws Exception if urn is not a configured collection.
    */
-  CiteProperty getLabelProperty(CiteUrn urn) 
+  CiteProperty getLabelProperty(CiteUrn urn)
   throws Exception {
     def config =  this.collections[urn.toString()]
     return config.labelProp
   }
 
 
-  /** Gets a list of properties for a collection 
+  /** Gets a list of properties for a collection
    * identified by URN.
    * @param urn The Collection in question.
    * @returns A list of CiteProperty objects.
@@ -521,7 +521,7 @@ class CollectionArchive {
   throws Exception {
     return this.collections[urn.toString()].collProperties
   }
-  
+
   /** Gets a description of a collection
    * identified by URN.
    * @param urn The Collection in question.
@@ -554,9 +554,9 @@ class CollectionArchive {
   throws Exception {
     return this.collections[urn.toString()].nsFull
   }
-  
+
   /** Gets a list of controlled vocabulary values
-   * for a given property in a given collection. The 
+   * for a given property in a given collection. The
    * property must be of type CitePropertyType.STRING.
    * An empty list means that any string value is allowed.
    * @param urn The Collection containing the property.
@@ -578,7 +578,7 @@ class CollectionArchive {
    * @throws Exception if urn is not a configured collection or
    * if propertyName does not exist in that collection.
    */
-  RdfVerb getRdfVerb(CiteUrn urn, String propertyName) 
+  RdfVerb getRdfVerb(CiteUrn urn, String propertyName)
   throws Exception {
     return this.collections[urn.toString()].getRdf(propertyName)
   }
@@ -603,7 +603,7 @@ class CollectionArchive {
     return singleVal
   }
 
-  
+
   // ORDERING
   CiteProperty getOrderedByProperty(CiteUrn urn) {
     def config =  this.collections[urn.toString()]
@@ -619,7 +619,7 @@ class CollectionArchive {
     }
   }
 
-  String getUriForExtension(String extensAbbr) 
+  String getUriForExtension(String extensAbbr)
   throws Exception {
     try {
       return this.extensionsMap[extensAbbr]
@@ -637,7 +637,7 @@ class CollectionArchive {
     StringBuilder ttl = new StringBuilder()
     // 0. Handle ttl'ing prefix data
     ttl.append(prefix)
-    
+
     // 1. Done once for whole archive:
     // expansion of extension abbr -> URI
     ttl.append(ttlExtensionMap())
@@ -672,7 +672,7 @@ class CollectionArchive {
 
     String urnStr = "<${cc.urn}>"
     String propUri = "citedata:${cc.urn.getCollection()}_${prop.propertyName}"
-    
+
     ttl.append( urnStr + " cite:collProperty  " + propUri + " .\n")
     ttl.append( propUri + " rdf:type rdf:Property .\n")
     ttl.append( propUri + " cite:propType " + prop.typeAsRdfString() + " .\n")
@@ -687,12 +687,16 @@ class CollectionArchive {
    */
   String ttlCollectionStructure(CiteCollection cc) {
     StringBuilder ttl = new StringBuilder()
-    
+
     String urnStr = "<${cc.urn}>"
     ttl.append(urnStr + " rdfs:label " + '"' + cc.description  + '" . \n')
 
     String canonicalPropStr = "citedata:${cc.urn.getCollection()}_${cc.canonicalIdProp.propertyName}"
     ttl.append(urnStr + " cite:idPropName " + canonicalPropStr + " . \n")
+
+    String nsFullStr = "<${cc.nsFull}>"
+    String nsAbbrStr = "'${cc.nsAbbr}''"
+    ttl.append(urnStr + " cite:abbreviatedBy " + nsAbbrStr + " . \n")
 
     String labelPropStr =  "citedata:${cc.urn.getCollection()}_${cc.labelProp.propertyName.replaceAll(/[\n\t\s]+/,' ')}"
     ttl.append(urnStr + " cite:labelPropName " + labelPropStr + " . \n")
@@ -700,7 +704,7 @@ class CollectionArchive {
     cc.collProperties.each { prop ->
       ttl.append(ttlPropertyStructure(prop, cc))
     }
-    
+
     return ttl.toString()
   }
 
@@ -714,7 +718,7 @@ class CollectionArchive {
     }
     return idx
   }
-  
+
   String oloOrdering(CiteCollection cc) {
     StringBuilder ttl = new StringBuilder()
 
@@ -744,7 +748,7 @@ class CollectionArchive {
     }
     return ttl.toString()
   }
-  
+
   String turtleizeCollection(CiteCollection cc) {
     StringBuilder ttl = new StringBuilder()
 
@@ -753,25 +757,25 @@ class CollectionArchive {
 
     // check for optional ordering and extensions
     String urnStr = "<${cc.urn}>"
-    
+
     // ordering
     if (cc.isOrderedCollection) {
       String orderingPropStr = "citedata:${cc.urn.getCollection()}_${cc.orderedByProp.propertyName}"
-      
+
       ttl.append(urnStr + " cite:ordered " + '"true" .\n')
       ttl.append(urnStr + " cite:orderingPropName " + orderingPropStr + " . \n")
-      
+
       ttl.append(oloOrdering(cc))
-      
+
     } else {
-      ttl.append(urnStr + " cite:ordered " + '"false" .\n') 
+      ttl.append(urnStr + " cite:ordered " + '"false" .\n')
     }
-    
+
     // extensions supported:
     ttl.append(ttlExtensionMap())
 
-    
-    //2. turtleize data array    
+
+    //2. turtleize data array
     LocalFileSource lfs = this.dataSources[cc.urn.toString()]
     ttl.append(turtleizeDataArray(lfs.getRecordArray(), cc))
 
@@ -790,7 +794,7 @@ class CollectionArchive {
   }
 
 
-  /** Composes a TTL representation of of a single instance of a CITE property 
+  /** Composes a TTL representation of of a single instance of a CITE property
    * with data value.
    * @param propValue String representation of the property's value.
    * @param prop The CiteProperty this value instantiates.
@@ -890,7 +894,7 @@ class CollectionArchive {
     }
     return ttl.toString()
   }
-  
+
   String turtleizeOneRow(ArrayList cols, ArrayList header, CiteCollection cc)
   throws Exception {
     StringBuilder rowTtl = new StringBuilder()
@@ -900,18 +904,18 @@ class CollectionArchive {
     // required human-readable label:
     String objectLabel = findLabelString(cols, header, cc.labelProp.propertyName)
     rowTtl.append("<${objectUrn}> rdfs:label " + '"' + objectLabel + '" .\n')
-    // 
+    //
     // ADD UNIVERSAL VALUE PROPERTIES
     // accessible from cc object
     rowTtl.append(turtleizeUniversalValues(objectUrn, cc))
 
-    
+
     // All properties with variable values:
     cols.eachWithIndex { column, idx ->
       try {
 	CiteProperty columnProp =  cc.collProperties.find {it.propertyName == header[idx]}
 	rowTtl.append(turtleizeProperty(column, columnProp, header[idx], objectUrn))
-	
+
       } catch (Exception e) {
 	System.err.println "CollectionArchive: no property " + header[idx] + " for collection ${cc}"
 	throw e
@@ -935,4 +939,3 @@ class CollectionArchive {
   }
 
 }
-

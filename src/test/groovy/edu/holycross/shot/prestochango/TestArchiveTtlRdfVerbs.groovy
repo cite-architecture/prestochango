@@ -34,6 +34,8 @@ class TestArchiveTtlRdfVerbs extends GroovyTestCase {
     println "Resulting tt:\n" + ttl
     // check for one entry with verb "cite:madeUp" and
     // one with verb "cite:upMade"
+  
+
   }
 
 
