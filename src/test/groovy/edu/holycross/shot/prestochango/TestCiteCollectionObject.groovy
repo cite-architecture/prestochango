@@ -10,10 +10,10 @@ import org.junit.Test
 
 
 /** Class testing output of ttl from prestochango's CollectionArchive class.
- */
+*/
 class TestCiteCollectionObject extends GroovyTestCase {
 
-	 /* Make a collection */
+	/* Make a collection */
 
 	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
 	String descr = "Test collection"
@@ -32,205 +32,203 @@ class TestCiteCollectionObject extends GroovyTestCase {
 	String nsAbbr = "testNs"
 	String nsFull = "http://www.testNs.org/datans"
 
-  CiteCollection ccOrdered = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
+	CiteCollection ccOrdered = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
 
 	CiteCollection ccUnordered = new CiteCollection(collUrn,descr, idProp, labelProp, null, nsAbbr, nsFull, collProps, extensions)
 
 
- @Test void testConstructor1() {
+	@Test void testConstructor1() {
 
-	// Make some property values
+		// Make some property values
 
-	def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
-/*
-    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
 
-	CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
 
-	assert cco*/
+		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
+
+		assert cco
+	}
 
 
- }
-/*
- @Test void testConstructor2() {
+	@Test void testConstructor2() {
 
-	def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
+		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
 
-    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
 
-	CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
+		CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
 
-	assert cco
+		assert cco
 
- }
+	}
 
- @Test void testGetPropertyNames() {
 
-	
-
-	def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
-
-    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
-
-	CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
-
-	assert cco.getPropertyNames() == ["urn","label","seq"]
-
- }
-
- @Test void testGetPropertyType() {
+	@Test void testGetPropertyNames() {
 
 
 
-	def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
+		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
 
-    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
 
-	CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
+		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
 
-	assert cco.collection.collProperties.size() == 3
-	assert cco.getPropertyType("urn") == CitePropertyType.CITE_URN
-	assert cco.getPropertyType("seq") == CitePropertyType.NUM
-	assert cco.getPropertyType("label") == CitePropertyType.STRING
- }
+		assert cco.getPropertyNames() == ["urn","label","seq"]
 
- @Test void testGetPropertyValue() {
+	}
 
 
-
-	def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
-
-  CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
-
-	CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
-
-	assert cco.getPropertyValue("urn").toString() == "urn:cite:testNs:testColl.one.v1"
-	assert cco.getPropertyValue("seq") == 1
-	assert cco.getPropertyValue("label") == "object 1"
- }
-
- @Test void testGetPropertyValue2() {
+	@Test void testGetPropertyType() {
 
 
 
-	def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
+		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
 
-  CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
-	CiteUrn prevUrn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
-	CiteUrn nextUrn = new CiteUrn("urn:cite:testNs:testColl.three.v1")
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
 
-	CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
+		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
 
-	assert cco.urn.toString() == urn.toString()
-	assert cco.getPropertyValue("urn").toString() == "urn:cite:testNs:testColl.two.v1"
-	assert cco.getPropertyValue("seq") == 2
-	assert cco.getPropertyValue("label") == "object 2"
-
- }
-
- @Test void testBadProperties1() {
-
-	ArrayList xcollProps = [idProp, labelProp, orderedByProp,booleanProp]
-	ArrayList xextensions = ["cite:CiteImage","cite:Geo"]
-
-	String xorderedProp = "orderedBy"
-	String xnsAbbr = "testNs"
-	String xnsFull = "http://www.testNs.org/datans"
-
-    CiteCollection ccTest = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, xnsAbbr, xnsFull, xcollProps, xextensions)
+		assert cco.collection.collProperties.size() == 3
+		assert cco.getPropertyType("urn") == "CITE_URN"
+		assert cco.getPropertyType("seq") == "NUM"
+		assert cco.getPropertyType("label") == "STRING"
+	}
 
 
-	def properties1 = ["urn":"not-a-urn","label":"object 2","seq":"2","trueOrFalse":"true"]
-	def properties2 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"not-a-number","trueOrFalse":"false"]
-	def properties3 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2","trueOrFalse":"notTrueOrFalse"]
+	@Test void testGetPropertyValue() {
 
-    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
 
-	shouldFail {
+
+		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
+
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+
+		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
+
+		assert cco.getPropertyValue("urn").toString() == "urn:cite:testNs:testColl.one.v1"
+		assert cco.getPropertyValue("seq") == "1"
+		assert cco.getPropertyValue("label") == "object 1"
+	}
+
+
+	@Test void testGetPropertyValue2() {
+
+
+
+		def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
+
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+		CiteUrn prevUrn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+		CiteUrn nextUrn = new CiteUrn("urn:cite:testNs:testColl.three.v1")
+
+		CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
+
+		assert cco.urn.toString() == urn.toString()
+		assert cco.getPropertyValue("urn").toString() == "urn:cite:testNs:testColl.two.v1"
+		assert cco.getPropertyValue("seq") == "2"
+		assert cco.getPropertyValue("label") == "object 2"
+
+	}
+
+
+	@Test void testBadProperties1() {
+
+		ArrayList xcollProps = [idProp, labelProp, orderedByProp,booleanProp]
+		ArrayList xextensions = ["cite:CiteImage","cite:Geo"]
+
+		String xorderedProp = "orderedBy"
+		String xnsAbbr = "testNs"
+		String xnsFull = "http://www.testNs.org/datans"
+
+		CiteCollection ccTest = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, xnsAbbr, xnsFull, xcollProps, xextensions)
+
+
+		def properties1 = ["urn":"not-a-urn","label":"object 2","seq":"2","trueOrFalse":"true"]
+		def properties2 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"not-a-number","trueOrFalse":"false"]
+		def properties3 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2","trueOrFalse":"notTrueOrFalse"]
+
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+
+		 shouldFail {
+			CiteCollectionObject cco1 = new CiteCollectionObject(urn,ccTest,properties1,prevUrn,nextUrn)
+		}
+
+		 shouldFail {
+			CiteCollectionObject cco2 = new CiteCollectionObject(urn,ccTest,properties2,prevUrn,nextUrn)
+		}
+
+		shouldFail {
+			CiteCollectionObject cco3 = new CiteCollectionObject(urn,ccTest,properties3,prevUrn,nextUrn)
+		}
+
+	}
+
+
+	@Test void testPropertyValues2() {
+
+		ArrayList xcollProps = [idProp, labelProp, orderedByProp,booleanProp]
+		ArrayList xextensions = ["cite:CiteImage","cite:Geo"]
+
+		String xorderedProp = "orderedBy"
+		String xnsAbbr = "testNs"
+		String xnsFull = "http://www.testNs.org/datans"
+
+		CiteCollection ccTest = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, xnsAbbr, xnsFull, xcollProps, xextensions)
+
+
+		def properties1 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2","trueOrFalse":"true"]
+		def properties2 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2","trueOrFalse":"false"]
+
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+
 		CiteCollectionObject cco1 = new CiteCollectionObject(urn,ccTest,properties1,prevUrn,nextUrn)
-	}
+		assert cco1.getPropertyValue("trueOrFalse") == "true"
 
-	shouldFail {
+		shouldFail{
+			assert cco1.getPropertyValue("trueOrFalse") == "false"
+		}
+
 		CiteCollectionObject cco2 = new CiteCollectionObject(urn,ccTest,properties2,prevUrn,nextUrn)
+		assert cco2.getPropertyValue("trueOrFalse") == "false"
+		shouldFail{
+			assert cco2.getPropertyValue("trueOrFalse") == true
+		}
+
+
 	}
 
-	shouldFail {
-		CiteCollectionObject cco3 = new CiteCollectionObject(urn,ccTest,properties3,prevUrn,nextUrn)
+	@Test void testGetSequence() {
+
+
+
+		def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
+
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+		CiteUrn prevUrn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+		CiteUrn nextUrn = new CiteUrn("urn:cite:testNs:testColl.three.v1")
+
+		CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
+
+		assert cco.urn.toString() == urn.toString()
+		assert cco.getSequence() == 2
+
 	}
 
- }
-
- @Test void testPropertyValues2() {
-
-	 ArrayList xcollProps = [idProp, labelProp, orderedByProp,booleanProp]
-	 ArrayList xextensions = ["cite:CiteImage","cite:Geo"]
-
-	 String xorderedProp = "orderedBy"
-	 String xnsAbbr = "testNs"
-	 String xnsFull = "http://www.testNs.org/datans"
-
-	 CiteCollection ccTest = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, xnsAbbr, xnsFull, xcollProps, xextensions)
-
-
-	 def properties1 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2","trueOrFalse":"true"]
-	 def properties2 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2","trueOrFalse":"false"]
-
-	 CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
-
-	 CiteCollectionObject cco1 = new CiteCollectionObject(urn,ccTest,properties1,prevUrn,nextUrn)
-	 assert cco1.getPropertyValue("trueOrFalse") == true
-
-	 shouldFail{
-		 assert cco1.getPropertyValue("trueOrFalse") == false
-	 }
-	 shouldFail{
-		 assert cco1.getPropertyValue("trueOrFalse") == "true"
-	 }
-
-	 CiteCollectionObject cco2 = new CiteCollectionObject(urn,ccTest,properties2,prevUrn,nextUrn)
-	 assert cco2.getPropertyValue("trueOrFalse") == false
-	 shouldFail{
-		 assert cco2.getPropertyValue("trueOrFalse") == "false"
-	 }
-	 shouldFail{
-		 assert cco2.getPropertyValue("trueOrFalse") == true
-	 }
-
-
- }
-
- @Test void testGetSequence() {
+	@Test void testGetSequenceFailsWithUnordered() {
 
 
 
-	def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
+		def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
 
-    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
-	CiteUrn prevUrn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
-	CiteUrn nextUrn = new CiteUrn("urn:cite:testNs:testColl.three.v1")
-
-	CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
-
-	assert cco.urn.toString() == urn.toString()
-	assert cco.getSequence() == 2
-
- }
-
- @Test void testGetSequenceFailsWithUnordered() {
-
-
-
-	def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
-
-    CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
 
 		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
 
 		assert cco.urn.toString() == urn.toString()
-	shouldFail{
-		assert cco.getSequence() == 2
-	}
+		shouldFail{
+			assert cco.getSequence() == 2
+		}
 
- }
-*/
+	}
 }

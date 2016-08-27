@@ -34,6 +34,7 @@ class CiteCollectionObject {
 		CiteUrn urn,
 		CiteCollection collection,
 		Map objectProperties )
+
     throws Exception {
 
 		// check properties for correct types
@@ -41,38 +42,55 @@ class CiteCollectionObject {
 		float f
 		objectProperties.each { key, value ->
 			tempType = collection.getPropertyType(key)
+      System.err.println("${key}")
+      System.err.println("TempType: ${tempType}")
 			switch(tempType){
-				case "citeurn":
+				case "CITE_URN":
+          System.err.println("got CITE_URN")
 					try {
 					    CiteUrn tcite = new CiteUrn(value)
+              System.err.println("Turned ${tcite} into a urn.")
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE URN. " + e)
 					}
 
 				break;
-				case "ctsurn":
+
+				case "CTS_URN":
+          System.err.println("got CTS_URN")
 					try {
 					    CtsUrn tcts = new CtsUrn(value)
+              System.err.println("Turned ${tcts} into a urn.")
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CTS URN. " + e)
 					}
 				break;
-				case "number":
+
+				case "NUM":
+          System.err.println("got NUM")
 					try {
 						  f = Float.valueOf(value.trim()).floatValue();
+              System.err.println("Turned ${f} into a float.")
 						}
 						catch (NumberFormatException nfe)
 						{
 						  throw new Exception("CiteCollectionObject: Could not conver '${value} to a number. " + nfe.getMessage());
 						}
 				break;
-				case "boolean":
+
+				case "BOOLEAN":
+          System.err.println("got BOOLEAN")
 					if ((value != "true") && (value != "false")){
 						  throw new Exception("CiteCollectionObject: '${value} was supposed to be either 'true' or 'false'. " )
 					}
 
 				break;
+        case "STRING":
+          System.err.println("got STRING")
+				break;
+
 				default:
+          throw new Exception("CiteCollectionObject: ${tempType} is not a recognized data-type for a CITE object.")
 
 				break;
 			}
@@ -107,44 +125,62 @@ class CiteCollectionObject {
 		// check properties for correct types
 		String tempType = ""
 		float f
-		objectProperties.each { key, value ->
+			objectProperties.each { key, value ->
 			tempType = collection.getPropertyType(key)
+      System.err.println("${key}")
+      System.err.println("TempType: ${tempType}")
 			switch(tempType){
-				case "citeurn":
+				case "CITE_URN":
+          System.err.println("got CITE_URN")
 					try {
 					    CiteUrn tcite = new CiteUrn(value)
+              System.err.println("Turned ${tcite} into a urn.")
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE URN. " + e)
 					}
 
 				break;
-				case "ctsurn":
+
+				case "CTS_URN":
+          System.err.println("got CTS_URN")
 					try {
-					    CiteUrn tcts = new CtsUrn(value)
+					    CtsUrn tcts = new CtsUrn(value)
+              System.err.println("Turned ${tcts} into a urn.")
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CTS URN. " + e)
 					}
 				break;
-				case "number":
+
+				case "NUM":
+          System.err.println("got NUM")
 					try {
 						  f = Float.valueOf(value.trim()).floatValue();
+              System.err.println("Turned ${f} into a float.")
 						}
 						catch (NumberFormatException nfe)
 						{
 						  throw new Exception("CiteCollectionObject: Could not conver '${value} to a number. " + nfe.getMessage());
 						}
 				break;
-				case "boolean":
+
+				case "BOOLEAN":
+          System.err.println("got BOOLEAN")
 					if ((value != "true") && (value != "false")){
 						  throw new Exception("CiteCollectionObject: '${value} was supposed to be either 'true' or 'false'. " )
 					}
 
 				break;
+        case "STRING":
+          System.err.println("got STRING")
+				break;
+
 				default:
+          throw new Exception("CiteCollectionObject: ${tempType} is not a recognized data-type for a CITE object.")
 
 				break;
 			}
 		}
+
 
 		this.urn = urn
 		this.collection = collection
