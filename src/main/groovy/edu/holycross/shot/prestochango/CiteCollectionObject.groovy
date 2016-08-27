@@ -42,14 +42,10 @@ class CiteCollectionObject {
 		float f
 		objectProperties.each { key, value ->
 			tempType = collection.getPropertyType(key)
-      System.err.println("${key}")
-      System.err.println("TempType: ${tempType}")
 			switch(tempType){
 				case "CITE_URN":
-          System.err.println("got CITE_URN")
 					try {
 					    CiteUrn tcite = new CiteUrn(value)
-              System.err.println("Turned ${tcite} into a urn.")
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE URN. " + e)
 					}
@@ -57,20 +53,16 @@ class CiteCollectionObject {
 				break;
 
 				case "CTS_URN":
-          System.err.println("got CTS_URN")
 					try {
 					    CtsUrn tcts = new CtsUrn(value)
-              System.err.println("Turned ${tcts} into a urn.")
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CTS URN. " + e)
 					}
 				break;
 
 				case "NUM":
-          System.err.println("got NUM")
 					try {
 						  f = Float.valueOf(value.trim()).floatValue();
-              System.err.println("Turned ${f} into a float.")
 						}
 						catch (NumberFormatException nfe)
 						{
@@ -79,14 +71,12 @@ class CiteCollectionObject {
 				break;
 
 				case "BOOLEAN":
-          System.err.println("got BOOLEAN")
 					if ((value != "true") && (value != "false")){
 						  throw new Exception("CiteCollectionObject: '${value} was supposed to be either 'true' or 'false'. " )
 					}
 
 				break;
         case "STRING":
-          System.err.println("got STRING")
 				break;
 
 				default:
@@ -127,14 +117,10 @@ class CiteCollectionObject {
 		float f
 			objectProperties.each { key, value ->
 			tempType = collection.getPropertyType(key)
-      System.err.println("${key}")
-      System.err.println("TempType: ${tempType}")
 			switch(tempType){
 				case "CITE_URN":
-          System.err.println("got CITE_URN")
 					try {
 					    CiteUrn tcite = new CiteUrn(value)
-              System.err.println("Turned ${tcite} into a urn.")
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE URN. " + e)
 					}
@@ -142,20 +128,16 @@ class CiteCollectionObject {
 				break;
 
 				case "CTS_URN":
-          System.err.println("got CTS_URN")
 					try {
 					    CtsUrn tcts = new CtsUrn(value)
-              System.err.println("Turned ${tcts} into a urn.")
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CTS URN. " + e)
 					}
 				break;
 
 				case "NUM":
-          System.err.println("got NUM")
 					try {
 						  f = Float.valueOf(value.trim()).floatValue();
-              System.err.println("Turned ${f} into a float.")
 						}
 						catch (NumberFormatException nfe)
 						{
@@ -164,14 +146,12 @@ class CiteCollectionObject {
 				break;
 
 				case "BOOLEAN":
-          System.err.println("got BOOLEAN")
 					if ((value != "true") && (value != "false")){
 						  throw new Exception("CiteCollectionObject: '${value} was supposed to be either 'true' or 'false'. " )
 					}
 
 				break;
         case "STRING":
-          System.err.println("got STRING")
 				break;
 
 				default:
