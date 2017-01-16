@@ -10,7 +10,7 @@
     <citeCollection
         canonicalId="URN"
         label="Comments"
-        urn="urn:cite:hmt:scholia">
+        urn="urn:cite2:hmt:scholia.v1:">
         <namespaceMapping
             abbr="hmt"
             uri="http://www.homermultitext.org/datans"/>
@@ -34,7 +34,7 @@
         <citeProperty
             label="Scholion URN"
             name="URN"
-            type="citeurn"/>
+            type="cite2urn"/>
         <citeProperty
             label="Text URN"
             name="TextUrn"
@@ -49,13 +49,13 @@
         <citeProperty
             label="Visual evidence"
             name="VisualEvidence"
-            type="citeurn">
+            type="cite2urn">
         	<indexRelation rdfAbbr="dse:illustratedBy"  rdfFull="http://www.homermultitext.org/dse/rdf/illustratedBy" inverseAbbr="dse:illustrates" inverseFull="http://www.homermultitext.org/dse/rdf/illustrates"/>
         </citeProperty>
         <citeProperty
             label="Folio URN"
             name="FolioUrn"
-            type="citeurn">
+            type="cite2urn">
         	<indexRelation rdfFull="http://www.homermultitext.org/dse/rdf/appearsOn" rdfAbbr="dse:appearsOn"  inverseFull="http://www.homermultitext.org/dse/rdf/hasOnIt"
         		inverseAbbr="dse:hasOnIt"/>
         </citeProperty>

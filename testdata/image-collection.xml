@@ -9,7 +9,7 @@
 
 
     <!-- IMAGE DATA FROM HMT Collections ********************   -->
-    <citeCollection canonicalId="Image" label="Caption" urn="urn:cite:hmt:vaimg">
+    <citeCollection canonicalId="Image" label="Caption" urn="urn:cite2:hmt:vaimg.v1:">
         <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
 
         <extendedBy extension="cite:CiteImage"/>
@@ -24,7 +24,7 @@
             http://creativecommons.org/licenses/by-nc/3.0/deed.en_US</rights>
         <source type="file" value="vaimgs.csv"/>
 
-        <citeProperty name="Image" label="Image URN" type="citeurn"/>
+        <citeProperty name="Image" label="Image URN" type="cite2urn"/>
         <citeProperty name="Label" label="Caption" type="string"/>
         <citeProperty name="Rights" label="Rights" type="string"> </citeProperty>
 

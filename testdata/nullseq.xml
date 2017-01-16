@@ -6,7 +6,7 @@
     <!-- Optional element:  none in this inventory yet.
         <extensionImplementation name="" baseUrl=""></extensionImplementation>
     -->
-    <citeCollection canonicalId="URN" urn="urn:cite:hmt:u4" label="Label">
+    <citeCollection canonicalId="URN" urn="urn:cite2:hmt:u4.v1:" label="Label">
         <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"></namespaceMapping>
         <title xmlns="http://purl.org/dc/elements/1.1/">Pages of the manuscriptMarciana 841</title>
         <creator xmlns="http://purl.org/dc/elements/1.1/">Christopher Blackwell</creator>
@@ -16,7 +16,7 @@
         <rights xmlns="http://purl.org/dc/elements/1.1/">CC attribution share-alike</rights>
         <orderedBy property="Sequence"/>
         <source  type="file" value="nullseq.csv"></source>
-        <citeProperty name="URN" label="URN"  type="citeurn"/>
+        <citeProperty name="URN" label="URN"  type="cite2urn"/>
         <citeProperty
             label="Sequence"
             name="Sequence"

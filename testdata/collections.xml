@@ -13,7 +13,7 @@
 
 
     <!-- IMAGE DATA FROM HMT Collections ********************   -->
-    <citeCollection canonicalId="Image" label="Label" urn="urn:cite:hmt:vaimg">
+    <citeCollection canonicalId="Image" label="Label" urn="urn:cite2:hmt:vaimg.v1:">
         <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
 
         <extendedBy extension="cite:CiteImage"/>
@@ -28,13 +28,13 @@
             http://creativecommons.org/licenses/by-nc/3.0/deed.en_US</rights>
         <source type="file" value="vaimgs.csv"/>
 
-        <citeProperty name="Image" label="Image URN" type="citeurn"/>
+        <citeProperty name="Image" label="Image URN" type="cite2urn"/>
         <citeProperty name="Label" label="Caption" type="string"/>
         <citeProperty name="Rights" label="Rights" type="string"> </citeProperty>
 
     </citeCollection>
 
-    <citeCollection canonicalId="URN" label="EnglishName" urn="urn:cite:hmt:critsigns">
+    <citeCollection canonicalId="URN" label="EnglishName" urn="urn:cite2:hmt:critsigns.v1:">
         <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
         <dc:title>Classes of Aristarchan critical signs</dc:title>
         <dc:description>Names and character encoding information for Aristarchan critical signs</dc:description>
@@ -42,14 +42,14 @@
             Attribution-Non-Commercial 3.0 Unported License,
             http://creativecommons.org/licenses/by-nc/3.0/deed.en_US</dc:rights>
         <source type="file" value="criticalsigns.tsv"/>
-        <citeProperty label="URN" name="URN" type="citeurn"/>
+        <citeProperty label="URN" name="URN" type="cite2urn"/>
         <citeProperty label="English name" name="EnglishName" type="string"/>
         <citeProperty label="Greek name" name="GreekName" type="string"/>
         <citeProperty label="Unicode codepoint (hex value)" name="UnicodeHex" type="string"/>
         <citeProperty label="Notes on Unicode representation" name="UnicodeNotes" type="string"/>
     </citeCollection>
 
-    <citeCollection canonicalId="URN" label="Label" urn="urn:cite:hmt:msA">
+    <citeCollection canonicalId="URN" label="Label" urn="urn:cite2:hmt:msA.v1:">
         <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
         <title xmlns="http://purl.org/dc/elements/1.1/">Pages of the Venetus A manuscript</title>
         <creator xmlns="http://purl.org/dc/elements/1.1/">Christopher Blackwell</creator>
@@ -64,14 +64,14 @@
         <!-- // Siglum	Sequence	URN	RV	Label	CodexURN -->
 
         <source type="file" value="venetusA.tsv"/>
-        <citeProperty label="URN" name="URN" type="citeurn"/>
+        <citeProperty label="URN" name="URN" type="cite2urn"/>
         <citeProperty label="Siglum" name="Siglum" type="string"/>
         <citeProperty label="Sequence" name="Sequence" type="number"/>
 
 
         <citeProperty label="Recto or verso" name="RV" type="string"/>
         <citeProperty label="description" name="Label" type="string"/>
-        <citeProperty label="Codex URN" name="CodexURN" type="citeurn"/>
+        <citeProperty label="Codex URN" name="CodexURN" type="cite2urn"/>
     </citeCollection>
 
 

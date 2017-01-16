@@ -10,7 +10,7 @@
 
 
     <!-- IMAGE DATA FROM HMT Collections ********************   -->
-    <citeCollection canonicalId="Image" label="Caption" urn="urn:cite:hmt:vaimg">
+    <citeCollection canonicalId="Image" label="Caption" urn="urn:cite2:hmt:vaimg.v1:">
         <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
         <extendedBy extension="cite:CiteImage"/>
         
@@ -26,14 +26,14 @@
         <orderedBy property="Sequence"/>
         <source type="file" value="one-for-all.csv"/>
 
-        <citeProperty name="Image" label="Image URN" type="citeurn"/>
+        <citeProperty name="Image" label="Image URN" type="cite2urn"/>
         <citeProperty name="Label" label="Caption" type="string"/>
-        <citeProperty name="OtherUrn" label="Another URN" type="citeurn">
+        <citeProperty name="OtherUrn" label="Another URN" type="cite2urn">
             <indexRelation rdfFull="http://dev.null" rdfAbbr="cite:upMade" inverseFull="http://dev.null" inverseAbbr="cite:madeUp"/>
         </citeProperty>
         <citeProperty name="Rights" label="Rights" type="string"></citeProperty>
-        <citeProperty name="testUV1" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing1" type="citeurn"></citeProperty>
-        <citeProperty name="testUV2" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing2" type="citeurn"></citeProperty>
+        <citeProperty name="testUV1" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing1" type="cite2urn"></citeProperty>
+        <citeProperty name="testUV2" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing2" type="cite2urn"></citeProperty>
         <citeProperty name="testBoolean" label="testing boolean values" type="boolean"></citeProperty>
         <citeProperty name="Sequence" label="Sequence" type="number"></citeProperty>
     </citeCollection>

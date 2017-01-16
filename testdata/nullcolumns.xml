@@ -16,7 +16,7 @@
     <citeCollection
         canonicalId="URN"
         label="EnglishName"
-        urn="urn:cite:hmt:nullcolumns">
+        urn="urn:cite2:hmt:nullcolumns.v1:">
         <namespaceMapping
             abbr="hmt"
             uri="http://www.homermultitext.org/datans"/>
@@ -31,7 +31,7 @@
         <citeProperty
             label="URN"
             name="URN"
-            type="citeurn"/>
+            type="cite2urn"/>
         <citeProperty
             label="English name"
             name="EnglishName"

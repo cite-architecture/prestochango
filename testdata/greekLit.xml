@@ -3,33 +3,33 @@
 <collectionService xmlns="http://chs.harvard.edu/xmlns/cite"
     xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.0">
 
-    <citeCollection canonicalId="URN" label="GreekLit Text Groups" urn="urn:cite:chs:textgroup">
+    <citeCollection canonicalId="URN" label="GreekLit Text Groups" urn="urn:cite2:chs:textgroup.v1:">
         <namespaceMapping abbr="chs" uri="http://chs.harvard.edu/cite/chs"/>
         <dc:creator>The Center for Hellenic Studies of Harvard University</dc:creator>
         <dc:description>TextGroup identifiers for ancient Greek texts transmitted by manuscript copying.</dc:description>
         <dc:rights>Public Domain</dc:rights>
         <source type="file" value="greekLit-groups.csv"/>
-        <citeProperty label="URN" name="URN" type="citeurn"/>
+        <citeProperty label="URN" name="URN" type="cite2urn"/>
         <citeProperty label="CTS URN" type="ctsurn" name="CTSURN"/>
         <citeProperty label="English Name" name="EnglishName" type="string"/>
         <citeProperty label="Latin Name" name="LatinName" type="string"/>
     </citeCollection>
 
-    <citeCollection canonicalId="URN" label="GreekLit Works" urn="urn:cite:chs:work">
+    <citeCollection canonicalId="URN" label="GreekLit Works" urn="urn:cite2:chs:work.v1:">
         <namespaceMapping abbr="chs" uri="http://chs.harvard.edu/cite/chs"/>
         <dc:creator>The Center for Hellenic Studies of Harvard University</dc:creator>
         <dc:description>Work identifiers for ancient Greek texts transmitted by manuscript  copying.</dc:description>
         <dc:rights>Public Domain</dc:rights>
         <source type="file" value="greekLit-works.csv"/>
-        <citeProperty label="URN" name="URN" type="citeurn"/>
+        <citeProperty label="URN" name="URN" type="cite2urn"/>
         <citeProperty label="CTS URN" type="ctsurn" name="CTSURN"/>
-        <citeProperty label="Group URN" type="citeurn" name="GroupURN">
+        <citeProperty label="Group URN" type="cite2urn" name="GroupURN">
             <indexRelation rdfFull = "http://www.homermultitext.org/cite/rdf/inherits" rdfAbbr="hmt:inherits"
                 inverseFull ="http://www.homermultitext.org/cite/rdf/isInheritedBy" inverseAbbr="hmt:isInheritedBy"/>
         </citeProperty>
         <citeProperty label="English Name" name="EnglishName" type="string"/>
         <citeProperty label="Latin Name" name="LatinName" type="string"/>
-        <citeProperty name="Textgroup" label="Text group" type="citeurn"/>
+        <citeProperty name="Textgroup" label="Text group" type="cite2urn"/>
         
     </citeCollection>
 

@@ -10,7 +10,7 @@
 
 
 
-    <citeCollection canonicalId="URN" label="EnglishName" urn="urn:cite:hmt:critsigns">
+    <citeCollection canonicalId="URN" label="EnglishName" urn="urn:cite2:hmt:critsigns.v1:">
         <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
         <dc:title>Classes of Aristarchan critical signs</dc:title>
         <dc:description>Names and character encoding information for Aristarchan critical signs</dc:description>
@@ -18,12 +18,12 @@
             Attribution-Non-Commercial 3.0 Unported License,
             http://creativecommons.org/licenses/by-nc/3.0/deed.en_US</dc:rights>
         <source type="file" value="tsvs/criticalsigns.tsv"/>
-        <citeProperty label="URN" name="URN" type="citeurn"/>
+        <citeProperty label="URN" name="URN" type="cite2urn"/>
         <citeProperty label="English name" name="EnglishName" type="string"/>
         <citeProperty label="Greek name" name="GreekName" type="string"/>
         <citeProperty label="Unicode codepoint (hex value)" name="UnicodeHex" type="string"/>
         <citeProperty label="Notes on Unicode representation" name="UnicodeNotes" type="string"/>
-        <citeProperty label="Evidentiary Manuscript" name="MS" type="citeurn"
+        <citeProperty label="Evidentiary Manuscript" name="MS" type="cite2urn"
             universalValue="urn:cite:hmt:codices.venA"/>
     </citeCollection>
 

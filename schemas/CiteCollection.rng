@@ -189,7 +189,7 @@
 				<data
 					type="string">
 					<param
-						name="pattern">urn:cite2:.+:.+:.*</param>
+						name="pattern">urn:cite2:.+:[^.]+\.[^.:]+:.*</param>
 				</data>
 			</attribute>
 			<element

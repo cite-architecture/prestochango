@@ -13,7 +13,7 @@
 	<citeCollection
 		canonicalId="codex"
 		label="description"
-		urn="urn:cite:hmt:codices:">
+		urn="urn:cite2:hmt:codices.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -38,7 +38,7 @@
 		<citeProperty
 			label="Codex URN"
 			name="codex"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Label"
 			name="description"
@@ -46,7 +46,7 @@
 		<citeProperty
 			label="Page model"
 			name="pageModel"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Century (approx.)"
 			name="century"
@@ -55,7 +55,7 @@
 	<citeCollection
 		canonicalId="PageZone"
 		label="Label"
-		urn="urn:cite:hmt:pageroi:">
+		urn="urn:cite2:hmt:pageroi.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -79,15 +79,15 @@
 		<citeProperty
 			label="Zone on image"
 			name="PageZone"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Folio"
 			name="Folio"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Region of image"
 			name="ImageRoI"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Label"
 			name="Label"
@@ -96,7 +96,7 @@
 	<citeCollection
 		canonicalId="IliadZone"
 		label="IliadZone"
-		urn="urn:cite:hmt:textblock:">
+		urn="urn:cite2:hmt:textblock.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -120,15 +120,15 @@
 		<citeProperty
 			label="Zone on image"
 			name="IliadZone"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Folio"
 			name="Folio"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Region of image"
 			name="ImageRoI"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Notes"
 			name="Notes"
@@ -138,7 +138,7 @@
 	<citeCollection
 		canonicalId="PageUrn"
 		label="Label"
-		urn="urn:cite:hmt:msA:">
+		urn="urn:cite2:hmt:msA.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -164,7 +164,7 @@
 		<citeProperty
 			label="URN"
 			name="PageUrn"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Sequence"
 			name="Sequence"
@@ -181,7 +181,7 @@
 	<citeCollection
 		canonicalId="PageUrn"
 		label="Label"
-		urn="urn:cite:hmt:e4:">
+		urn="urn:cite2:hmt:e4.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -208,7 +208,7 @@
 		<citeProperty
 			label="URN"
 			name="PageUrn"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Sequence"
 			name="Sequence"
@@ -225,7 +225,7 @@
 	<citeCollection
 		canonicalId="PageUrn"
 		label="Label"
-		urn="urn:cite:hmt:e3">
+		urn="urn:cite2:hmt:e3.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -252,7 +252,7 @@
 		<citeProperty
 			label="URN"
 			name="PageUrn"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Sequence"
 			name="Sequence"
@@ -274,7 +274,7 @@
 	<citeCollection
 		canonicalId="PageUrn"
 		label="Label"
-		urn="urn:cite:hmt:u4:">
+		urn="urn:cite2:hmt:u4.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -301,7 +301,7 @@
 		<citeProperty
 			label="URN"
 			name="PageUrn"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Sequence"
 			name="Sequence"
@@ -318,7 +318,7 @@
 	<citeCollection
 		canonicalId="PageUrn"
 		label="Label"
-		urn="urn:cite:hmt:msB:">
+		urn="urn:cite2:hmt:msB.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -344,7 +344,7 @@
 		<citeProperty
 			label="URN"
 			name="PageUrn"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Sequence"
 			name="Sequence"
@@ -361,7 +361,7 @@
 	<citeCollection
 		canonicalId="page"
 		label="label"
-		urn="urn:cite:hmt:comp:">
+		urn="urn:cite2:hmt:comp.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -387,7 +387,7 @@
 		<citeProperty
 			label="URN"
 			name="page"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Recto/verso"
 			name="rv"
@@ -410,7 +410,7 @@
 	<citeCollection
 		canonicalId="Graphic"
 		label="Caption"
-		urn="urn:cite:hmt:vagraphics:">
+		urn="urn:cite2:hmt:vagraphics.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -425,7 +425,7 @@
 		<citeProperty
 			label="URN"
 			name="Graphic"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Caption"
 			name="Caption"
@@ -433,12 +433,12 @@
 		<citeProperty
 			label="Image"
 			name="ImageRoi"
-			type="citeurn"/>
+			type="cite2urn"/>
 	</citeCollection>
 	<citeCollection
 		canonicalId="Graphic"
 		label="Caption"
-		urn="urn:cite:hmt:vagraphics:">
+		urn="urn:cite2:hmt:vagraphics.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -453,7 +453,7 @@
 		<citeProperty
 			label="URN"
 			name="Graphic"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Caption"
 			name="Caption"
@@ -461,16 +461,16 @@
 		<citeProperty
 			label="Folio"
 			name="Folio"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Image"
 			name="VisualEvidence"
-			type="citeurn"/>
+			type="cite2urn"/>
 	</citeCollection>
 	<citeCollection
 		canonicalId="SignURN"
 		label="EnglishName"
-		urn="urn:cite:hmt:critsigns:">
+		urn="urn:cite2:hmt:critsigns.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -485,7 +485,7 @@
 		<citeProperty
 			label="URN"
 			name="SignURN"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="English name"
 			name="EnglishName"
@@ -506,7 +506,7 @@
 	<citeCollection
 		canonicalId="Caption"
 		label="Label"
-		urn="urn:cite:hmt:captions:">
+		urn="urn:cite2:hmt:captions.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -534,7 +534,7 @@
 		<citeProperty
 			label="Caption"
 			name="Caption"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Text"
 			name="Text"
@@ -542,11 +542,11 @@
 		<citeProperty
 			label="Visual evidence"
 			name="VisualEvidence"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Folio"
 			name="Folio"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Label"
 			name="Label"
@@ -555,7 +555,7 @@
 	<citeCollection
 		canonicalId="Entry"
 		label="Label"
-		urn="urn:cite:hmt:catships:">
+		urn="urn:cite2:hmt:catships.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -582,7 +582,7 @@
 		<citeProperty
 			label="Entry"
 			name="Entry"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Label"
 			name="Label"
@@ -594,12 +594,12 @@
 		<citeProperty
 			label="Visual evidence"
 			name="VisualEvidence"
-			type="citeurn"/>
+			type="cite2urn"/>
 	</citeCollection>
 	<citeCollection
 		canonicalId="OccurrrenceUrn"
 		label="OccurrrenceUrn"
-		urn="urn:cite:hmt:venAsign:">
+		urn="urn:cite2:hmt:venAsign.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -616,7 +616,7 @@
 		<citeProperty
 			label="URN"
 			name="OccurrrenceUrn"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Sequence"
 			name="Sequence"
@@ -624,7 +624,7 @@
 		<citeProperty
 			label="Critical sign"
 			name="CriticalSign"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Attached to line"
 			name="TextPassage"
@@ -633,7 +633,7 @@
 	<citeCollection
 		canonicalId="StatusUrn"
 		label="Meaning"
-		urn="urn:cite:hmt:edstatus:">
+		urn="urn:cite2:hmt:edstatus.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -648,7 +648,7 @@
 		<citeProperty
 			label="Status"
 			name="StatusUrn"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Definition"
 			name="Meaning"
@@ -661,7 +661,7 @@
 	<citeCollection
 		canonicalId="OccurrrenceUrn"
 		label="CriticalSign"
-		urn="urn:cite:hmt:proclusSign:">
+		urn="urn:cite2:hmt:proclusSign.v1:">
 		<namespaceMapping
 			abbr="hmt"
 			uri="http://www.homermultitext.org/datans"/>
@@ -678,7 +678,7 @@
 		<citeProperty
 			label="URN"
 			name="OccurrrenceUrn"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Sequence"
 			name="Sequence"
@@ -686,7 +686,7 @@
 		<citeProperty
 			label="Critical sign"
 			name="CriticalSign"
-			type="citeurn"/>
+			type="cite2urn"/>
 		<citeProperty
 			label="Attached to text"
 			name="TextPassage"
@@ -694,7 +694,7 @@
 		<citeProperty
 			label="Region of image"
 			name="ImageRoI"
-			type="citeurn"/>
+			type="cite2urn"/>
 	</citeCollection>
 	
 	<!-- END FEATURES SPECIFIC TO VENETUS A ************************************************* ********************   -->
