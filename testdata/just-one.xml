@@ -29,7 +29,7 @@
 
         <citeProperty name="Image" label="Image URN" type="citeurn"/>
         <citeProperty name="Label" label="Caption" type="string"/>
-        <citeProperty name="OtherUrn" label="Another URN" type="citeurn">
+        <citeProperty name="OtherUrn" label="Another URN" type="ctsurn">
         	<indexRelation rdfFull="http://devnull.com/rdf"  inverseFull="http://devnull.com/rdf" rdfAbbr="cite:madeUp" inverseAbbr="cite:upMade"/>
         </citeProperty>
         <citeProperty name="Rights" label="Rights" type="string"></citeProperty>

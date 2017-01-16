@@ -814,7 +814,17 @@ class CollectionArchive {
     // Compose subject-verb-object statements
     String subject = "<${objectUrn}>"
     String verb = "citedata:${objectUrn.getCollection()}_${colName}"
-    String objectString = prop.asRdfString(propValue)
+
+		String objectString = ""
+		//if (prop.propertyType == CitePropertyType.CTS_URN){
+			//CtsUrn testUnencoded = new CtsUrn(propValue)
+	    //objectString = prop.asRdfString(testUnencoded.encodeSubref())
+			//System.err.println("ctsurn = ${objectString} ")
+		//} else {
+	    objectString = prop.asRdfString(propValue)
+			//System.err.println("other = ${objectString} ")
+		//}
+
     // CHECK CONTROL VOCAB ON STRINGS
 
     propertyTtl.append("${subject} ${verb} ${objectString} .\n")
