@@ -11,6 +11,6 @@ project.ext {
     safecsvversion = '1.+'
 
     // Note this:
-    citeversion = '1.+'
+    citeversion = '3.+'
 
 }
