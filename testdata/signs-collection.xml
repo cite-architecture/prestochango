@@ -24,7 +24,7 @@
         <citeProperty label="Unicode codepoint (hex value)" name="UnicodeHex" type="string"/>
         <citeProperty label="Notes on Unicode representation" name="UnicodeNotes" type="string"/>
         <citeProperty label="Evidentiary Manuscript" name="MS" type="cite2urn"
-            universalValue="urn:cite:hmt:codices.venA"/>
+            universalValue="urn:cite2:hmt:codices.v1:venA"/>
     </citeCollection>
 
 

@@ -108,7 +108,6 @@ class CiteProperty {
 
     try {
 			if (this.singleValue.contains(":cite:")){
-				System.err.println("this.singleValue = ${this.singleValue}")
 				CiteUrn c1urn = new CiteUrn(this.singleValue)
 				singleVal = new Cite2Urn(c1urn)
 			} else {
@@ -239,7 +238,7 @@ class CiteProperty {
 			Cite2Urn urn
 			if (propValue.contains(":cite:")){
 				CiteUrn c1urn = new CiteUrn(propValue)
-				urn = new Cite2Urn(c1urn) 
+				urn = new Cite2Urn(c1urn)
 			} else {
 	      urn = new Cite2Urn(propValue)
 			}

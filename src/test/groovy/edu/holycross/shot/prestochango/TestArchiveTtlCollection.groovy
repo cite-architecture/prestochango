@@ -29,7 +29,7 @@ class TestArchiveTtlCollection extends GroovyTestCase {
     CiteCollection cc = cca.getCollection(new Cite2Urn("urn:cite2:hmt:vaimg.v1:"))
 
     def ttl = cca.turtleizeCollection(cc)
-    println "Resulting tt:\n" + ttl
+    System.err.println("Resulting ttl: \n" + ttl + "\n------------")
     // check for one entry with verb "cite:madeUp" and
     // one with verb "cite:upMade"
 

@@ -788,6 +788,7 @@ class CollectionArchive {
 
       ttl.append(oloOrdering(cc))
 
+
     } else {
       ttl.append(urnStr + " cite:ordered " + '"false" .\n')
     }
