@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -26,7 +26,7 @@ class TestArchiveTtlOlo extends GroovyTestCase {
     File inv = new File(inventoryName)
     CollectionArchive cca = new CollectionArchive(inv, schemaFileName, baseDir)
 
-    CiteCollection cc = cca.getCollection(new CiteUrn("urn:cite:hmt:critsigns"))
+    CiteCollection cc = cca.getCollection(new Cite2Urn("urn:cite2:hmt:critsigns.v1:"))
     println cca.oloOrdering(cc)
     // check first and last values...
   }

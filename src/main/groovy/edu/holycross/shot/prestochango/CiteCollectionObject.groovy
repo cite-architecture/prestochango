@@ -1,6 +1,7 @@
 package edu.holycross.shot.prestochango
 
 import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 import edu.harvard.chs.cite.CtsUrn
 
 /** A class representing the implementation of a set of CITE Collection Objects
@@ -9,16 +10,16 @@ class CiteCollectionObject {
 
 
   /** CITE URN for this set */
-  public CiteUrn urn = null
+  public Cite2Urn urn = null
 
   /** CITE Collection to which this object belongs **/
   public CiteCollection collection = null
 
   /** URN of the previous object in an ordered collection; may be null */
-  public CiteUrn prevUrn = null
+  public Cite2Urn prevUrn = null
 
   /** URN of the next object in an ordered collection; may be null */
-  public CiteUrn nextUrn = null
+  public Cite2Urn nextUrn = null
 
   /** Map of property names and values
 	*
@@ -31,7 +32,7 @@ class CiteCollectionObject {
    * @param objectProperties a map of property-name <--> value
    */
     CiteCollectionObject(
-		CiteUrn urn,
+		Cite2Urn urn,
 		CiteCollection collection,
 		Map objectProperties )
 
@@ -43,11 +44,17 @@ class CiteCollectionObject {
 		objectProperties.each { key, value ->
 			tempType = collection.getPropertyType(key)
 			switch(tempType){
-				case "CITE_URN":
+				case "CITE2_URN":
+					Cite2Urn tcite
 					try {
-					    CiteUrn tcite = new CiteUrn(value)
+						if (value.contains(":cite:")){
+							CiteUrn c1urn = new CiteUrn(value)
+							tcite = new Cite2Urn(c1urn)
+						} else {
+					    tcite = new Cite2Urn(value)
+						}
 					} catch (Exception e) {
-						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE URN. " + e)
+						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE2 URN. " + e)
 					}
 
 				break;
@@ -100,11 +107,11 @@ class CiteCollectionObject {
    * @param nextUrn next urn in an ordered collection; may be null
    */
     CiteCollectionObject(
-		CiteUrn urn,
+		Cite2Urn urn,
 		CiteCollection collection,
 		Map objectProperties,
-		CiteUrn prevUrn,
-		CiteUrn nextUrn )
+		Cite2Urn prevUrn,
+		Cite2Urn nextUrn )
     throws Exception {
 
 		if (collection.isOrderedCollection == false){
@@ -118,9 +125,15 @@ class CiteCollectionObject {
 			objectProperties.each { key, value ->
 			tempType = collection.getPropertyType(key)
 			switch(tempType){
-				case "CITE_URN":
+				case "CITE2_URN":
+				  Cite2Urn tcite
 					try {
-					    CiteUrn tcite = new CiteUrn(value)
+						if (value.contains(":cite:")){
+						  CiteUrn c1urn = new CiteUrn(value)
+							tcite = new Cite2Urn(c1urn)
+						} else {
+					    tcite = new Cite2Urn(value)
+						}
 					} catch (Exception e) {
 						throw new Exception("CiteCollectionObject: Could not turn '${value}' into a CITE URN. " + e)
 					}
@@ -182,8 +195,8 @@ class CiteCollectionObject {
 		def returnVal
 
 		switch(pt){
-			case "citeurn":
-				returnVal = new CiteUrn(this.objectProperties[pn])
+			case "cite2urn":
+				returnVal = new Cite2Urn(this.objectProperties[pn])
 			break;
 
 			case "ctsurn":

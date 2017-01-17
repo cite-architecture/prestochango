@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -18,9 +18,9 @@ class TestCiteCollectionValueList extends GroovyTestCase {
    def vocabList = ["recto", "verso"] as Set
    CiteProperty pageSide = new CiteProperty("rv","Recto or verso side",vocabList)
 
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	Cite2Urn collUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:")
   String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE2_URN,"canonical id")
 	CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
 
 	ArrayList collProps = [idProp, labelProp, pageSide]

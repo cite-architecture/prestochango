@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -15,10 +15,10 @@ class TestCitePropertyRdf extends GroovyTestCase {
 
 	@Test void testRdf() {
 		RdfVerb rdf = new RdfVerb("dse:illustratedBy","http://www.homermultitext.org/dse/rdf/illustratedBy/illustratedBy")
-		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
+		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE2_URN,"Default image",rdf)
 		assert testProp
 		assert testProp.propertyName == "img"
-		assert testProp.propertyType == CitePropertyType.CITE_URN
+		assert testProp.propertyType == CitePropertyType.CITE2_URN
 		assert testProp.label == "Default image"
     assert shouldFail {
       def vocabList = testProp.getVocabulary()
@@ -37,10 +37,10 @@ class TestCitePropertyRdf extends GroovyTestCase {
         "dse:illustrates",
         "http://www.homermultitext.org/dse/rdf/illustratedBy/illustrates"
         )
-  		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
+  		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE2_URN,"Default image",rdf)
   		assert testProp
   		assert testProp.propertyName == "img"
-  		assert testProp.propertyType == CitePropertyType.CITE_URN
+  		assert testProp.propertyType == CitePropertyType.CITE2_URN
   		assert testProp.label == "Default image"
       assert shouldFail {
         def vocabList = testProp.getVocabulary()

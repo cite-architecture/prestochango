@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -27,14 +27,14 @@ class TestArchiveTtlRdfVerbs extends GroovyTestCase {
     CollectionArchive cca = new CollectionArchive(inv, schemaFileName, baseDir)
 
     def srcList = cca.getDataSources()
-    LocalFileSource lfs = srcList["urn:cite:hmt:vaimg"]
-    CiteCollection cc = cca.getCollection(new CiteUrn("urn:cite:hmt:vaimg"))
+    LocalFileSource lfs = srcList["urn:cite2:hmt:vaimg.v1:"]
+    CiteCollection cc = cca.getCollection(new Cite2Urn("urn:cite2:hmt:vaimg.v1:"))
 
     def ttl = cca.turtleizeDataArray(lfs.getRecordArray(), cc)
     println "Resulting tt:\n" + ttl
     // check for one entry with verb "cite:madeUp" and
     // one with verb "cite:upMade"
-  
+
 
   }
 

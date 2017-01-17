@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -16,9 +16,9 @@ class TestCiteCollectionProperties extends GroovyTestCase {
 
  @Test void testGetPropNames() {
 
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	Cite2Urn collUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:")
   String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE2_URN,"canonical id")
 	CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
 	CiteProperty orderedByProp = new CiteProperty("seq",CitePropertyType.NUM,"sequence")
 
@@ -40,9 +40,9 @@ class TestCiteCollectionProperties extends GroovyTestCase {
 
  @Test void testAboutProperties() {
 
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	Cite2Urn collUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:")
   String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE2_URN,"canonical id")
 	CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
 	CiteProperty orderedByProp = new CiteProperty("seq",CitePropertyType.NUM,"sequence")
 
@@ -64,9 +64,9 @@ class TestCiteCollectionProperties extends GroovyTestCase {
 
  @Test void testMoreAboutProperties() {
 
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	Cite2Urn collUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:")
   String descr = "Test collection"
-  CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+  CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE2_URN,"canonical id")
   CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
   CiteProperty orderedByProp = new CiteProperty("seq",CitePropertyType.NUM,"sequence")
 	ArrayList collProps = [idProp, labelProp, orderedByProp]
@@ -78,7 +78,7 @@ class TestCiteCollectionProperties extends GroovyTestCase {
 
     CiteCollection cc = new CiteCollection(collUrn,descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
 
-	assert cc.getPropertyType("urn") == CitePropertyType.CITE_URN
+	assert cc.getPropertyType("urn") == CitePropertyType.CITE2_URN
 	assert cc.getPropertyType("label") == CitePropertyType.STRING
 	assert cc.getPropertyType("seq") == CitePropertyType.NUM
  }
@@ -86,9 +86,9 @@ class TestCiteCollectionProperties extends GroovyTestCase {
 
  @Test void findByName() {
 
-   CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+   Cite2Urn collUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:")
   String descr = "Test collection"
-  CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+  CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE2_URN,"canonical id")
   CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
   CiteProperty orderedByProp = new CiteProperty("seq",CitePropertyType.NUM,"sequence")
  ArrayList collProps = [idProp, labelProp, orderedByProp]
@@ -101,7 +101,7 @@ class TestCiteCollectionProperties extends GroovyTestCase {
   CiteCollection cc = new CiteCollection(collUrn,descr, idProp, labelProp, orderedByProp, nsAbbr, nsFull, collProps, extensions)
 
   def prop =cc.propertyForName("urn")
-  assert prop.CitePropertyType == CitePropertyType.CITE_URN
+  assert prop.CitePropertyType == CitePropertyType.CITE2_URN
   assert prop.label == "canonical id"
 
  }

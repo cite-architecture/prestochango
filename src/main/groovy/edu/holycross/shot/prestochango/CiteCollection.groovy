@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 /** A class representing the implementation of a CITE Collection
  * in the context of a specific CITE Collection service.
@@ -12,11 +12,11 @@ class CiteCollection {
 
 
   /** CITE Collection URN for this collection */
-  public CiteUrn urn = null
+  public Cite2Urn urn = null
 
   /** Human-readable description or label. */
   public String description = ""
-   
+
   /** Name of the property with object's URN. */
   public CiteProperty canonicalIdProp = null
 
@@ -35,9 +35,9 @@ class CiteCollection {
   /** URI uniquely identifying the CITE namespace. */
   public String nsFull = null
 
-  
-  /** Possibly empty list of extensions applicable to this 
-   * Collection.  These are identified by abbreviations that 
+
+  /** Possibly empty list of extensions applicable to this
+   * Collection.  These are identified by abbreviations that
    * can resolved with reference to the inventory of the Collection
    * Service where this Collection is instantiated. */
   public ArrayList extendedBy = []
@@ -45,7 +45,7 @@ class CiteCollection {
   // all properties
   public ArrayList collProperties = []
 
-  
+
   /** Constructor for CollectionArchive using local file storage.
    * @param urn A Cite URN identifying the collection
    * @param canonicalIdProp A string naming the property that contains each object's CITE URN, its unique identifier
@@ -55,31 +55,31 @@ class CiteCollection {
    * @param properties May be null. An ArrayList of CollectionProperty objects must have at least two.
    */
   CiteCollection(
-    CiteUrn urn,
+    Cite2Urn urn,
     String description,
-    CiteProperty canonicalIdProp, 
-    CiteProperty labelProp, 
-    CiteProperty orderedByProp, 
-    String nsAbbr, 
-    String nsFull, 
+    CiteProperty canonicalIdProp,
+    CiteProperty labelProp,
+    CiteProperty orderedByProp,
+    String nsAbbr,
+    String nsFull,
     ArrayList collProperties,
     ArrayList extendedBy
-  ) 
+  )
   throws Exception {
     this.description = description
     try {
-             
+
       if ( (urn == null) ) {
 	throw new Exception("CiteCollection constructor: collUrn parameter cannot be null.")
       }
 
-      this.urn = urn 
+      this.urn = urn
 
       if ( (collProperties == null) || (collProperties.size() < 2) ) {
 	throw new Exception("CiteCollection constructor: there must be at least two properties identified in the ArrayList param 'properties'.")
       }
-      
-      this.collProperties = collProperties 
+
+      this.collProperties = collProperties
 
       if ( canonicalIdProp == null ) {
 	throw new Exception("CiteCollection constructor: canonicalIdProp cannot be null or empty.")
@@ -112,7 +112,7 @@ class CiteCollection {
 	  throw new Exception("CiteCollection constructor: OrderedBy property must have type of 'number'.")
 	}
 	this.orderedByProp = orderedByProp
-	this.isOrderedCollection = true	
+	this.isOrderedCollection = true
       } else {
 	this.orderedByProp = null
 	this.isOrderedCollection = false
@@ -154,7 +154,7 @@ class CiteCollection {
     return pn
   }
 
-  
+
   /** Returns CitePropertyType for a property identified by name.
    * @param String property name
    * @returns CitePropertyType for the property.
@@ -176,7 +176,7 @@ class CiteCollection {
       return prop
     }
   }
-  
+
   boolean hasVocabList(String propName)
   throws Exception {
     return propertyForName(propName).valueSet.size() > 0
@@ -195,12 +195,12 @@ class CiteCollection {
     return propertyForName(propName).getSingleValue()
   }
 
-  
+
   // find Rdf object for a property
   RdfVerb getRdf(String propName) {
     return propertyForName(propName).rdfPair
   }
-  
+
   public String getNsFull() {
     return this.nsFull
   }
@@ -231,5 +231,5 @@ class CiteCollection {
     }
     return uvals
   }
-  
+
 }

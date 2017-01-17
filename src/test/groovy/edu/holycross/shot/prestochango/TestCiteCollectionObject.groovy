@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 import edu.harvard.chs.cite.CtsUrn
 
 import static org.junit.Assert.*
@@ -15,12 +15,12 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 	/* Make a collection */
 
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	Cite2Urn collUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:")
 	String descr = "Test collection"
-	CiteUrn prevUrn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
-	CiteUrn nextUrn = new CiteUrn("urn:cite:testNs:testColl.three.v1")
+	Cite2Urn prevUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:one")
+	Cite2Urn nextUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:three")
 
-	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE2_URN,"canonical id")
 	CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
 	CiteProperty orderedByProp = new CiteProperty("seq",CitePropertyType.NUM,"sequence")
 	CiteProperty booleanProp = new CiteProperty("trueOrFalse",CitePropertyType.BOOLEAN,"a boolean property")
@@ -41,9 +41,9 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 		// Make some property values
 
-		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
+		def properties = ["urn":"urn:cite2:testNs:testColl.v1:one","label":"object 1","seq":"1"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:one")
 
 		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
 
@@ -53,9 +53,9 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 	@Test void testConstructor2() {
 
-		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
+		def properties = ["urn":"urn:cite2:testNs:testColl.v1:one","label":"object 1","seq":"1"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:two")
 
 		CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
 
@@ -68,9 +68,9 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 
 
-		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
+		def properties = ["urn":"urn:cite2:testNs:testColl.v1:one","label":"object 1","seq":"1"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:one")
 
 		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
 
@@ -83,14 +83,14 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 
 
-		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
+		def properties = ["urn":"urn:cite2:testNs:testColl.v1:one","label":"object 1","seq":"1"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:one")
 
 		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
 
 		assert cco.collection.collProperties.size() == 3
-		assert cco.getPropertyType("urn") == "CITE_URN"
+		assert cco.getPropertyType("urn") == "CITE2_URN"
 		assert cco.getPropertyType("seq") == "NUM"
 		assert cco.getPropertyType("label") == "STRING"
 	}
@@ -100,13 +100,13 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 
 
-		def properties = ["urn":"urn:cite:testNs:testColl.one.v1","label":"object 1","seq":"1"]
+		def properties = ["urn":"urn:cite2:testNs:testColl.v1:one","label":"object 1","seq":"1"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:one")
 
 		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
 
-		assert cco.getPropertyValue("urn").toString() == "urn:cite:testNs:testColl.one.v1"
+		assert cco.getPropertyValue("urn").toString() == "urn:cite2:testNs:testColl.v1:one"
 		assert cco.getPropertyValue("seq") == "1"
 		assert cco.getPropertyValue("label") == "object 1"
 	}
@@ -116,16 +116,16 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 
 
-		def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
+		def properties = ["urn":"urn:cite2:testNs:testColl.v1:two","label":"object 2","seq":"2"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
-		CiteUrn prevUrn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
-		CiteUrn nextUrn = new CiteUrn("urn:cite:testNs:testColl.three.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:two")
+		Cite2Urn prevUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:one")
+		Cite2Urn nextUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:three")
 
 		CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
 
 		assert cco.urn.toString() == urn.toString()
-		assert cco.getPropertyValue("urn").toString() == "urn:cite:testNs:testColl.two.v1"
+		assert cco.getPropertyValue("urn").toString() == "urn:cite2:testNs:testColl.v1:two"
 		assert cco.getPropertyValue("seq") == "2"
 		assert cco.getPropertyValue("label") == "object 2"
 
@@ -145,10 +145,10 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 
 		def properties1 = ["urn":"not-a-urn","label":"object 2","seq":"2","trueOrFalse":"true"]
-		def properties2 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"not-a-number","trueOrFalse":"false"]
-		def properties3 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2","trueOrFalse":"notTrueOrFalse"]
+		def properties2 = ["urn":"urn:cite2:testNs:testColl.v1:two","label":"object 2","seq":"not-a-number","trueOrFalse":"false"]
+		def properties3 = ["urn":"urn:cite2:testNs:testColl.v1:two","label":"object 2","seq":"2","trueOrFalse":"notTrueOrFalse"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:two")
 
 		 shouldFail {
 			CiteCollectionObject cco1 = new CiteCollectionObject(urn,ccTest,properties1,prevUrn,nextUrn)
@@ -177,10 +177,10 @@ class TestCiteCollectionObject extends GroovyTestCase {
 		CiteCollection ccTest = new CiteCollection(collUrn, descr, idProp, labelProp, orderedByProp, xnsAbbr, xnsFull, xcollProps, xextensions)
 
 
-		def properties1 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2","trueOrFalse":"true"]
-		def properties2 = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2","trueOrFalse":"false"]
+		def properties1 = ["urn":"urn:cite2:testNs:testColl.v1:two","label":"object 2","seq":"2","trueOrFalse":"true"]
+		def properties2 = ["urn":"urn:cite2:testNs:testColl.v1:two","label":"object 2","seq":"2","trueOrFalse":"false"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:two")
 
 		CiteCollectionObject cco1 = new CiteCollectionObject(urn,ccTest,properties1,prevUrn,nextUrn)
 		assert cco1.getPropertyValue("trueOrFalse") == "true"
@@ -202,11 +202,11 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 
 
-		def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
+		def properties = ["urn":"urn:cite2:testNs:testColl.v1:two","label":"object 2","seq":"2"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
-		CiteUrn prevUrn = new CiteUrn("urn:cite:testNs:testColl.one.v1")
-		CiteUrn nextUrn = new CiteUrn("urn:cite:testNs:testColl.three.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:two")
+		Cite2Urn prevUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:one")
+		Cite2Urn nextUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:three")
 
 		CiteCollectionObject cco = new CiteCollectionObject(urn,ccOrdered,properties,prevUrn,nextUrn)
 
@@ -219,9 +219,9 @@ class TestCiteCollectionObject extends GroovyTestCase {
 
 
 
-		def properties = ["urn":"urn:cite:testNs:testColl.two.v1","label":"object 2","seq":"2"]
+		def properties = ["urn":"urn:cite2:testNs:testColl.v1:two","label":"object 2","seq":"2"]
 
-		CiteUrn urn = new CiteUrn("urn:cite:testNs:testColl.two.v1")
+		Cite2Urn urn = new Cite2Urn("urn:cite2:testNs:testColl.v1:two")
 
 		CiteCollectionObject cco = new CiteCollectionObject(urn,ccUnordered,properties)
 

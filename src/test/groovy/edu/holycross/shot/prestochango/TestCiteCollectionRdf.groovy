@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -18,9 +18,9 @@ class TestCiteCollectionRdf extends GroovyTestCase {
    def vocabList = ["recto", "verso"] as Set
    CiteProperty pageSide = new CiteProperty("rv","Recto or verso side",vocabList)
 
-	CiteUrn collUrn = new CiteUrn("urn:cite:testNs:testColl")
+	Cite2Urn collUrn = new Cite2Urn("urn:cite2:testNs:testColl.v1:")
   String descr = "Test collection"
-	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+	CiteProperty idProp = new CiteProperty("urn",CitePropertyType.CITE2_URN,"canonical id")
 	CiteProperty labelProp = new CiteProperty("label",CitePropertyType.STRING,"description of object")
 
 
@@ -29,7 +29,7 @@ class TestCiteCollectionRdf extends GroovyTestCase {
       "dse:illustratedBy", "http://www.homermultitext.org/dse/rdf/illustratedBy",
   "dse:illustrates", "http://www.homermultitext.org/dse/rdf/illustrates"
       )
-  CiteProperty img = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
+  CiteProperty img = new CiteProperty("img",CitePropertyType.CITE2_URN,"Default image",rdf)
 
 	ArrayList collProps = [idProp, labelProp, pageSide, img]
 

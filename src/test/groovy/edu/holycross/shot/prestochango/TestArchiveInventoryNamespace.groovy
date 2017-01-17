@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -18,7 +18,7 @@ class TestArchiveInventoryNamespace extends GroovyTestCase {
  // Ordered colections MUST have a sequence value
  @Test void testConstructor() {
   CollectionArchive cc = new CollectionArchive(inv, schemaFileName, new File("/dev/null"))
-  
+
  }
 
 }

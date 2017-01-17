@@ -1,6 +1,7 @@
 package edu.holycross.shot.prestochango
 
 import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 import edu.harvard.chs.cite.CtsUrn
 
 import javax.xml.XMLConstants
@@ -251,9 +252,16 @@ class CollectionArchive {
    * @returns A map of Dublin Core element names to String values.
    */
   LinkedHashMap configureDcForCollection(groovy.util.Node c) {
-    CiteUrn collUrn
     try {
-      collUrn = new CiteUrn(c.'@urn')
+			Cite2Urn collUrn
+			if (c.'@urn'.contains(":cite:")){
+				CiteUrn tempCite1Urn = new CiteUrn(c.'@urn')
+				collUrn = new CiteUrn(tempCite1Urn)
+			} else if (c.'@urn'.contains(":cite2:")) {
+				collUrn = new Cite2Urn(c.'@urn')
+			} else {
+				throw new Exception("CollectionArchive: could not identify ${c.'@urn'} as either a CITE URN or a CITE2 URN.")
+			}
     } catch (Exception e) {
       System.err.println("Could not configure collection from URN value "  + c.'@urn')
       throw e
@@ -307,8 +315,8 @@ class CollectionArchive {
     case "ctsurn":
     return CitePropertyType.CTS_URN
     break
-    case "citeurn":
-    return CitePropertyType.CITE_URN
+    case "cite2urn":
+    return CitePropertyType.CITE2_URN
     break
     case "string":
     return CitePropertyType.STRING
@@ -425,9 +433,16 @@ class CollectionArchive {
    * @returns A CiteCollection object.
    */
   CiteCollection configureCollection(groovy.util.Node c) {
-    CiteUrn collUrn
+		Cite2Urn collUrn
     try {
-      collUrn = new CiteUrn(c.'@urn')
+			if (c.'@urn'.contains(":cite:")){
+				CiteUrn tempCite1Urn = new CiteUrn(c.'@urn')
+				collUrn = new CiteUrn(tempCite1Urn)
+			} else if (c.'@urn'.contains(":cite2:")) {
+				collUrn = new Cite2Urn(c.'@urn')
+			} else {
+				throw new Exception("CollectionArchive: could not identify ${c.'@urn'} as either a CITE URN or a CITE2 URN.")
+			}
     } catch (Exception e) {
       System.err.println("Could not configure collection from URN value "  + c.'@urn')
       throw e
@@ -476,7 +491,7 @@ class CollectionArchive {
    * @param urn URN of the collection to find.
    * @returns A CiteCollection object.
    */
-  CiteCollection getCollection(CiteUrn urn) {
+  CiteCollection getCollection(Cite2Urn urn) {
     return collections[urn.toString()]
   }
 
@@ -492,7 +507,7 @@ class CollectionArchive {
    * @param urn The Collection in question.
    * @returns Property for canonical identification
    */
-  CiteProperty getCanonicalIdProperty(CiteUrn urn)
+  CiteProperty getCanonicalIdProperty(Cite2Urn urn)
   throws Exception {
     def config =  this.collections[urn.toString()]
     return config.canonicalIdProp
@@ -504,7 +519,7 @@ class CollectionArchive {
    * @returns Name of the property.
    * @throws Exception if urn is not a configured collection.
    */
-  CiteProperty getLabelProperty(CiteUrn urn)
+  CiteProperty getLabelProperty(Cite2Urn urn)
   throws Exception {
     def config =  this.collections[urn.toString()]
     return config.labelProp
@@ -517,7 +532,7 @@ class CollectionArchive {
    * @returns A list of CiteProperty objects.
    * @throws Exception if urn is not a configured collection.
    */
-  ArrayList getProperties(CiteUrn urn)
+  ArrayList getProperties(Cite2Urn urn)
   throws Exception {
     return this.collections[urn.toString()].collProperties
   }
@@ -528,7 +543,7 @@ class CollectionArchive {
    * @returns A human-readable string.
    * @throws Exception if urn is not a configured collection.
    */
-  String getDescription(CiteUrn urn)
+  String getDescription(Cite2Urn urn)
   throws Exception {
     return this.collections[urn.toString()].description
   }
@@ -539,7 +554,7 @@ class CollectionArchive {
    * @returns CITE namespace, in abbreviated form.
    * @throws Exception if urn is not a configured collection.
    */
-  String getNsAbbr(CiteUrn urn) {
+  String getNsAbbr(Cite2Urn urn) {
     return this.collections[urn.toString()].nsAbbr
   }
 
@@ -550,7 +565,7 @@ class CollectionArchive {
    * @returns CITE namespace URI.
    * @throws Exception if urn is not a configured collection.
    */
-  String getNsFull(CiteUrn urn)
+  String getNsFull(Cite2Urn urn)
   throws Exception {
     return this.collections[urn.toString()].nsFull
   }
@@ -565,7 +580,7 @@ class CollectionArchive {
    * @throws Exception if urn is not a configured collection, or
    * if propertyName does not exist in that collection.
    */
-  ArrayList getVocabulary(CiteUrn urn, String propertyName)
+  ArrayList getVocabulary(Cite2Urn urn, String propertyName)
   throws Exception {
     return this.collections[urn.toString()].getVocabList(propertyName)
   }
@@ -578,7 +593,7 @@ class CollectionArchive {
    * @throws Exception if urn is not a configured collection or
    * if propertyName does not exist in that collection.
    */
-  RdfVerb getRdfVerb(CiteUrn urn, String propertyName)
+  RdfVerb getRdfVerb(Cite2Urn urn, String propertyName)
   throws Exception {
     return this.collections[urn.toString()].getRdf(propertyName)
   }
@@ -594,7 +609,7 @@ class CollectionArchive {
    * @throws Exception if urn is not a configured collection or
    * if propertyName does not exist in that collection.
    */
-  Object getSingleValue(CiteUrn collectionUrn, String propertyName)
+  Object getSingleValue(Cite2Urn collectionUrn, String propertyName)
   throws Exception {
     CiteCollection cc = this.collections[collectionUrn.toString()]
     Object singleVal =  cc.getSingleValue(propertyName)
@@ -605,12 +620,12 @@ class CollectionArchive {
 
 
   // ORDERING
-  CiteProperty getOrderedByProperty(CiteUrn urn) {
+  CiteProperty getOrderedByProperty(Cite2Urn urn) {
     def config =  this.collections[urn.toString()]
     return config.orderedByProp
   }
 
-  boolean isOrdered(CiteUrn urn) {
+  boolean isOrdered(Cite2Urn urn) {
     def config =  this.collections[urn.toString()]
     if (config == null) {
       throw new Exception("CollectionArchive: no collection " + urn)
@@ -761,7 +776,7 @@ class CollectionArchive {
     //1. turtleize collection structure
     ttl.append(ttlCollectionStructure(cc))
 
-    // check for optional ordering and extensions
+    // check for optional ordering, versions and extensions
     String urnStr = "<${cc.urn}>"
 
     // ordering
@@ -779,6 +794,12 @@ class CollectionArchive {
 
     // extensions supported:
     ttl.append(ttlExtensionMap())
+
+		// version
+    if (cc.urn.hasCollectionVersion()){
+      ttl.append("<${cc.urn}> cite:isVersionOf <${cc.urn.reduceToCollection()}> .\n")
+      ttl.append("<${cc.urn.reduceToCollection()}> cite:hasVersion <${cc.urn}> .\n")
+    }
 
 
     //2. turtleize data array
@@ -808,12 +829,12 @@ class CollectionArchive {
    * @param objectUrn URN of the object this data value belongs to.
    * @returns A String of TTL.
    */
-  String turtleizeProperty(String propValue, CiteProperty prop, String colName, CiteUrn objectUrn) {
+  String turtleizeProperty(String propValue, CiteProperty prop, String colName, Cite2Urn objectUrn) {
     StringBuilder propertyTtl = new StringBuilder()
 
     // Compose subject-verb-object statements
     String subject = "<${objectUrn}>"
-    String verb = "citedata:${objectUrn.getCollection()}_${colName}"
+    String verb = "citedata:${objectUrn.getCollection()}_${objectUrn.getCollectionVersion()}_${colName}"
     String objectString = prop.asRdfString(propValue)
     // CHECK CONTROL VOCAB ON STRINGS
 
@@ -835,23 +856,28 @@ class CollectionArchive {
     return ttl.toString()
   }
 
-  CiteUrn findCanonicalUrn(ArrayList cols, ArrayList header, String canonicalName){
-    CiteUrn canonical = null
-    cols.eachWithIndex { column, idx ->
-      if (header.indexOf(canonicalName) == idx) {
-	try {
-	  canonical = new CiteUrn(column)
-	} catch (Exception e) {
-	  System.err.println "Could not form URN for canonical identifier " + column
-	}
-      }
-    }
-    if (canonical == null) {
-      throw new Exception("No canonical ID find in " + header)
-    } else {
-      return canonical
-    }
-  }
+	Cite2Urn findCanonicalUrn(ArrayList cols, ArrayList header, String canonicalName){
+		Cite2Urn canonical = null
+		cols.eachWithIndex { column, idx ->
+			if (header.indexOf(canonicalName) == idx) {
+				try {
+						if (column.contains(":cite:")){
+								CiteUrn c1urn = new CiteUrn(column)
+								canonical = new Cite2Urn(c1urn)
+						} else {
+							canonical = new Cite2Urn(column)
+						}
+					} catch (Exception e) {
+						System.err.println "Could not form URN for canonical identifier " + column
+					}
+				}
+			}
+			if (canonical == null) {
+				throw new Exception("No canonical ID find in " + header)
+				} else {
+					return canonical
+				}
+			}
 
   String findLabelString(ArrayList cols, ArrayList header, String labelPropName){
     String label = null
@@ -867,7 +893,7 @@ class CollectionArchive {
     }
   }
 
-  String turtleizeUniversalValues(CiteUrn urn, CiteCollection coll) {
+  String turtleizeUniversalValues(Cite2Urn urn, CiteCollection coll) {
     StringBuilder ttl = new StringBuilder()
     coll.collProperties.each { p ->
       try {
@@ -905,7 +931,7 @@ class CollectionArchive {
   throws Exception {
     StringBuilder rowTtl = new StringBuilder()
     // required Canonical ID:
-    CiteUrn objectUrn = findCanonicalUrn(cols, header, cc.canonicalIdProp.propertyName)
+    Cite2Urn objectUrn = findCanonicalUrn(cols, header, cc.canonicalIdProp.propertyName)
     rowTtl.append(turtleizeCanonicalRelation(objectUrn, cc.urn))
     // required human-readable label:
     String objectLabel = findLabelString(cols, header, cc.labelProp.propertyName)
@@ -930,17 +956,11 @@ class CollectionArchive {
     return rowTtl.toString()
   }
 
-  String turtleizeCanonicalRelation(CiteUrn objUrn,CiteUrn collUrn) {
+  String turtleizeCanonicalRelation(Cite2Urn objUrn,Cite2Urn collUrn) {
     StringBuilder oneRow = new StringBuilder()
     oneRow.append("<${objUrn}> cite:belongsTo <${collUrn}> .\n")
     oneRow.append("<${collUrn}> cite:possesses <${objUrn}> .\n")
 
-    if (objUrn.hasVersion()){
-      oneRow.append("<${objUrn}> cite:isVersionOf <${objUrn.reduceToObject()}> .\n")
-      oneRow.append("<${objUrn.reduceToObject()}> cite:hasVersion <${objUrn}> .\n")
-      oneRow.append("<${objUrn.reduceToObject()}> cite:belongsTo <${collUrn}> .\n")
-      oneRow.append("<${collUrn}> cite:possesses <${objUrn.reduceToObject()}> .\n")
-    }
     return oneRow.toString()
   }
 

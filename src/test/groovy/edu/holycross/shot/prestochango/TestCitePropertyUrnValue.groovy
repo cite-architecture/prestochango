@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -16,10 +16,10 @@ class TestCitePropertyUrnValue extends GroovyTestCase {
 	// Ordered colections MUST have a sequence value
 	@Test void testConstructor1() {
 
-		CiteProperty testProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+		CiteProperty testProp = new CiteProperty("urn",CitePropertyType.CITE2_URN,"canonical id")
 		assert testProp
 		assert testProp.propertyName == "urn"
-		assert testProp.propertyType == CitePropertyType.CITE_URN
+		assert testProp.propertyType == CitePropertyType.CITE2_URN
 		assert testProp.label == "canonical id"
 
 
@@ -28,10 +28,10 @@ class TestCitePropertyUrnValue extends GroovyTestCase {
 
 	@Test void testConstructor2() {
 		RdfVerb rdf = new RdfVerb("dse:illustratedBy", "dse:illustrates")
-		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
+		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE2_URN,"Default image",rdf)
 		assert testProp
 		assert testProp.propertyName == "img"
-		assert testProp.propertyType == CitePropertyType.CITE_URN
+		assert testProp.propertyType == CitePropertyType.CITE2_URN
 		assert testProp.label == "Default image"
     assert testProp.rdfPair.abbr == "dse:illustratedBy"
 	}

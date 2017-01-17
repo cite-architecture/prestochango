@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -20,11 +20,11 @@ class TestArchiveCollectionList extends GroovyTestCase {
     String inventoryName = "testdata/signs-collection.xml"
     File inv = new File(inventoryName)
     CollectionArchive cca = new CollectionArchive(inv, schemaFileName, new File("/dev/null"))
-    CiteUrn urn = new CiteUrn("urn:cite:hmt:critsigns")
+    Cite2Urn urn = new Cite2Urn("urn:cite2:hmt:critsigns.v1:")
 
     def collList = cca.getCollections()
     assert collList.size() == 1
-    assert collList[0].urn.toString() ==   "urn:cite:hmt:critsigns"
+    assert collList[0].urn.toString() ==   "urn:cite2:hmt:critsigns.v1:"
   }
 
 
@@ -39,7 +39,7 @@ class TestArchiveCollectionList extends GroovyTestCase {
     def expectedNumber = 3
     assert cca.getCollections().size() == expectedNumber
 
-    def expectedUrns = ["urn:cite:hmt:vaimg","urn:cite:hmt:critsigns","urn:cite:hmt:msA"]
+    def expectedUrns = ["urn:cite2:hmt:vaimg.v1:","urn:cite2:hmt:critsigns.v1:","urn:cite2:hmt:msA.v1:"]
     def actualUrns = []
     cca.getCollections().each {
       actualUrns.add(it.urn.toString())

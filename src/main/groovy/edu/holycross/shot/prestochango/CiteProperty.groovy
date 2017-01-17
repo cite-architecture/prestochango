@@ -1,6 +1,7 @@
 package edu.holycross.shot.prestochango
 
 import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 import edu.harvard.chs.cite.CtsUrn
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -27,7 +28,7 @@ class CiteProperty {
   String label
 
   RdfVerb rdfPair = null
-  
+
 
   /** Possible null set defining a controlled vocabulary list for a
    * string property.  A null valueSet means that any value is allowed.
@@ -37,7 +38,7 @@ class CiteProperty {
   // string expression of a single value of any type,
   // converted to type defined in propertyType on retreival
   String singleValue = null
-  
+
   /** Constructor with three required values.
    * @param propName Name of the property.
    * @param propType One of the allowed values for property type.
@@ -55,7 +56,7 @@ class CiteProperty {
     this.label = propLabel
     this.rdfPair = rdfVerb
 
-    if ((propType != CitePropertyType.CITE_URN) && (propType != CitePropertyType.CTS_URN))  {
+    if ((propType != CitePropertyType.CITE2_URN) && (propType != CitePropertyType.CTS_URN))  {
       throw new Exception("Cannot create property ${propName} of type ${propType}: RDF relations only apply to URN values")
     }
   }
@@ -89,8 +90,8 @@ class CiteProperty {
     }
   }
 
-  
- 
+
+
 
   // Creates appropriate type of object from the "universal value" string.
   Object getSingleValue() {
@@ -103,11 +104,18 @@ class CiteProperty {
 
     Object singleVal = null
     switch (this.propertyType) {
-    case (CitePropertyType.CITE_URN):
+    case (CitePropertyType.CITE2_URN):
+
     try {
-      singleVal = new CiteUrn(this.singleValue)
+			if (this.singleValue.contains(":cite:")){
+				System.err.println("this.singleValue = ${this.singleValue}")
+				CiteUrn c1urn = new CiteUrn(this.singleValue)
+				singleVal = new Cite2Urn(c1urn)
+			} else {
+	      singleVal = new Cite2Urn(this.singleValue)
+			}
     } catch(Exception e) {
-      System.err.println "CiteProperty, ${propertyName}: single value '" + this.singleValue + "' is not a valid CITE URN"
+      System.err.println "CiteProperty, ${propertyName}: single value '" + this.singleValue + "' is not a valid CITE or CITE2 URN. ${e}"
       throw e
     }
     break
@@ -149,7 +157,7 @@ class CiteProperty {
       return singleVal
     }
   }
-  
+
   /** Overrides default. */
   String toString() {
     return("${this.propertyName} (${this.propertyType})")
@@ -164,8 +172,8 @@ class CiteProperty {
     String rdf = ""
     switch(propertyType) {
 
-    case (CitePropertyType.CITE_URN):
-    rdf = "cite:CiteUrn"
+    case (CitePropertyType.CITE2_URN):
+    rdf = "cite:Cite2Urn"
     break
 
     case (CitePropertyType.CTS_URN):
@@ -191,10 +199,10 @@ class CiteProperty {
     }
     return rdf
   }
-    
+
   /** Formats a string representation of a value for
    * this property for use in TTL statements.
-   * @param propValue String representation of a 
+   * @param propValue String representation of a
    * value for this property.
    * @returns A String formatted for use in TTL.
    */
@@ -202,7 +210,7 @@ class CiteProperty {
 
     String objectString = null
     switch (this.propertyType) {
-		
+
     case CitePropertyType.BOOLEAN:
     if (propValue == "true") {
       objectString = "true"
@@ -210,7 +218,7 @@ class CiteProperty {
       objectString = "false"
     }
     break
-    
+
     case CitePropertyType.STRING:
     objectString = '"' + propValue + '"'
     break
@@ -224,11 +232,17 @@ class CiteProperty {
     objectString = '"' + propValue + '"'
     break
 
-    
-    case CitePropertyType.CITE_URN:
-    
+
+    case CitePropertyType.CITE2_URN:
+
     try {
-      CiteUrn urn = new CiteUrn(propValue)
+			Cite2Urn urn
+			if (propValue.contains(":cite:")){
+				CiteUrn c1urn = new CiteUrn(propValue)
+				urn = new Cite2Urn(c1urn) 
+			} else {
+	      urn = new Cite2Urn(propValue)
+			}
     } catch (Exception e) {
       System.err.println("CiteProperty: invalid value for CITE URN " + propValue)
       throw e
@@ -246,7 +260,7 @@ class CiteProperty {
     objectString = '<' + propValue + '>'
     break
 
-    default : 
+    default :
     System.err.println "UNRECOGNIZED TYPE:" + propertyType
     throw new Exception("CiteProperty: unrecognized type " + propertyType)
     break
@@ -258,5 +272,5 @@ class CiteProperty {
       return objectString
       }
   }
-  
+
 }

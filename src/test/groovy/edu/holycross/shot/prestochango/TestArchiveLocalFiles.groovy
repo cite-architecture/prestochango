@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -27,7 +27,7 @@ class TestArchiveLocalFiles extends GroovyTestCase {
     File inv = new File(inventoryName)
     CollectionArchive cca = new CollectionArchive(inv, schemaFileName, baseDir)
 
-    CiteUrn urn = new CiteUrn("urn:cite:hmt:critsigns")
+    Cite2Urn urn = new Cite2Urn("urn:cite2:hmt:critsigns.v1:")
 
     def srcList = cca.getDataSources()
 

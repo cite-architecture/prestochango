@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -16,12 +16,12 @@ class TestCitePropertySingleValue extends GroovyTestCase {
 
 		@Test void testSingleValue() {
 
-			CiteUrn msA = new CiteUrn("urn:cite:hmt:msA")
+			Cite2Urn msA = new Cite2Urn("urn:cite2:hmt:msA.v1:")
 
-			CiteProperty testProp = new CiteProperty("ms",CitePropertyType.CITE_URN,"Codex")
-			testProp.setSingleValue("urn:cite:hmt:msA")
+			CiteProperty testProp = new CiteProperty("ms",CitePropertyType.CITE2_URN,"Codex")
+			testProp.setSingleValue("urn:cite2:hmt:msA.v1:")
 
-			CiteUrn retrieved = testProp.getSingleValue() as CiteUrn
+			Cite2Urn retrieved = testProp.getSingleValue() as Cite2Urn
 			assert retrieved.toString() == msA.toString()
 
 			CiteProperty noUniversal = new CiteProperty("RV",CitePropertyType.STRING,"recto or verso" )

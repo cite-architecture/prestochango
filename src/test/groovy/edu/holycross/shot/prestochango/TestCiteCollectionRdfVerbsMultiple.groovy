@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -25,7 +25,7 @@ class TestCiteCollectionRdfVerbsMultiple extends GroovyTestCase {
 
     CollectionArchive cc = new CollectionArchive(invFile, schemaFileName, dataDir)
 
-    
+
 
   }
 

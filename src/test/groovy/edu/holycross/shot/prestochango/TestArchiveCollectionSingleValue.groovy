@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -18,11 +18,11 @@ class TestArchiveCollectionSingleValue extends GroovyTestCase {
 
  @Test void testSingleValue() {
   CollectionArchive ccarchive = new CollectionArchive(inv, schemaFileName, new File("/dev/null"))
-  CiteUrn urn = new CiteUrn("urn:cite:hmt:vaimg")
+  Cite2Urn urn = new Cite2Urn("urn:cite2:hmt:vaimg.v1:")
 
 
-  CiteUrn expectedUrn =  ccarchive.getSingleValue(urn,"testUV1") as CiteUrn
-  assert expectedUrn.toString() == "urn:cite:hmt:some.thing1"
+  Cite2Urn expectedUrn =  ccarchive.getSingleValue(urn,"testUV1") as Cite2Urn
+  assert expectedUrn.toString() == "urn:cite2:hmt:some:thing1"
 
   def msg = shouldFail {
     def uval = ccarchive.getSingleValue(urn, "Image")

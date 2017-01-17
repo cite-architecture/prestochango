@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -23,9 +23,9 @@ class TestArchiveMetadata extends GroovyTestCase {
 
 
     def dcmeta = cca.getDcMeta()
-    
 
-    def signsMeta = dcmeta["urn:cite:hmt:critsigns"]
+
+    def signsMeta = dcmeta["urn:cite2:hmt:critsigns.v1:"]
     assert signsMeta["title"] == "Classes of Aristarchan critical signs"
 
   }

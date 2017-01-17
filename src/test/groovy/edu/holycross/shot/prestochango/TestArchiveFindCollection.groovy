@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -25,10 +25,10 @@ class TestArchiveFindCollection extends GroovyTestCase {
     @Test void testRetrieval() {
         CollectionArchive ccarchive = new CollectionArchive(inv, schemaFileName, dir)
 
-        CiteUrn collUrn = new CiteUrn("urn:cite:hmt:msA")
+        Cite2Urn collUrn = new Cite2Urn("urn:cite2:hmt:msA.v1:")
         CiteCollection cc = ccarchive.getCollection(collUrn)
-        
-        assert cc.urn.toString() == "urn:cite:hmt:msA"
+
+        assert cc.urn.toString() == "urn:cite2:hmt:msA.v1:"
         assert cc.canonicalIdProp.propertyName == "URN"
         assert cc.labelProp.propertyName == "Label"
 

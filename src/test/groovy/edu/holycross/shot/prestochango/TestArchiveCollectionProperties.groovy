@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -24,7 +24,7 @@ class TestArchiveCollectionProperties extends GroovyTestCase {
     @Test void testPropMetadata() {
         CollectionArchive cc = new CollectionArchive(inv, schemaFileName, dir)
 
-        CiteUrn collUrn = new CiteUrn("urn:cite:hmt:msA")
+        Cite2Urn collUrn = new Cite2Urn("urn:cite2:hmt:msA.v1:")
 
         // Siglum	Sequence	URN	RV	Label	CodexURN
         def expectedNames = ["URN", "Siglum", "Sequence", "RV", "Label", "CodexURN"]

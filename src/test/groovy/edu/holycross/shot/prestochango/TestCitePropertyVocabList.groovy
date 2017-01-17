@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -27,15 +27,15 @@ class TestCitePropertyVocabList extends GroovyTestCase {
 
 	@Test void testConstructor2() {
 		RdfVerb rdf = new RdfVerb("http://www.homermultitext.org/cite/rdf/citeimage", "citeimg")
-		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE_URN,"Default image",rdf)
+		CiteProperty testProp = new CiteProperty("img",CitePropertyType.CITE2_URN,"Default image",rdf)
 		assert testProp
 		assert testProp.propertyName == "img"
-		assert testProp.propertyType == CitePropertyType.CITE_URN
+		assert testProp.propertyType == CitePropertyType.CITE2_URN
 		assert testProp.label == "Default image"
     assert shouldFail {
       def vocabList = testProp.getVocabulary()
     }
-  
+
 	}
 
 }

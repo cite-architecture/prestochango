@@ -10,7 +10,7 @@ public enum CitePropertyType {
   NUM ("numeric value"),
   BOOLEAN ("boolean value"),
   MARKDOWN ("markdown string"),
-  CITE_URN ("CITE Object URN"),
+  CITE2_URN ("CITE2 Object URN"),
   CTS_URN ("CTS URN")
 
   private String label

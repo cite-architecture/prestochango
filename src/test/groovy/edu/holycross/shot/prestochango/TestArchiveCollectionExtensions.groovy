@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -19,7 +19,7 @@ class TestArchiveCollectionExtensions extends GroovyTestCase {
    String inventoryName = "testdata/signs-collection.xml"
    File inv = new File(inventoryName)
   CollectionArchive ccarchive = new CollectionArchive(inv, schemaFileName, new File("/dev/null"))
-  CiteUrn urn = new CiteUrn("urn:cite:hmt:critsigns")
+  Cite2Urn urn = new Cite2Urn("urn:cite2:hmt:critsigns.v1:")
 
   assert ccarchive.extensionsMap.size() == 1
   assert ccarchive.extensionsMap.keySet()[0] == "cite:CiteImage"

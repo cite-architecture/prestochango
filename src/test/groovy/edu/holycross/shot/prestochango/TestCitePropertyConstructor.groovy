@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -16,10 +16,10 @@ class TestCitePropertyConstructor extends GroovyTestCase {
 	// Ordered colections MUST have a sequence value
 	@Test void testConstructor1() {
 
-		CiteProperty testProp = new CiteProperty("urn",CitePropertyType.CITE_URN,"canonical id")
+		CiteProperty testProp = new CiteProperty("urn",CitePropertyType.CITE2_URN,"canonical id")
 		assert testProp
 		assert testProp.propertyName == "urn"
-		assert testProp.propertyType == CitePropertyType.CITE_URN
+		assert testProp.propertyType == CitePropertyType.CITE2_URN
 		assert testProp.label == "canonical id"
 
 	}
