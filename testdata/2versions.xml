@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../schemas/CiteCollectionInventory.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<collectionService xmlns="http://chs.harvard.edu/xmlns/cite"
+    xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.0">
+    <extensions>
+        <extension abbr="cite:CiteImage"
+            uri="http://www.homermultitext.org/cite/rdf/citeimage"> </extension>
+        <extension abbr="cite:GeoJSON" uri="http://made.up.uri/rdf/geojson"/>
+    </extensions>
+
+
+    <!-- IMAGE DATA FROM HMT Collections ********************   -->
+    <citeCollection canonicalId="Image" label="Label" urn="urn:cite2:hmt:vaimg.v1:">
+        <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
+
+        <extendedBy extension="cite:CiteImage"/>
+        <dc:title xmlns="http://purl.org/dc/elements/1.1/">Images of the Venetus A MS</dc:title>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Christopher Blackwell</creator>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Neel Smith</creator>
+        <coverage xmlns="http://purl.org/dc/elements/1.1/">All images from the Homer Multitext
+            project's photography of the Venetus A manuscript.</coverage>
+        <description xmlns="http://purl.org/dc/elements/1.1/"> (Version 1) Photography of the Venetus A manuscript by the Homer Multitext project.</description>
+        <rights xmlns="http://purl.org/dc/elements/1.1/"> All data in this collection are available
+            under the terms of the Creative Commons Attribution-Non-Commercial 3.0 Unported License,
+            http://creativecommons.org/licenses/by-nc/3.0/deed.en_US</rights>
+        <orderedBy property="Sequence"/>
+        <source type="file" value="csvs/2versions1.csv"/>
+       
+
+        <citeProperty name="Image" label="Image URN" type="cite2urn"/>
+        <citeProperty name="Label" label="Caption" type="string"/>
+        <citeProperty name="OtherUrn" label="Another URN" type="cite2urn">
+        	<indexRelation rdfFull="http://devnull.com/rdf"  inverseFull="http://devnull.com/rdf" rdfAbbr="cite:madeUp" inverseAbbr="cite:upMade"/>
+        </citeProperty>
+        <citeProperty name="Rights" label="Rights" type="string"></citeProperty>
+        <citeProperty name="testUV1" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing1" type="cite2urn"></citeProperty>
+        <citeProperty name="testUV2" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing2" type="cite2urn"></citeProperty>
+        <citeProperty name="testBoolean" label="testing boolean values" type="boolean"></citeProperty>
+        <citeProperty name="Sequence" label="Sequence" type="number"></citeProperty>
+    </citeCollection>
+    
+    <citeCollection canonicalId="Image" label="Label" urn="urn:cite2:hmt:vaimg.v2:">
+        <namespaceMapping abbr="hmt" uri="http://www.homermultitext.org/datans"/>
+        
+        <extendedBy extension="cite:CiteImage"/>
+        <dc:title xmlns="http://purl.org/dc/elements/1.1/">Images of the Venetus A MS</dc:title>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Christopher Blackwell</creator>
+        <creator xmlns="http://purl.org/dc/elements/1.1/">Neel Smith</creator>
+        <coverage xmlns="http://purl.org/dc/elements/1.1/">All images from the Homer Multitext
+            project's photography of the Venetus A manuscript.</coverage>
+        <description xmlns="http://purl.org/dc/elements/1.1/"> (version 2) Photography of the Venetus A manuscript by the Homer Multitext project.</description>
+        <rights xmlns="http://purl.org/dc/elements/1.1/"> All data in this collection are available
+            under the terms of the Creative Commons Attribution-Non-Commercial 3.0 Unported License,
+            http://creativecommons.org/licenses/by-nc/3.0/deed.en_US</rights>
+        <orderedBy property="Sequence"/>
+        <source type="file" value="csvs/2versions2.csv"/>
+        
+        
+        <citeProperty name="Image" label="Image URN" type="cite2urn"/>
+        <citeProperty name="Label" label="Caption" type="string"/>
+        <citeProperty name="OtherUrn" label="Another URN" type="cite2urn">
+            <indexRelation rdfFull="http://devnull.com/rdf"  inverseFull="http://devnull.com/rdf" rdfAbbr="cite:madeUp" inverseAbbr="cite:upMade"/>
+        </citeProperty>
+        <citeProperty name="Rights" label="Rights" type="string"></citeProperty>
+        <citeProperty name="testUV1" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing1" type="cite2urn"></citeProperty>
+        <citeProperty name="testUV2" label="testing Universal Value" universalValue="urn:cite:hmt:some.thing2" type="cite2urn"></citeProperty>
+        <citeProperty name="testBoolean" label="testing boolean values" type="boolean"></citeProperty>
+        <citeProperty name="Sequence" label="Sequence" type="number"></citeProperty>
+    </citeCollection>
+
+</collectionService>
