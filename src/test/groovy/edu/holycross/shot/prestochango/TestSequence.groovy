@@ -1,6 +1,6 @@
 package edu.holycross.shot.prestochango
 
-import edu.harvard.chs.cite.CiteUrn
+import edu.harvard.chs.cite.Cite2Urn
 
 import static org.junit.Assert.*
 import org.junit.Test
@@ -12,79 +12,45 @@ import org.junit.Test
 */
 class TestSequence extends GroovyTestCase {
 
+  String inventoryName = "testdata/collections.xml"
+  File inv = new File(inventoryName)
   String schemaFileName = "schemas/CiteCollectionInventory.rng"
-  String response = ""
+	File dataDir = new File("testdata/csvs")
 
-  @Test void testSequence() {
-/*
-    String inventory = "testdata/one-for-all.xml"
-    File invFile = new File(inventory)
+ // Ordered colections MUST have a sequence value
+ @Test void testOrdering() {
+  CollectionArchive ccarchive = new CollectionArchive(inv, schemaFileName, dataDir)
+  Cite2Urn urn = new Cite2Urn("urn:cite2:hmt:msA.v1:")
+	String ttl = ccarchive.oloOrdering(ccarchive.getCollection(urn))
 
-    String data = "testdata/csvs"
-    File dataDir = new File(data)
-
-    CollectionArchive cc = new CollectionArchive(invFile, schemaFileName, dataDir)
-
-    File testOut = new File("testdata/testoutput/oneForAll.ttl")
-
-		if (testOut.exists()) {
-		  testOut.setText("")
-		}
-
-    cc.ttl(testOut)
-
-
-	def numCorrect = 0
-
-	testOut.eachLine { l ->
-		if ( l.contains("urn:cite:hmt:vaimg.VA082RN_0083.v1" )) {
-			if (l.contains("olo:item")){
-				assert l.contains(" 1 ")
-				numCorrect++
+  assert ccarchive.isOrdered(urn)
+  assert  ccarchive.getOrderedByProperty(urn).propertyName == "Sequence"
+	ttl.eachLine{ l, i ->
+		  if (i < 9){
+				System.err.println(l)
 			}
-		}
-		if ( l.contains("urn:cite:hmt:vaimg.VA083RN_0084.v1" )) {
-			if (l.contains("olo:item")){
-				assert l.contains(" 2 ")
-				numCorrect++
+
+			if ( i == 0 ){
+				assert l.contains("urn:cite2:hmt:msA:1r")
 			}
-		}
-		if ( l.contains("urn:cite:hmt:vaimg.VA084RN_0085.v1" )) {
-			if (l.contains("olo:item")){
-				assert l.contains(" 3 ")
-				numCorrect++
+			if ( i == 1 ){
+				assert l.contains("urn:cite2:hmt:msA:1v")
 			}
-		}
+			if ( i == 2 ){
+				assert l.contains("urn:cite2:hmt:msA:1v")
+			}
+			if ( i == 3 ){
+				assert l.contains("urn:cite2:hmt:msA:1r")
+			}
+			if ( i == 4 ){
+				assert l.contains("urn:cite2:hmt:msA:2r")
+			}
+
+			assert l.contains(":cite:") == false
+			assert l.contains(":cite2:")
 	}
 
-	assert numCorrect == 3
-
-	numCorrect = 0
-
-	testOut.eachLine { l ->
-		if ( l.contains("urn:cite:hmt:vaimg.VA082RN_0083.v1> olo:next" )) {
-			if (l.contains("olo:next")){
-				assert l.contains("urn:cite:hmt:vaimg.VA083RN_0084.v1")
-				numCorrect++
-			}
-		}
-		if ( l.contains("urn:cite:hmt:vaimg.VA083RN_0084.v1> olo:next")) {
-			if (l.contains("olo:next")){
-				assert l.contains("urn:cite:hmt:vaimg.VA084RN_0085.v1")
-				numCorrect++
-			}
-		}
-		if ( l.contains("urn:cite:hmt:vaimg.VA083RN_0084.v1> olo:previous" )) {
-			if (l.contains("olo:previous")){
-				assert l.contains("urn:cite:hmt:vaimg.VA082RN_0083.v1")
-				numCorrect++
-			}
-		}
-
-	}
-	assert numCorrect == 3
-	*/
-  }
+ }
 
 
 }

@@ -754,17 +754,43 @@ class CollectionArchive {
 
     // Write olo sequencing statements:
     def lastRec = data.size()  - 1
+
+		// Set up urns for translation from cite to cite2
+		CiteUrn c1urn
+		Cite2Urn subjUrn
+		Cite2Urn prevUrn
+		Cite2Urn nextUrn
+
     data.eachWithIndex { cols, i ->
-      String subj = "<" + cols[canonicalColumn] + ">"
+      String subj = cols[canonicalColumn]
+			if (subj.contains(":cite:")){
+				c1urn = new CiteUrn(subj)
+				subjUrn = new Cite2Urn(c1urn)
+			} else {
+				subjUrn = new Cite2Urn(subj)
+			}
       def oloCounter = i + 1
-      ttl.append(subj + " olo:item " + oloCounter + " .\n")
+      ttl.append("<${subjUrn}>" + " olo:item " + oloCounter + " .\n")
+
       if (i > 0) {
-	String prevId = "<" + data[i - 1][canonicalColumn] + ">"
-	ttl.append(subj + " olo:previous " + prevId + " .\n")
+				String prevId = data[i - 1][canonicalColumn]
+				if (prevId.contains(":cite:")){
+					c1urn = new CiteUrn(prevId)
+					prevUrn = new Cite2Urn(c1urn)
+				} else {
+					prevUrn = new Cite2Urn(prevId)
+				}
+				ttl.append("<${subjUrn}>" + " olo:previous " + "<${prevUrn}>" + " .\n")
       }
       if (i < lastRec) {
-	String nextId = "<" + data[i + 1][canonicalColumn] + ">"
-	ttl.append(subj + " olo:next " + nextId + " .\n")
+				String nextId = data[i + 1][canonicalColumn]
+				if (nextId.contains(":cite:")){
+					c1urn = new CiteUrn(nextId)
+					nextUrn = new Cite2Urn(c1urn)
+				} else {
+					nextUrn = new Cite2Urn(nextId)
+				}
+				ttl.append("<${subjUrn}>"+ " olo:next " + "<${nextUrn}>" + " .\n")
       }
     }
     return ttl.toString()
