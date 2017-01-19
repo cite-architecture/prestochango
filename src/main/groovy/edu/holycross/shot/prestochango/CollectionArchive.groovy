@@ -835,7 +835,7 @@ class CollectionArchive {
 
     // Compose subject-verb-object statements
     String subject = "<${objectUrn}>"
-    String verb = "citedata:${objectUrn.getCollection()}_${objectUrn.getCollectionVersion()}_${colName}"
+    String verb = "citedata:${objectUrn.getCollection()}_${colName}"
     String objectString = prop.asRdfString(propValue)
     // CHECK CONTROL VOCAB ON STRINGS
 

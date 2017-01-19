@@ -21,6 +21,10 @@ class TestCitePropertyTtlString extends GroovyTestCase {
 			 String nogo = testProp.asRdfString("urn:citeless:nogood")
 		}
 
+		String notCite2String = testProp.asRdfString("urn:cite:hmt:vaimg.123.v1")
+		System.err.println("string: ${notCite2String}")
+		assert notCite2String == "<urn:cite2:hmt:vaimg.v1:123>"
+
 	}
 
 

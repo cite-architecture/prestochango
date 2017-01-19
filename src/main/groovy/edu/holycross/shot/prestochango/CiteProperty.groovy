@@ -242,11 +242,11 @@ class CiteProperty {
 			} else {
 	      urn = new Cite2Urn(propValue)
 			}
+	    objectString = '<' + urn.toString() + '>'
     } catch (Exception e) {
       System.err.println("CiteProperty: invalid value for CITE URN " + propValue)
       throw e
     }
-    objectString = '<' + propValue + '>'
     break
 
     case CitePropertyType.CTS_URN:
