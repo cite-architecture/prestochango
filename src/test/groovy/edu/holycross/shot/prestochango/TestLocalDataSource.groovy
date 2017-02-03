@@ -31,5 +31,14 @@ class TestLocalDataSource extends GroovyTestCase {
    assert records[0] == headers
  }
 
+ @Test void testBadFilenameExtension() {
+   File shortFile = new File("testdata/tsvs/just-one.txt")
+   LocalFileSource lfs = new LocalFileSource(shortFile)
+   def records = lfs.getRecordArray()
+   assert records.size() == 2
+   def headers = ["Image", "Label", "Rights", "OtherUrn", "testBoolean", "Sequence"]
+   assert records[0] == headers
+ }
+
 
 }

@@ -29,7 +29,7 @@ class LocalFileSource implements CiteDataSource {
       break
 
       default:
-      throw new Exception("Unsupported filename extension in " + delimitedString)
+      throw new Exception("Unsupported filename extension in " + delimitedFile.toString())
       break
       }
 
