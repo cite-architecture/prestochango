@@ -263,7 +263,6 @@ class CiteProperty {
       throw e
     }
 		CtsUrn ctsurn = new CtsUrn(propValue)
-		System.err.println("CTS URN: ${ctsurn.toString()}")
 		if (ctsurn.hasSubref()){
        objectString = '<' + ctsurn.encodeSubref() + '>'
 		} else {
