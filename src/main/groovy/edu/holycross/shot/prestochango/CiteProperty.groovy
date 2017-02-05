@@ -242,7 +242,13 @@ class CiteProperty {
 			} else {
 	      urn = new Cite2Urn(propValue)
 			}
-	    objectString = '<' + urn.toString() + '>'
+
+			if (urn.hasExtendedRef()){
+				objectString = '<' + urn.encodeSubref() + '>'
+			} else {
+				objectString = '<' + urn.toString() + '>'
+			}
+
     } catch (Exception e) {
       System.err.println("CiteProperty: invalid value for CITE URN " + propValue)
       throw e
@@ -256,7 +262,13 @@ class CiteProperty {
       System.err.println("CiteProperty: invalid value for CTS URN " + propValue)
       throw e
     }
-    objectString = '<' + propValue + '>'
+		CtsUrn ctsurn = new CtsUrn(propValue)
+		System.err.println("CTS URN: ${ctsurn.toString()}")
+		if (ctsurn.hasSubref()){
+       objectString = '<' + ctsurn.encodeSubref() + '>'
+		} else {
+       objectString = '<' + ctsurn.toString() + '>'
+		}
     break
 
     default :
